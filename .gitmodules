@@ -17,7 +17,6 @@
 [submodule "notebook-mode"]
 	path = notebook-mode
 	url = git@github.com:rougier/notebook-mode.git
-	branch = master
 [submodule "ssass-mode"]
 	path = ssass-mode
 	url = https://github.com/AdamNiederer/ssass-mode.git
