@@ -45,10 +45,10 @@
 (add-hook 'html-mode-hook 'variable-pitch-mode)
 (add-hook 'mhtml-mode-hook 'variable-pitch-mode)
 (add-hook 'python-mode-hook 'variable-pitch-mode)
-;(dolist (mode '(scheme-mode-hook term-mode-hook))  ; org-mode-hook term-mode-hook eshell-mode-hook treemacs-mode-hook
-;  (add-hook mode
-;    (lambda ()
-;      (display-line-numbers-mode 0))))
+                                        ;(dolist (mode '(scheme-mode-hook term-mode-hook))  ; org-mode-hook term-mode-hook eshell-mode-hook treemacs-mode-hook
+                                        ;  (add-hook mode
+                                        ;    (lambda ()
+                                        ;      (display-line-numbers-mode 0))))
 
                                         ; Nope. (add-hook 'scheme-mode-hook 'variable-pitch-mode)
 
@@ -69,28 +69,6 @@
 
 (tool-bar-mode 1)
 					;(tool-bar-add-item "my-custom-action" 'my-custom-command "tooltip" 'my-custom-icon)
-
-(require 'mh-e) ; mail
-
-(setq display-buffer-alist
-      '(
-	("\\*messages.*"
-	 (display-buffer-in-side-window)
-	 (window-width . 0.25) ;; Side window takes up 1/4th of the screen
-	 (side . right)
-	 )
-	("^\\*Projectile.*"
-	 ((display-buffer-reuse-window display-buffer-at-top)
-          (window-height . 0.25)))
-	("^\\*scratch.*"
-	 ((display-buffer-reuse-window display-buffer-at-bottom)
-          (window-height . 0.1)))
-	("\\*Warnings.*"
-	 (display-buffer-reuse-window display-buffer-in-side-window)
-	 (window-width . 0.25) ;; Side window takes up 1/4th of the screen
-	 (side . right)
-	 )
-	))
 
 (projectile-mode +1)
 
@@ -156,12 +134,13 @@
 (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
 (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
 
+                                        ; '(cua-mode t)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(cua-mode t)
  '(elfeed-feeds
    '(("http://planet.emacslife.com/atom.xml" emacs) "https://lwn.net/headlines/rss" "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fhnrss.org%252Ffrontpage%26max%3D3%26links%3Dpreserve" "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fwww.nature.com%252Fnmat%252Fcurrent_issue%252Frss%252F%26max%3D3%26links%3Dpreserve" "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fwww.nature.com%252Fnphys%252Fcurrent_issue%252Frss%252F%26max%3D3%26links%3Dpreserve" "https://semianalysis.substack.com/feed" "https://slow-journalism.com/blog/feed" "http://ftr.fivefilters.net/makefulltextfeed.php?url=https%3A%2F%2Ffeeds.arstechnica.com%2Farstechnica%2Ffeatures&max=3"))
  '(format-all-debug nil)
@@ -231,7 +210,7 @@
                                         ;					  (global-tree-sitter-mode)
                                         ;					  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 
-  
+
 					; no (mp-setup-install-grammars)
   ;; Do not forget to customize Combobulate to your liking:
   ;;
@@ -487,30 +466,6 @@
 (setq treemacs-width 25) ; Adjust the width of the treemacs window as needed
 
 (setq doc-view-resolution 300)
-
-(setq mu4e-get-mail-command "offlineimap"
-      mu4e-maildir (expand-file-name "~/Mail")
-      mu4e-update-interval 180
-      message-kill-buffer-on-exit t
-      mu4e-headers-skip-duplicates t
-      mu4e-compose-signature-auto-include nil
-      mu4e-view-show-images t
-      mu4e-view-show-addresses t
-      mu4e-attachment-dir "~/Downloads"
-      mu4e-use-fancy-chars t
-      mu4e-headers-auto-update t
-      message-signature-file "~/.emacs.d/.signature"
-      mu4e-compose-signature-auto-include nil
-      mu4e-view-prefer-html t
-      mu4e-compose-in-new-frame t
-      mu4e-change-filenames-when-moving t
-					;message-send-mail-function 'smtpmail-send-it
-      starttls-use-gnutls t
-      smtpmail-stream-type 'starttls
-      ;;mu4e-html2text-command "w3m -T text/html"
-      )
-
-(require 'mu4e-context)
 
 (use-package org-mime
   :ensure t)
