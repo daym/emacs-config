@@ -1,0 +1,36 @@
+[submodule "wakib-keys"]
+	path = wakib-keys
+	url = https://github.com/darkstego/wakib-keys.git
+	branch = master
+[submodule "bar-cursor"]
+	path = bar-cursor
+	url = https://github.com/ajsquared/bar-cursor.git
+	branch = master
+[submodule "combobulate"]
+	path = combobulate
+	url = https://github.com/mickeynp/combobulate.git
+	branch = master
+[submodule "elfeed-tube"]
+	path = elfeed-tube
+	url = https://github.com/karthink/elfeed-tube.git
+	branch = master
+[submodule "notebook-mode"]
+	path = notebook-mode
+	url = git@github.com:rougier/notebook-mode.git
+	branch = master
+[submodule "ssass-mode"]
+	path = ssass-mode
+	url = https://github.com/AdamNiederer/ssass-mode.git
+	branch = master
+[submodule "vue-html-mode"]
+	path = vue-html-mode
+	url = https://github.com/AdamNiederer/vue-html-mode.git
+	branch = master
+[submodule "vue-mode"]
+	path = vue-mode
+	url = https://github.com/AdamNiederer/vue-mode.git
+	branch = master
+[submodule "xenops"]
+	path = xenops
+	url = https://github.com/dandavison/xenops.git
+	branch = master
