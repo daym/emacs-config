@@ -33,3 +33,7 @@
 	path = xenops
 	url = https://github.com/dandavison/xenops.git
 	branch = master
+[submodule "iscroll"]
+	path = iscroll
+	url = https://github.com/casouri/iscroll.git
+	branch = master
