@@ -1,5 +1,9 @@
 ;; -*- lexical-binding: t -*-
 
+;(customize-set-variable 'lsp-treemacs-theme "Iconless")
+(add-to-list 'load-path "~/.emacs.d/elfeed/")
+
+(require 'nerd-icons)
                                         ; Gtk 3
 ;; XXX test
                                         ;(save-place-mode 1) ; save cursor position
@@ -34,6 +38,9 @@
 (global-tab-line-mode 1)
 (global-visual-line-mode 1)
 
+(require 'lsp-treemacs)
+;(setq lsp-treemacs-theme "Iconless")
+
 (add-hook 'org-mode-hook 'variable-pitch-mode)
 (add-hook 'rustic-mode-hook 'variable-pitch-mode)
                                         ;  (add-hook 'rust-ts-mode-hook 'variable-pitch-mode)
@@ -66,6 +73,7 @@
                                         ; Shouldn't those be context-dependent?
 
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'prog-mode-hook 'comment-tags-mode)
 
 (tool-bar-mode 1)
 					;(tool-bar-add-item "my-custom-action" 'my-custom-command "tooltip" 'my-custom-icon)
@@ -82,7 +90,7 @@
 
 ;;; CUA mode
 
-                                        ;(cua-mode t) ; replaced by wakib-keys
+(cua-mode t) ; replaced by wakib-keys
 (setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
 (transient-mark-mode 1) ;; No region when it is not highlighted
 (setq cua-keep-region-after-copy t) ;; Standard Windows behaviour
@@ -142,7 +150,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(elfeed-feeds
-   '(("http://planet.emacslife.com/atom.xml" emacs) "https://lwn.net/headlines/rss" "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fhnrss.org%252Ffrontpage%26max%3D3%26links%3Dpreserve" "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fwww.nature.com%252Fnmat%252Fcurrent_issue%252Frss%252F%26max%3D3%26links%3Dpreserve" "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fwww.nature.com%252Fnphys%252Fcurrent_issue%252Frss%252F%26max%3D3%26links%3Dpreserve" "https://semianalysis.substack.com/feed" "https://slow-journalism.com/blog/feed" "http://ftr.fivefilters.net/makefulltextfeed.php?url=https%3A%2F%2Ffeeds.arstechnica.com%2Farstechnica%2Ffeatures&max=3"))
+   '(("http://planet.emacslife.com/atom.xml" emacs)
+     "https://lwn.net/headlines/rss" "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fhnrss.org%252Ffrontpage%26max%3D3%26links%3Dpreserve" "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fwww.nature.com%252Fnmat%252Fcurrent_issue%252Frss%252F%26max%3D3%26links%3Dpreserve" "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fwww.nature.com%252Fnphys%252Fcurrent_issue%252Frss%252F%26max%3D3%26links%3Dpreserve" "https://semianalysis.substack.com/feed" "https://slow-journalism.com/blog/feed" "http://ftr.fivefilters.net/makefulltextfeed.php?url=https%3A%2F%2Ffeeds.arstechnica.com%2Farstechnica%2Ffeatures&max=3"))
  '(format-all-debug nil)
  '(format-all-show-errors 'errors)
  '(frame-background-mode 'light)
@@ -152,10 +161,12 @@
      (eval modify-syntax-entry 126 "'")
      (geiser-guile-binary "guix" "repl")
      (geiser-insert-actual-lambda)))
+ '(large-file-warning-threshold 100000000)
  '(lsp-rust-analyzer-rustc-source
    "/usr/local/rustup/toolchains/nightly-2024-08-03-x86_64-unknown-linux-musl/lib/rustlib/rustc-src/rust/compiler/rustc/Cargo.toml")
+ '(lsp-treemacs-theme "Iconless")
  '(package-selected-packages
-   '(org-mime back-button counsel-projectile counsel-tramp magit-popup edit-indirect eat flycheck-rust typescript-mode go-mode git-timemachine web-mode rainbow-delimiters geiser-guile flycheck-guile clojure-mode envrc shackle vertico counsel pkg-info rustic magit-svn magit-gerrit agda2-mode tramp find-file-in-project elpy lsp-ui consult embark pg finalize org-roam eval-in-repl eval-in-repl-slime slime-company ts async ement crdt paredit))
+   '(org-mime back-button counsel-projectile counsel-tramp magit-popup edit-indirect eat flycheck-rust typescript-mode go-mode git-timemachine web-mode rainbow-delimiters geiser-guile flycheck-guile clojure-mode envrc shackle vertico counsel pkg-info rustic magit-svn magit-gerrit agda2-mode tramp find-file-in-project lsp-ui consult embark pg finalize org-roam eval-in-repl eval-in-repl-slime slime-company ts async ement crdt paredit))
  '(smtpmail-smtp-server "w0062d1b.kasserver.com" t)
  '(smtpmail-smtp-service 25 t))
 (custom-set-faces
@@ -163,10 +174,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Noto Sans Mono" :foundry "GOOG" :slant normal :weight regular :height 110 :width normal))))
+ '(default ((t (:family "Noto Sans Mono" :foundry "GOOG" :slant normal :weight regular :height 100 :width normal))))
  '(lsp-ui-sideline-global ((t (:family "Dijkstra Italic" :italic t :weight regular :height 0.8)))))
 
-(set-face-attribute 'default nil :height 110)
+(set-face-attribute 'default nil :height 100)
 (setq tool-bar-button-margin (cons 7 1))
 
 (with-eval-after-load 'treemacs
@@ -337,7 +348,12 @@
                                         ;(add-to-list 'frames-only-mode-kill-frame-when-buffer-killed-buffer-list '(regexp . "\\*.*\\.po\\*"))
                                         ;(add-to-list 'frames-only-mode-kill-frame-when-buffer-killed-buffer-list "*Scratch*")
 
-(elpy-enable)
+(add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
+(add-to-list 'auto-mode-alist '("\\.PDF\\'" . pdf-view-mode))
+(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+
+(require 'dap-python)
+                                        ;(elpy-enable)
 
 (use-package lsp-mode
   :ensure nil
@@ -465,7 +481,12 @@
 
 (setq treemacs-width 25) ; Adjust the width of the treemacs window as needed
 
+                                        ; bad
 (setq doc-view-resolution 300)
+(require 'pdf-tools)
+
+;; Die, Doc-View-mode! die!
+                                        ;(defalias 'doc-view-mode #'pdf-view-mode)
 
 (use-package org-mime
   :ensure t)
@@ -619,6 +640,9 @@
 
 (require 'mpv)
 (load "~/.emacs.d/custom.el" t)
+
+;; Otherwise half the icons are from the wrong set.
+(treemacs-refresh)
 
 (setq envrc-debug t)
 					; as late as possible:

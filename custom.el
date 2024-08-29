@@ -7,6 +7,12 @@
 (global-set-key (kbd "M-<Left>") 'back-button-global-backward)
 (global-set-key (kbd "M-<Right>") 'back-button-global-forward)
 
+(with-eval-after-load 'nov
+  (define-key nov-mode-map (kbd "<mouse-8>") #'nov-history-back)
+  (define-key nov-mode-map (kbd "<mouse-9>") #'nov-history-forward)
+  (define-key nov-mode-map (kbd "M-<Left>") #'nov-history-back)
+  (define-key nov-mode-map (kbd "M-<Right>") #'nov-history-forward))
+
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
 (global-set-key (kbd "<XF86Search>") 'search-forward)
 (global-set-key (kbd "<Search>") 'search-forward)
@@ -121,6 +127,10 @@
 (global-set-key (kbd "C-S-s") 'save-buffer)
 
 ;;; ======================
+
+(add-to-list 'load-path "~/.emacs.d/treemacs-nerd-icons/")
+(require 'treemacs-nerd-icons)
+(treemacs-load-theme "nerd-icons")
 
 (setq display-buffer-alist
       '(
@@ -423,6 +433,39 @@
                                         ;  "Heavy face for `markchars-mode' char marking."
                                         ;  :group 'markchars)
 
+;; Must do this so the agenda knows where to look for my files
+(setq org-agenda-files '("~/doc/org"))
+
+;; When a TODO is set to a done state, record a timestamp
+(setq org-log-done 'time)
+
+;; Follow the links
+(setq org-return-follows-link  t)
+
+;; Associate all org files with org mode
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+
+;; Make the indentation look nicer
+(add-hook 'org-mode-hook 'org-indent-mode)
+
+;; Remap the change priority keys to use the UP or DOWN key
+(define-key org-mode-map (kbd "C-c <up>") 'org-priority-up)
+(define-key org-mode-map (kbd "C-c <down>") 'org-priority-down)
+
+;; Shortcuts for storing links, viewing the agenda, and starting a capture
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(define-key global-map "\C-cc" 'org-capture)
+
+;; When you want to change the level of an org item, use SMR
+(define-key org-mode-map (kbd "C-c C-g C-r") 'org-shiftmetaright)
+
+;; Hide the markers so you just see bold text as BOLD-TEXT and not *BOLD-TEXT*
+(setq org-hide-emphasis-markers t)
+
+;; Wrap the lines in org mode so that things are easier to read ; FIXME how to make tables work correctly then?
+(add-hook 'org-mode-hook 'visual-line-mode)
+
 (use-package org-roam
   :ensure f
   :custom
@@ -433,3 +476,285 @@
   :config
   (org-roam-setup))
 (org-roam-db-autosync-mode)
+
+;;; Make elfeed store-link store the link to the ORIGINAL article, not to the feed.
+
+(org-link-set-parameters "elfeed"
+                         :follow #'elfeed-link-open
+                         :store #'elfeed-link-store-link
+                         :export #'elfeed-link-export-link)
+
+(defun elfeed-link-export-link (link desc format _protocol)
+  "Export `org-mode' `elfeed' LINK with DESC for FORMAT."
+  (if (string-match "\\([^#]+\\)#\\(.+\\)" link)
+      (if-let* ((entry
+                 (elfeed-db-get-entry
+                  (cons (match-string 1 link)
+                        (match-string 2 link))))
+                (url
+                 (elfeed-entry-link entry))
+                (title
+                 (elfeed-entry-title entry)))
+          (pcase format
+            ('html (format "<a href=\"%s\">%s</a>" url desc))
+            ('md (format "[%s](%s)" desc url))
+            ('latex (format "\\href{%s}{%s}" url desc))
+            ('texinfo (format "@uref{%s,%s}" url desc))
+            (_ (format "%s (%s)" desc url)))
+        (format "%s (%s)" desc url))
+    (format "%s (%s)" desc link)))
+
+;;; Pandoc
+
+(setq pandoc-data-dir "~/.emacs.d/etc/pandoc/")
+
+(defun efe/export-to-docx ()
+  "Output to docx using pandoc-mode"
+  (interactive)
+  (pandoc-mode)
+  (execute-kbd-macro (kbd "C-c / O W d b b r"))
+  (setq pandoc-mode nil))
+
+(defun insert-html-blog-template ()
+  "Inserts HTML_HEAD lines at the first empty line and html code at the end of the buffer."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (let ((empty-line (progn (re-search-forward "^$" nil t) (point))))
+      (goto-char empty-line)
+      (insert "\n#+HTML_HEAD: <link rel=\"webmention\" href=\"https://webmention.io/ismailefe.org/webmention\" />\n")
+      (insert "#+HTML_HEAD: <link rel=\"stylesheet\" type=\"text/css\" href=\"/templates/style.css\" />\n")
+      (insert "#+HTML_HEAD: <link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/favicon/apple-touch-icon.png\">\n")
+      (insert "#+HTML_HEAD: <link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon/favicon-32x32.png\">\n")
+      (insert "#+HTML_HEAD: <link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon/favicon-16x16.png\">\n")
+      (insert "#+HTML_HEAD: <link rel=\"manifest\" href=\"/favicon/site.webmanifest\">\n")))
+  (goto-char (point-max))
+  (insert "\n\n")
+  (insert "#+BEGIN_EXPORT html\n")
+  (insert "<div class=\"bottom-header\">\n")
+  (insert "  <a class=\"bottom-header-link\" href=\"/\">Home</a>\n")
+  (insert "  <a href=\"mailto:ismailefetop@gmail.com\" class=\"bottom-header-link\">Mail Me</a>\n")
+  (insert "  <a class=\"bottom-header-link\" href=\"/feed.xml\" target=\"_blank\">RSS</a>\n")
+  (insert "  <a class=\"bottom-header-link\" href=\"https://github.com/Ektaynot/ismailefe_org\" target=\"_blank\">Source</a>\n")
+  (insert "</div>\n")
+  (insert "<div class=\"firechickenwebring\">\n")
+  (insert "  <a href=\"https://firechicken.club/efe/prev\">←</a>\n")
+  (insert "  <a href=\"https://firechicken.club\">🔥⁠🐓</a>\n")
+  (insert "  <a href=\"https://firechicken.club/efe/next\">→</a>\n")
+  (insert "</div>\n")
+  (insert "#+END_EXPORT\n"))
+
+                                        ; With these snippets added, all I have to do is run the 'org-pandoc-export-to-html5' function in Emacs (this function comes with ox-pandoc). This creates a html file with the same name as the original file.
+
+(require 'request)
+(require 'dom)
+                                        ;(require 'simpleclip)
+
+(defun google-search-first-result (query)
+  "Search Google for QUERY and return the first search result."
+  (interactive "sSearch Query: ")
+  (let ((url (concat "https://www.google.com/search?q=" (url-hexify-string query)))
+        (user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"))
+    (request url
+      :headers `(("User-Agent" . ,user-agent))
+      :parser 'buffer-string
+      :success (cl-function
+                (lambda (&key data &allow-other-keys)
+                  (let* ((dom (with-temp-buffer
+                                (insert data)
+                                (libxml-parse-html-region (point-min) (point-max))))
+                         (first-result (car (dom-by-class dom "tF2Cxc"))))
+                    (if first-result
+                        (let ((link (dom-attr (car (dom-by-tag first-result 'a)) 'href)))
+                          (when link
+                            (message "First search result: %s" link)
+                                        ;(simpleclip-set-contents link)
+                            (kill-new link)
+                            ))
+                      (message "No results found."))))))))
+
+(defun google-first-result-at-point ()
+  "Get the first url from a Google search from the word at point."
+  (interactive)
+  (let ((word (thing-at-point 'word)))
+    (if word
+        (google-search-first-result word)
+      (message "No word found at point."))))
+
+(setq scroll-preserve-screen-position nil)
+
+                                        ; Unbreak image scrolling
+
+(add-to-list 'load-path "~/.emacs.d/iscroll/")
+(require 'iscroll)
+                                        ; Note: Only enable in text modes, not prog modes
+                                        ;(iscroll-mode)
+
+(add-hook 'elfeed-show-mode-hook 'iscroll-mode)
+
+;;; Org mode
+
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "PLANNING(p)" "IN-PROGRESS(i@/!)" "VERIFYING(v!)" "BLOCKED(b@)"  "|" "DONE(d!)" "OBE(o@!)" "WONT-DO(w@/!)" )
+        ))
+
+(setq org-capture-templates
+      '(
+        ("w" "Work Log Entry"
+         entry (file+datetree "~/doc/org/work-log.org")
+         "* %?"
+         :empty-lines 0)
+        ("n" "Note"
+         entry (file+headline "~/doc/org/notes.org" "Random Notes")
+         "** %?"
+         :empty-lines 0)
+        ("g" "General To-Do"
+         entry (file+headline "~/doc/org/todos.org" "General Tasks")
+         "* TODO [#B] %?\n:Created: %T\n "
+         :empty-lines 0)
+        ("c" "Code To-Do" ; execute this on the line of code you want to link it to
+         entry (file+headline "~/doc/org/todos.org" "Code Related Tasks")
+         "* TODO [#B] %?\n:Created: %T\n%i\n%a\nProposed Solution: "
+         :empty-lines 0)
+        ("m" "Meeting"
+         entry (file+datetree "~/doc/org/meetings.org")
+         "* %? :meeting:%^g \n:Created: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
+         :tree-type week
+         :clock-in t
+         :clock-resume t
+         :empty-lines 0)
+
+        ))
+
+;; Tags
+(setq org-tag-alist '(
+                      ;; Ticket types (exclusive)
+                      (:startgroup . nil)
+                      ("@bug" . ?b)
+                      ("@feature" . ?u)
+                      ("@spike" . ?j)
+                      (:endgroup . nil)
+
+                      ;; Ticket flags
+                      ("@write_future_ticket" . ?w)
+                      ("@emergency" . ?e)
+                      ("@research" . ?r)
+
+                      ;; Meeting types (exclusive)
+                      (:startgroup . nil)
+                      ("big_sprint_review" . ?i)
+                      ("cents_sprint_retro" . ?n)
+                      ("dsu" . ?d)
+                      ("grooming" . ?g)
+                      ("sprint_retro" . ?s)
+                      (:endgroup . nil)
+
+                      ;; Code TODOs tags
+                      ("QA" . ?q)
+                      ("backend" . ?k)
+                      ("broken_code" . ?c)
+                      ("frontend" . ?f)
+
+                      ;; Special tags
+                      ("CRITICAL" . ?x)
+                      ("obstacle" . ?o)
+
+                      ;; Meeting tags
+                      ("HR" . ?h)
+                      ("general" . ?l)
+                      ("meeting" . ?m)
+                      ("misc" . ?z)
+                      ("planning" . ?p)
+
+                      ;; Work Log Tags
+                      ("accomplishment" . ?a)
+                      ))
+
+;; Tag colors
+(setq org-tag-faces
+      '(
+        ("planning"  . (:foreground "mediumPurple1" :weight bold))
+        ("backend"   . (:foreground "royalblue1"    :weight bold))
+        ("frontend"  . (:foreground "forest green"  :weight bold))
+        ("QA"        . (:foreground "sienna"        :weight bold))
+        ("meeting"   . (:foreground "yellow1"       :weight bold))
+        ("CRITICAL"  . (:foreground "red1"          :weight bold))
+        )
+      )
+
+;; Agenda View "d"
+(defun air-org-skip-subtree-if-priority (priority)
+  "Skip an agenda subtree if it has a priority of PRIORITY.
+
+  PRIORITY may be one of the characters ?A, ?B, or ?C."
+  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+        (pri-value (* 1000 (- org-lowest-priority priority)))
+        (pri-current (org-get-priority (thing-at-point 'line t))))
+    (if (= pri-value pri-current)
+        subtree-end
+      nil)))
+
+(setq org-agenda-skip-deadline-if-done t)
+
+(setq org-agenda-custom-commands
+      '(
+        ;; Daily Agenda & TODOs
+        ("d" "Daily agenda and all TODOs"
+
+         ;; Display items with priority A
+         ((tags "PRIORITY=\"A\""
+                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                 (org-agenda-overriding-header "High-priority unfinished tasks:")))
+
+          ;; View 7 days in the calendar view
+          (agenda "" ((org-agenda-span 7)))
+
+          ;; Display items with priority B (really it is view all items minus A & C)
+          (alltodo ""
+                   ((org-agenda-skip-function '(or (air-org-skip-subtree-if-priority ?A)
+                                                   (air-org-skip-subtree-if-priority ?C)
+                                                   (org-agenda-skip-if nil '(scheduled deadline))))
+                    (org-agenda-overriding-header "ALL normal priority tasks:")))
+
+          ;; Display items with pirority C
+          (tags "PRIORITY=\"C\""
+                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                 (org-agenda-overriding-header "Low-priority Unfinished tasks:")))
+          )
+
+         ;; Don't compress things (change to suite your tastes)
+         ((org-agenda-compact-blocks nil)))
+
+        ;; James's Super View
+        ("j" "James's Super View"
+         ((agenda "" ( (org-agenda-remove-tags t) (org-agenda-span 7)))
+          (alltodo ""  (;; Remove tags to make the view cleaner
+                        (org-agenda-remove-tags t)
+                        (org-agenda-prefix-format "  %t  %s")
+                        (org-agenda-overriding-header "CURRENT STATUS")
+                        ;; Define the super agenda groups (sorts by order)
+                        (org-super-agenda-groups
+                         '(;; Filter where tag is CRITICAL
+                           (:name "Critical Tasks"  :tag "CRITICAL" :order 0)
+                           ;; Filter where TODO state is IN-PROGRESS
+                           (:name "Currently Working" :todo "IN-PROGRESS" :order 1)
+                           ;; Filter where TODO state is PLANNING
+                           (:name "Planning Next Steps" :todo "PLANNING" :order 2 )
+                           ;; Filter where TODO state is BLOCKED or where the tag is obstacle
+                           (:name "Problems & Blockers" :todo "BLOCKED" :tag "obstacle" :order 3)
+                           ;; Filter where tag is @write_future_ticket
+                           (:name "Tickets to Create" :tag "@write_future_ticket" :order 4)
+                           ;; Filter where tag is @research
+                           (:name "Research Required" :tag "@research" :order 7)
+                           ;; Filter where tag is meeting and priority is A (only want TODOs from meetings)
+                           (:name "Meeting Action Items" :and (:tag "meeting" :priority "A") :order 8)
+                           ;; Filter where state is TODO and the priority is A and the tag is not meeting
+                           (:name "Other Important Items" :and (:todo "TODO" :priority "A" :not (:tag "meeting")) :order 9)
+                           ;; Filter where state is TODO and priority is B
+                           (:name "General Backlog" :and (:todo "TODO" :priority "B") :order 10)
+                           ;; Filter where the priority is C or less (supports future lower priorities)
+                           (:name "Non Critical" :priority<= "C" :order 11)
+                           ;; Filter where TODO state is VERIFYING
+                           (:name "Currently Being Verified" :todo "VERIFYING" :order 20)))))
+          ))
+        ))
