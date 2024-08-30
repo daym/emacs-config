@@ -166,7 +166,7 @@
    "/usr/local/rustup/toolchains/nightly-2024-08-03-x86_64-unknown-linux-musl/lib/rustlib/rustc-src/rust/compiler/rustc/Cargo.toml")
  '(lsp-treemacs-theme "Iconless")
  '(package-selected-packages
-   '(org-mime back-button counsel-projectile counsel-tramp magit-popup edit-indirect eat flycheck-rust typescript-mode go-mode git-timemachine web-mode rainbow-delimiters geiser-guile flycheck-guile clojure-mode envrc shackle vertico counsel pkg-info rustic magit-svn magit-gerrit agda2-mode tramp find-file-in-project lsp-ui consult embark pg finalize org-roam eval-in-repl eval-in-repl-slime slime-company ts async ement crdt paredit))
+   '(org-mime back-button counsel-projectile counsel-tramp magit-popup edit-indirect eat flycheck-rust typescript-mode go-mode git-timemachine web-mode rainbow-delimiters geiser-guile flycheck-guile clojure-mode envrc shackle vertico counsel pkg-info rustic magit-svn magit-gerrit agda2-mode tramp find-file-in-project lsp-ui consult embark pg finalize org-roam eval-in-repl eval-in-repl-slime slime-company ts async ement crdt gptel paredit))
  '(smtpmail-smtp-server "w0062d1b.kasserver.com" t)
  '(smtpmail-smtp-service 25 t))
 (custom-set-faces
@@ -578,6 +578,31 @@
 ;; pinentry
 (defvar epa-pinentry-mode)
 (setq epa-pinentry-mode 'loopback)
+
+(defun my/eshell-hook ()
+   "Set up eshell hook for completions."
+   (interactive)
+   (setq-local completion-styles '(basic partial-completion))
+   ;(setq-local corfu-auto t)
+   ;?! (corfu-mode) or company
+   ;(setq-local completion-at-point-functions
+   ;            (list (cape-capf-super
+   ;                   #'pcomplete-completions-at-point
+   ;                   #'cape-history)))
+   (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history))
+
+(use-package eshell
+   :config
+   ;(setq eshell-scroll-to-bottom-on-input t)
+   (setq-local tab-always-indent 'complete)
+   (setq eshell-history-size 100000)
+   (setq eshell-save-history-on-exit t) ;; Enable history saving on exit
+   (setq eshell-hist-ignoredups t) ;; Ignore duplicates
+   :hook
+   (eshell-mode . my/eshell-hook))
+
+(add-hook 'comint-mode-hook #'capf-autosuggest-mode)
+(add-hook 'eshell-mode-hook #'capf-autosuggest-mode)
 
 ;; Match eshell, shell, term and/or vterm buffers
 ;; Usually need both name and major mode
