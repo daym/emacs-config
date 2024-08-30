@@ -468,6 +468,13 @@
 
 (setq solarized-termcolors 256)
 (set-terminal-parameter nil 'background-mode 'light)
+;(require 'solarized-theme)
+; wrong solarized :P
+;(solarized-create-theme-file-with-palette 'light 'solarized-solarized-light
+;  '("#002b36" "#fdf6e3"
+;    "#b58900" "#cb4b16" "#dc322f" "#d33682" "#6c71c4" "#268bd2" "#2aa198" "#859900"))
+
+;(load-theme 'solarized-solarized-light t)
 (load-theme 'solarized t)
 					;(enable-theme)
 

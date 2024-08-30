@@ -128,6 +128,9 @@
 
 ;;; ======================
 
+;; Improve contrast
+(add-to-list 'default-frame-alist '(foreground-color . "#505050"))
+
 (add-to-list 'load-path "~/.emacs.d/treemacs-nerd-icons/")
 (require 'treemacs-nerd-icons)
 (treemacs-load-theme "nerd-icons")
