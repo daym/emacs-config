@@ -128,6 +128,11 @@
 
 ;;; ======================
 
+(require 'pulsar)
+(setq pulsar-face 'pulsar-blue)
+;; Pulse when minibuffer shows up
+(add-hook 'minibuffer-setup-hook #'pulsar-pulse-line)
+
 ;; Improve contrast
 (add-to-list 'default-frame-alist '(foreground-color . "#505050"))
 
