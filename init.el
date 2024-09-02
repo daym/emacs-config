@@ -339,6 +339,7 @@
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
+;(add-to-list 'auto-mode-alist '("\\.jl" . julia-snail-mode))
 (add-to-list 'auto-mode-alist '("\\.rs" . rustic-mode))
 (add-to-list 'auto-mode-alist '("\\.cs" . csharp-mode))
 (add-to-list 'auto-mode-alist '("\\.js" . js2-mode))
@@ -667,8 +668,55 @@
 (setq lsp-tex-server 'digestif)
 (setq TeX-electric-sub-and-superscript t)
 (setq TeX-fold-mode t)
-
                                         ;(add-hook LaTeX-mode-hook #'xenops-mode)
+
+
+;; This ensures that pressing Enter will insert a new line and indent it.
+;(global-set-key (kbd "RET") #'newline-and-indent)
+
+;; Indentation based on the indentation of the previous non-blank line.
+;(setq-default indent-line-function #'indent-relative-first-indent-point)
+
+;; In modes such as `text-mode', calling `newline-and-indent' multiple times
+;; removes the indentation. The following fixes the issue and ensures that text
+;; is properly indented using `indent-relative' or
+;; `indent-relative-first-indent-point'.
+;(setq-default indent-line-ignored-functions '())
+
+;The outline-indent.el Emacs package provides a minor mode that enables code folding based on indentation levels for various
+;indentation-based text files, such as YAML, Python, and any other indented text files.
+
+;;In addition to code folding, outline-indent allows moving indented subtrees up and down, promoting and demoting sections to adjust indentation levels, customizing the ellipsis, and inserting a new line with the same indentation level as the current line, among other features.
+(use-package outline-indent
+  :ensure f
+  :commands (outline-indent-minor-mode
+             outline-indent-insert-heading)
+  :hook ((yaml-mode . outline-indent-minor-mode)
+         (yaml-ts-mode . outline-indent-minor-mode)
+         (python-mode . outline-indent-minor-mode)
+         (python-ts-mode . outline-indent-minor-mode))
+  :custom
+  (outline-indent-ellipsis " ▼ "))
+
+;; Python
+(add-hook 'python-mode-hook #'outline-indent-minor-mode)
+(add-hook 'python-ts-mode-hook #'outline-indent-minor-mode)
+
+;; YAML
+(add-hook 'yaml-mode-hook #'outline-indent-minor-mode)
+(add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
+
+;; The dtrt-indent provides an Emacs minor mode that detects the original indentation offset used in source code files and automatically adjusts Emacs settings accordingly, making it easier to edit files created with different indentation styles.
+;(use-package dtrt-indent
+;  :ensure t
+;  :commands (dtrt-indent-global-mode
+;             dtrt-indent-mode
+;             dtrt-indent-adapt
+;             dtrt-indent-undo
+;             dtrt-indent-diagnosis
+;             dtrt-indent-highlight)
+;  :config
+;  (dtrt-indent-global-mode))
 
 (require 'mpv)
 (load "~/.emacs.d/custom.el" t)
