@@ -790,6 +790,7 @@ the cdr is the executable name."
     (geiser-guile-binary . "guile")
     (geiser-racket-binary . "racket")
     (geiser-chicken-binary . "chicken")
+    (haskell-process-path-ghci . "ghci")
     (js-comint-program-command . "node"))
   "A list of REPL environment configurations. Each item is a cons cell where
 the car is the name of the local variable to setq-local, and the cdr is
