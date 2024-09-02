@@ -771,35 +771,33 @@
 ;; envrc, correctly, changes the buffer-local process-environment PATH to whatever was specified in the .envrc file.
 ;; But then, most of the REPLs you start up don't notice the PATH change. That means that you will have the wrong Julia.
 ;; Therefore, every time buffer process environment is changed we update the REPL executable names.
-(defun update-julia-snail-executable-from-env ()
-  "Update `julia-snail-executable' based on the current `process-environment'."
-  (setq-local julia-snail-executable (or (executable-find "julia") "julia")))
 
-(defun update-inferior-lisp-program-from-env ()
-  "Update `inferior-lisp-program' based on the current `process-environment'."
-  (setq-local inferior-lisp-program (or (executable-find "sbcl") "sbcl")))
+(defun update-repl-executable-from-env (repl-config)
+  "Update the REPL executable based on the current `process-environment'.
+REPL-CONFIG is a cons cell where the car is the local variable and
+the cdr is the executable name."
+  (let ((variable-name (car repl-config))
+        (executable-name (cdr repl-config)))
+    (make-local-variable variable-name)
+    (set variable-name (or (executable-find executable-name) executable-name))))
 
-(defun update-python-shell-interpreter-from-env ()
-  "Update `python-shell-interpreter' based on the current `process-environment'."
-  (setq-local python-shell-interpreter (or (executable-find "python3") "python3")))
-
-(defun update-geiser-guile-binary-from-env ()
-  "Update `geiser-guile-binary' based on the current `process-environment'."
-  (setq-local geiser-guile-binary (or (executable-find "python3") "guile")))
-
-; geiser-racket-binary
-; geiser-chicken-binary
-; js-comint-program-command
+; TODO inferior-js-program-command ?
+; TODO could also intercept (make-comint comint-program-command) and change comint-program-command there--but that's maybe a little magical.
+(defvar repl-env-configurations
+  '((julia-snail-executable . "julia")
+    (inferior-lisp-program . "sbcl")
+    (python-shell-interpreter . "python3")
+    (geiser-guile-binary . "guile")
+    (geiser-racket-binary . "racket")
+    (geiser-chicken-binary . "chicken")
+    (js-comint-program-command . "node"))
+  "A list of REPL environment configurations. Each item is a cons cell where
+the car is the name of the local variable to setq-local, and the cdr is
+the name of the executable program to search for (searched-for in PATH).")
 
 (defun update-repl-commands (&rest _args)
-  ;; Note: Possible: (eq major-mode 'julia-mode)
+  "Update all REPL executable names for the current `process-environment'."
   (when (bound-and-true-p envrc-mode)
-    (update-julia-snail-executable-from-env)
-    (update-inferior-lisp-program-from-env)
-    (update-python-shell-interpreter-from-env)
-    (update-geiser-guile-binary-from-env)))
+    (mapc 'update-repl-executable-from-env repl-env-configurations)))
 
-;(advice-add 'julia-snail :before #'update-repl-commands)
 (advice-add 'envrc--update :after #'update-repl-commands)
-
-;; TODO do the same with Python, Guile etcetc.
