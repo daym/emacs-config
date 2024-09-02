@@ -801,3 +801,46 @@ the name of the executable program to search for (searched-for in PATH).")
     (mapc 'update-repl-executable-from-env repl-env-configurations)))
 
 (advice-add 'envrc--update :after #'update-repl-commands)
+
+(defun get-projectile-project-root ()
+  "Get the root directory of the project according to Projectile."
+  (when (and (featurep 'projectile) (projectile-project-p))
+    (projectile-project-root)))
+
+(defun get-builtin-project-root ()
+  "Get the root directory of the project according to Emacs' built-in project.el."
+  (when-let ((project (project-current)))
+    (project-root project)))
+
+(defun ensure-line-in-file (line file-path)
+  "Open FILE-PATH in a buffer and ensure that a specific LINE exists. Does not save the buffer automatically."
+  (let* ((file (expand-file-name file-path))
+         (buffer (find-file-noselect file)))
+    (with-current-buffer buffer
+      (goto-char (point-min))
+      ;; Check if line exists; if not, insert it at the end
+      (unless (search-forward (concat line "\n") nil t)
+        (goto-char (point-max))
+        (unless (bolp) (insert "\n"))  ; Ensure newline before inserting
+        (insert line "\n")
+        ;; Make the buffer visible for the user to review
+        (switch-to-buffer-other-window buffer)
+        (message "Review the changes and save the buffer if they are correct.")))))
+
+(defun envrc-root-directory ()
+  "Attempt to get the envrc root directory for the current buffer."
+  (when (featurep 'envrc)
+    (envrc--find-env-dir)))
+
+(defun update-guix-shell-authorized ()
+  "Ensure the current buffer's project or its directory is listed in
+   '~/.config/guix/shell-authorized-directories'."
+  (let ((project-dir (envrc-root-directory)))
+    (when project-dir
+      ;; Ensure there's no trailing slash to keep consistency in shell-authorized-directories
+      (setq project-dir (directory-file-name project-dir))
+      (ensure-line-in-file project-dir
+                           (expand-file-name "~/.config/guix/shell-authorized-directories")))))
+
+;; envrc-allow also allows `guix shell' to do its thing
+(advice-add 'envrc-allow :before #'update-guix-shell-authorized)
