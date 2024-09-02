@@ -766,3 +766,40 @@
                            (:name "Currently Being Verified" :todo "VERIFYING" :order 20)))))
           ))
         ))
+
+;; Work around envrc and julia-snail sillyness:
+;; envrc, correctly, changes the buffer-local process-environment PATH to whatever was specified in the .envrc file.
+;; But then, most of the REPLs you start up don't notice the PATH change. That means that you will have the wrong Julia.
+;; Therefore, every time buffer process environment is changed we update the REPL executable names.
+(defun update-julia-snail-executable-from-env ()
+  "Update `julia-snail-executable' based on the current `process-environment'."
+  (setq-local julia-snail-executable (or (executable-find "julia") "julia")))
+
+(defun update-inferior-lisp-program-from-env ()
+  "Update `inferior-lisp-program' based on the current `process-environment'."
+  (setq-local inferior-lisp-program (or (executable-find "sbcl") "sbcl")))
+
+(defun update-python-shell-interpreter-from-env ()
+  "Update `python-shell-interpreter' based on the current `process-environment'."
+  (setq-local python-shell-interpreter (or (executable-find "python3") "python3")))
+
+(defun update-geiser-guile-binary-from-env ()
+  "Update `geiser-guile-binary' based on the current `process-environment'."
+  (setq-local geiser-guile-binary (or (executable-find "python3") "guile")))
+
+; geiser-racket-binary
+; geiser-chicken-binary
+; js-comint-program-command
+
+(defun update-repl-commands (&rest _args)
+  ;; Note: Possible: (eq major-mode 'julia-mode)
+  (when (bound-and-true-p envrc-mode)
+    (update-julia-snail-executable-from-env)
+    (update-inferior-lisp-program-from-env)
+    (update-python-shell-interpreter-from-env)
+    (update-geiser-guile-binary-from-env)))
+
+;(advice-add 'julia-snail :before #'update-repl-commands)
+(advice-add 'envrc--update :after #'update-repl-commands)
+
+;; TODO do the same with Python, Guile etcetc.
