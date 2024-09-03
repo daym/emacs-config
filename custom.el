@@ -1,3 +1,22 @@
+;; Custom "e" command in eshell
+
+(require 'eshell)
+(require 'em-unix)
+
+(defun eshell/e (&rest args)
+  "Open a file in Emacs, similar to the 'find-file' function."
+  (eshell-eval-using-options
+   "e" args
+   '((?f "file" nil nil "file")
+     (?h "help" nil nil "help"))
+   (if (and (not args) (not eshell-current-argument))
+       (error "Usage: e FILE")
+     (let ((file (if args (car args) eshell-current-argument)))
+       (with-current-buffer (find-file-noselect file)
+         (switch-to-buffer (current-buffer)))))))
+
+(put 'eshell/e 'eshell-no-numeric-conversions t)
+
 ;;; Keybindings
 
 (global-unset-key (kbd "<f10>"))
@@ -342,8 +361,8 @@
                                         ;(load "nano.el")
 
                                         ; Too new version requires svg-tag-mode which is dumb
-(add-to-list 'load-path "~/.emacs.d/notebook-mode/")
-(load "notebook.el")
+                                        ;(add-to-list 'load-path "~/.emacs.d/notebook-mode/")
+                                        ;(load "notebook.el")
 
                                         ;(setq org-ellipsis "▾")
 
@@ -779,10 +798,11 @@ the cdr is the executable name."
   (let ((variable-name (car repl-config))
         (executable-name (cdr repl-config)))
     (make-local-variable variable-name)
+    ;(message (executable-find executable-name))
     (set variable-name (or (executable-find executable-name) executable-name))))
 
-; TODO inferior-js-program-command ?
-; TODO could also intercept (make-comint comint-program-command) and change comint-program-command there--but that's maybe a little magical.
+                                        ; TODO inferior-js-program-command ?
+                                        ; TODO could also intercept (make-comint comint-program-command) and change comint-program-command there--but that's maybe a little magical.
 (defvar repl-env-configurations
   '((julia-snail-executable . "julia")
     (inferior-lisp-program . "sbcl")
