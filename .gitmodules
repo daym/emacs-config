@@ -37,3 +37,7 @@
 	path = iscroll
 	url = https://github.com/casouri/iscroll.git
 	branch = master
+[submodule "treemacs-nerd-icons"]
+	path = treemacs-nerd-icons
+	url = https://github.com/rainstormstudio/treemacs-nerd-icons.git
+	branch = main
