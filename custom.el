@@ -490,9 +490,69 @@
 ;; Hide the markers so you just see bold text as BOLD-TEXT and not *BOLD-TEXT*
 (setq org-hide-emphasis-markers t)
 
+(setq org-roam-node-display-template
+      (concat "${title:*} " (propertize "${tags}" 'face 'org-tag)))
+
+;; Uhh.
+(setq org-roam-completion-everywhere t)
+
+(defun org-roam-update-recent-files ()
+  "Update the list of recent files in the org-roam recent.org file."
+  (interactive)
+  (with-temp-file "~/doc/org-roam/recent.org"
+    (insert "#+title: Recent Files\n\n")
+    (dolist (file (org-roam-list-files))
+      (insert (format "- [[file:%s][%s]]\n"
+                      file
+                      (org-roam-node-title (org-roam-node-from-file-name file)))))))
+
+(run-with-timer 0 3600 'org-roam-update-recent-files)  ; Update every hour
+
+(defun org-roam-open-index ()
+  "Open the org-roam index file."
+  (interactive)
+  (find-file "~/doc/org-roam/org-roam-index.org"))
+(global-set-key (kbd "C-c i") 'org-roam-open-index)
+
+;(setq org-roam-index-file "~/doc/org-roam/org-roam-index.org")
+
+;(add-hook 'after-init-hook 'org-roam-open-index) ; Automatically open org-roam index when you open emacs (yeah, right--we'll see)
+
+(setq org-roam-node-search-function #'org-roam-node-find-by-tags)
+
+(defun org-roam-node-find-by-tags (&optional other-window initial-input)
+  "Find and open an Org-roam node by tags.
+INITIAL-INPUT can be used to pre-fill the prompt."
+  (interactive current-prefix-arg)
+  (let* ((initial-input (or initial-input ""))
+         (node (org-roam-node-read initial-input
+                                   (lambda (node)
+                                     (or (org-roam-node-file-title node)
+                                         (org-roam-node-title node)))
+                                   nil
+                                   nil
+                                   (lambda (n1 n2)
+                                     (> (org-roam-node-file-mtime n1)
+                                        (org-roam-node-file-mtime n2))))))
+    (if other-window
+        (org-roam-node-open node other-window)
+      (org-roam-node-open node))))
+
+(use-package org-roam-ql
+  :after (org-roam)
+  :bind ((:map org-roam-mode-map
+               ;; Have org-roam-ql's transient available in org-roam-mode buffers
+               ("v" . org-roam-ql-buffer-dispatch)
+               :map minibuffer-mode-map
+               ;; Be able to add titles in queries while in minibuffer.
+               ;; This is similar to `org-roam-node-insert', but adds
+               ;; only title as a string.
+               ("C-c n i" . org-roam-ql-insert-node-title))))
+
 ;; Wrap the lines in org mode so that things are easier to read ; FIXME how to make tables work correctly then?
 (add-hook 'org-mode-hook 'visual-line-mode)
 
+(setq org-roam-v2-ack t)
 (use-package org-roam
   :ensure f
   :custom
@@ -865,3 +925,26 @@ the name of the executable program to search for (searched-for in PATH).")
 
 ;; envrc-allow also allows `guix shell' to do its thing
 (advice-add 'envrc-allow :before #'update-guix-shell-authorized)
+
+(defun my-notdeft-import-web-page (url &optional ask-dir)
+  "Import the web page at URL into NotDeft.
+Query for the target directory if ASK-DIR is non-nil.
+Interactively, query for a URL, and set ASK-DIR if a prefix
+argument is given. Choose a file name based on any document
+<title>, or generate some unique name."
+  (interactive "sPage URL: \nP")
+  (let* ((s (shell-command-to-string
+             (concat "curl --silent " (shell-quote-argument url) " | "
+                     "pandoc" " -f html-native_divs-native_spans"
+                     " -t org"
+                     " --wrap=none --smart --normalize --standalone")))
+         (title
+          (and
+           (string-match "^#\\+TITLE:[[:space:]]+\\(.+\\)$" s)
+           (match-string 1 s))))
+    (notdeft-create-file
+     (and ask-dir 'ask)
+     (and title `(title, title))
+     "org" s)))
+
+; TODO: https://tero.hasu.is/blog/transient-directories-in-notdeft/
