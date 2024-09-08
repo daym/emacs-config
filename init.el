@@ -1,6 +1,6 @@
 ;; -*- lexical-binding: t -*-
 
-;(customize-set-variable 'lsp-treemacs-theme "Iconless")
+                                        ;(customize-set-variable 'lsp-treemacs-theme "Iconless")
 (add-to-list 'load-path "~/.emacs.d/elfeed/")
 
 (require 'nerd-icons)
@@ -36,10 +36,10 @@
 (setq lsp-enable-suggest-server-download nil)
                                         ; <https://github.com/thread314/intuitive-tab-line-mode>
 (global-tab-line-mode 1)
-(global-visual-line-mode 1)
+                                        ;(global-visual-line-mode 1) ; no! Home would be beginning-of-visual-line
 
 (require 'lsp-treemacs)
-;(setq lsp-treemacs-theme "Iconless")
+                                        ;(setq lsp-treemacs-theme "Iconless")
 
 (add-hook 'org-mode-hook 'variable-pitch-mode)
 (add-hook 'rustic-mode-hook 'variable-pitch-mode)
@@ -150,7 +150,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(elfeed-feeds
-   '(("http://planet.emacslife.com/atom.xml" emacs)
+   '("https://the-dam.org/rss.xml"
+     ("http://planet.emacslife.com/atom.xml" emacs)
      "https://lwn.net/headlines/rss" "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fhnrss.org%252Ffrontpage%26max%3D3%26links%3Dpreserve" "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fwww.nature.com%252Fnmat%252Fcurrent_issue%252Frss%252F%26max%3D3%26links%3Dpreserve" "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fwww.nature.com%252Fnphys%252Fcurrent_issue%252Frss%252F%26max%3D3%26links%3Dpreserve" "https://semianalysis.substack.com/feed" "https://slow-journalism.com/blog/feed" "http://ftr.fivefilters.net/makefulltextfeed.php?url=https%3A%2F%2Ffeeds.arstechnica.com%2Farstechnica%2Ffeatures&max=3"))
  '(format-all-debug nil)
  '(format-all-show-errors 'errors)
@@ -165,6 +166,7 @@
  '(lsp-rust-analyzer-rustc-source
    "/usr/local/rustup/toolchains/nightly-2024-08-03-x86_64-unknown-linux-musl/lib/rustlib/rustc-src/rust/compiler/rustc/Cargo.toml")
  '(lsp-treemacs-theme "Iconless")
+ '(org-support-shift-select t)
  '(package-selected-packages
    '(org-mime back-button counsel-projectile counsel-tramp magit-popup edit-indirect eat flycheck-rust typescript-mode go-mode git-timemachine web-mode rainbow-delimiters geiser-guile flycheck-guile clojure-mode envrc shackle vertico counsel pkg-info rustic magit-svn magit-gerrit agda2-mode tramp find-file-in-project lsp-ui consult embark pg finalize org-roam eval-in-repl eval-in-repl-slime slime-company ts async ement crdt gptel paredit))
  '(smtpmail-smtp-server "w0062d1b.kasserver.com" t)
@@ -341,6 +343,7 @@
 
 (add-to-list 'auto-mode-alist '("\\.jl" . julia-snail-mode))
 (add-to-list 'auto-mode-alist '("\\.rs" . rustic-mode))
+                                        ; automatic (add-to-list 'auto-mode-alist '("\\.R" . ess-mode))
 (add-to-list 'auto-mode-alist '("\\.cs" . csharp-mode))
 (add-to-list 'auto-mode-alist '("\\.js" . js2-mode))
                                         ;(add-to-list 'auto-mode-alist '("\\.ts" . typescript-mode)) ; or combobulate-typescript-mode
@@ -469,13 +472,13 @@
 
 (setq solarized-termcolors 256)
 (set-terminal-parameter nil 'background-mode 'light)
-;(require 'solarized-theme)
-; wrong solarized :P
-;(solarized-create-theme-file-with-palette 'light 'solarized-solarized-light
-;  '("#002b36" "#fdf6e3"
-;    "#b58900" "#cb4b16" "#dc322f" "#d33682" "#6c71c4" "#268bd2" "#2aa198" "#859900"))
+                                        ;(require 'solarized-theme)
+                                        ; wrong solarized :P
+                                        ;(solarized-create-theme-file-with-palette 'light 'solarized-solarized-light
+                                        ;  '("#002b36" "#fdf6e3"
+                                        ;    "#b58900" "#cb4b16" "#dc322f" "#d33682" "#6c71c4" "#268bd2" "#2aa198" "#859900"))
 
-;(load-theme 'solarized-solarized-light t)
+                                        ;(load-theme 'solarized-solarized-light t)
 (load-theme 'solarized t)
 					;(enable-theme)
 
@@ -517,9 +520,9 @@
 (use-package magit
   :ensure f)
 
-(use-package forge
-  :ensure f
-  :after magit)
+                                        ;(use-package forge
+                                        ;  :ensure f
+                                        ;  :after magit)
 
                                         ;(use-package doom-modeline
                                         ;  :ensure f
@@ -581,26 +584,26 @@
 (setq epa-pinentry-mode 'loopback)
 
 (defun my/eshell-hook ()
-   "Set up eshell hook for completions."
-   (interactive)
-   (setq-local completion-styles '(basic partial-completion))
-   ;(setq-local corfu-auto t)
-   ;?! (corfu-mode) or company
-   ;(setq-local completion-at-point-functions
-   ;            (list (cape-capf-super
-   ;                   #'pcomplete-completions-at-point
-   ;                   #'cape-history)))
-   (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history))
+  "Set up eshell hook for completions."
+  (interactive)
+  (setq-local completion-styles '(basic partial-completion))
+                                        ;(setq-local corfu-auto t)
+                                        ;?! (corfu-mode) or company
+                                        ;(setq-local completion-at-point-functions
+                                        ;            (list (cape-capf-super
+                                        ;                   #'pcomplete-completions-at-point
+                                        ;                   #'cape-history)))
+  (define-key eshell-hist-mode-map (kbd "M-r") #'consult-history))
 
 (use-package eshell
-   :config
-   ;(setq eshell-scroll-to-bottom-on-input t)
-   (setq-local tab-always-indent 'complete)
-   (setq eshell-history-size 100000)
-   (setq eshell-save-history-on-exit t) ;; Enable history saving on exit
-   (setq eshell-hist-ignoredups t) ;; Ignore duplicates
-   :hook
-   (eshell-mode . my/eshell-hook))
+  :config
+                                        ;(setq eshell-scroll-to-bottom-on-input t)
+  (setq-local tab-always-indent 'complete)
+  (setq eshell-history-size 100000)
+  (setq eshell-save-history-on-exit t) ;; Enable history saving on exit
+  (setq eshell-hist-ignoredups t) ;; Ignore duplicates
+  :hook
+  (eshell-mode . my/eshell-hook))
 
 (add-hook 'comint-mode-hook #'capf-autosuggest-mode)
 (add-hook 'eshell-mode-hook #'capf-autosuggest-mode)
@@ -672,19 +675,19 @@
 
 
 ;; This ensures that pressing Enter will insert a new line and indent it.
-;(global-set-key (kbd "RET") #'newline-and-indent)
+                                        ;(global-set-key (kbd "RET") #'newline-and-indent)
 
 ;; Indentation based on the indentation of the previous non-blank line.
-;(setq-default indent-line-function #'indent-relative-first-indent-point)
+                                        ;(setq-default indent-line-function #'indent-relative-first-indent-point)
 
 ;; In modes such as `text-mode', calling `newline-and-indent' multiple times
 ;; removes the indentation. The following fixes the issue and ensures that text
 ;; is properly indented using `indent-relative' or
 ;; `indent-relative-first-indent-point'.
-;(setq-default indent-line-ignored-functions '())
+                                        ;(setq-default indent-line-ignored-functions '())
 
-;The outline-indent.el Emacs package provides a minor mode that enables code folding based on indentation levels for various
-;indentation-based text files, such as YAML, Python, and any other indented text files.
+                                        ;The outline-indent.el Emacs package provides a minor mode that enables code folding based on indentation levels for various
+                                        ;indentation-based text files, such as YAML, Python, and any other indented text files.
 
 ;;In addition to code folding, outline-indent allows moving indented subtrees up and down, promoting and demoting sections to adjust indentation levels, customizing the ellipsis, and inserting a new line with the same indentation level as the current line, among other features.
 (use-package outline-indent
@@ -707,23 +710,30 @@
 (add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
 
 ;; The dtrt-indent provides an Emacs minor mode that detects the original indentation offset used in source code files and automatically adjusts Emacs settings accordingly, making it easier to edit files created with different indentation styles.
-;(use-package dtrt-indent
-;  :ensure t
-;  :commands (dtrt-indent-global-mode
-;             dtrt-indent-mode
-;             dtrt-indent-adapt
-;             dtrt-indent-undo
-;             dtrt-indent-diagnosis
-;             dtrt-indent-highlight)
-;  :config
-;  (dtrt-indent-global-mode))
+                                        ;(use-package dtrt-indent
+                                        ;  :ensure t
+                                        ;  :commands (dtrt-indent-global-mode
+                                        ;             dtrt-indent-mode
+                                        ;             dtrt-indent-adapt
+                                        ;             dtrt-indent-undo
+                                        ;             dtrt-indent-diagnosis
+                                        ;             dtrt-indent-highlight)
+                                        ;  :config
+                                        ;  (dtrt-indent-global-mode))
 
 (require 'mpv)
+                                        ;(require 'howm) ; not right now
+
 (load "~/.emacs.d/custom.el" t)
 
 ;; Otherwise half the icons are from the wrong set.
 (treemacs-refresh)
 
-(setq envrc-debug t)
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)                 ; optional
+
+;(setq envrc-debug t)
 					; as late as possible:
-(envrc-global-mode)
+;(envrc-global-mode)
+(add-hook 'hack-local-variables-hook #'buffer-env-update)
+(add-hook 'comint-mode-hook #'buffer-env-update)
