@@ -948,3 +948,5 @@ argument is given. Choose a file name based on any document
      "org" s)))
 
 ; TODO: https://tero.hasu.is/blog/transient-directories-in-notdeft/
+
+(setq buffer-env-script-name '("manifest.scm" ".envrc"))
