@@ -271,24 +271,6 @@
                                             ("/scratchpost.org/Hardware/A20" . ?a)
                                             ("/scratchpost.org/Science" . ?s)
                                             ("/scratchpost.org/News" . ?w)))))))
-                                        ;       (make-mu4e-context
-                                        ;    :name "friendly-machines.com"
-                                        ;    :enter-func (lambda () (mu4e-message "Entering friendly-machines.com context"))
-                                        ;    :leave-func (lambda () (mu4e-message "Leaving friendly-machines.com context"))
-                                        ;    :match-func (lambda (msg)
-                                        ;              (when msg
-                                        ;            (mu4e-message-contact-field-matches
-                                        ;             msg '(:from :to :cc :bcc) "dannym@friendly-machines.com")))
-                                        ;    :vars '((user-mail-address . "dannym@friendly-machines.com")
-                                        ;        (user-full-name . "Danny Milosavljevic")
-                                        ;        (mu4e-sent-folder . "/friendly-machines.com/sent")
-                                        ;        (mu4e-drafts-folder . "/friendly-machines.com/drafts")
-                                        ;        (mu4e-trash-folder . "/friendly-machines.com/trash")
-                                        ;        (mu4e-refile-folder . "/friendly-machines.com/refile")
-                                        ;        (mu4e-get-mail-command . "offlineimap -a dannym@friendly-machines.com")
-                                        ;        (mu4e-sent-messages-behavior . sent)
-                                        ;        (mu4e-maildir-shortcuts . ( ("/friendly-machines.com/inbox" . ?i)
-                                        ;                        ))))
 
 (setq mu4e-change-filenames-when-moving t)
 
@@ -302,13 +284,7 @@
                                         ;     (mu4e-sent-folder   "/scratchpost.org/sent")
                                         ;     (mu4e-drafts-folder "/scratchpost.org/drafts")
                                         ;     (mu4e-trash-folder  "/scratchpost.org/trash")
-                                        ;     (mu4e-refile-folder "/scratchpost.org/archive"))
-                                        ;    ("friendly-machines.com"
-                                        ;     (user-mail-address  "dannym@friendly-machines.com")
-                                        ;     (mu4e-sent-folder   "/friendly-machines.com/sent")
-                                        ;     (mu4e-drafts-folder "/friendly-machines.com/drafts")
-                                        ;     (mu4e-trash-folder  "/friendly-machines.com/trash")
-                                        ;     (mu4e-refile-folder "/friendly-machines.com/archives"))))
+                                        ;     (mu4e-refile-folder "/scratchpost.org/archive"))))
 
                                         ;(setq mu4e-user-mail-address-list
                                         ;      (mapcar (lambda (account) (cadr (assq 'user-mail-address account)))
