@@ -3,6 +3,14 @@
 (require 'eshell)
 (require 'em-unix)
 
+;; The ~/.config/autostart/emacs.desktop (emacs --daemon) for some reason doesn't have the environment variables set in ~/.bash_profile .
+;; I use gdm autologin.  That uses /run/current-system/profile/share/wayland-sessions/sway.desktop and that calls sway WITHOUT a shell.
+;; Sway config has: exec --no-startup-id bash --login -c 'exec dex --autostart --environment i3'
+;; Sway has .local/bin in PATH
+;; Emacs --daemon has .local/bin in PATH
+;(setenv "PATH" (concat (getenv "PATH") ":/sw/bin"))
+;(setq exec-path (append exec-path '("/sw/bin")))
+
 (defun eshell/e (&rest args)
   "Open a file in Emacs, similar to the 'find-file' function."
   (eshell-eval-using-options
@@ -33,7 +41,7 @@
   (define-key nov-mode-map (kbd "M-<Right>") #'nov-history-forward))
 
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
-(global-set-key (kbd "<XF86Search>") 'search-forward)
+(global-set-key (kbd "<Search>") 'search-forward)
 (global-set-key (kbd "<Search>") 'search-forward)
                                         ;(global-set-key (kbd "<Launch1>") 'async-shell-command)
 (global-set-key (kbd "<Launch1>") 'project-compile)
@@ -466,79 +474,78 @@
 ;; Hide the markers so you just see bold text as BOLD-TEXT and not *BOLD-TEXT*
 (setq org-hide-emphasis-markers t)
 
-(setq org-roam-node-display-template
-      (concat "${title:*} " (propertize "${tags}" 'face 'org-tag)))
+;(setq org-roam-node-display-template
+;      (concat "${title:*} " (propertize "${tags}" 'face 'org-tag)))
 
 ;; Uhh.
-(setq org-roam-completion-everywhere t)
+;(setq org-roam-completion-everywhere t)
 
-(defun org-roam-update-recent-files ()
-  "Update the list of recent files in the org-roam recent.org file."
-  (interactive)
-  (with-temp-file "~/doc/org-roam/recent.org"
-    (insert "#+title: Recent Files\n\n")
-    (dolist (file (org-roam-list-files))
-      (insert (format "- [[file:%s][%s]]\n"
-                      file
-                      (org-roam-node-title (org-roam-node-from-file-name file)))))))
+; TODO: (org-roam-node-list)
+;(defun org-roam-update-recent-nodes ()
+;  "Update the list of recent nodes in the org-roam recent.org file."
+;  (interactive)
+;  (with-temp-file "~/doc/org-roam/recent.org"
+;    (insert "#+title: Recent Nodes\n\n")
+;    (dolist (node (org-roam-node-list))
+;      (insert (format "- [[node:%s][%s]]\n"
+;                      node
+;                      (org-roam-node-title node))))))
+;(run-with-timer 0 3600 'org-roam-update-recent-nodes)  ; Update every hour
 
-(run-with-timer 0 3600 'org-roam-update-recent-files)  ; Update every hour
-
-(defun org-roam-open-index ()
-  "Open the org-roam index file."
-  (interactive)
-  (find-file "~/doc/org-roam/org-roam-index.org"))
-(global-set-key (kbd "C-c i") 'org-roam-open-index)
+;(defun org-roam-open-index ()
+;  "Open the org-roam index file."
+;  (interactive)
+;  (find-file "~/doc/org-roam/org-roam-index.org"))
+;(global-set-key (kbd "C-c i") 'org-roam-open-index)
 
 ;(setq org-roam-index-file "~/doc/org-roam/org-roam-index.org")
 
 ;(add-hook 'after-init-hook 'org-roam-open-index) ; Automatically open org-roam index when you open emacs (yeah, right--we'll see)
 
-(setq org-roam-node-search-function #'org-roam-node-find-by-tags)
-
-(defun org-roam-node-find-by-tags (&optional other-window initial-input)
-  "Find and open an Org-roam node by tags.
-INITIAL-INPUT can be used to pre-fill the prompt."
-  (interactive current-prefix-arg)
-  (let* ((initial-input (or initial-input ""))
-         (node (org-roam-node-read initial-input
-                                   (lambda (node)
-                                     (or (org-roam-node-file-title node)
-                                         (org-roam-node-title node)))
-                                   nil
-                                   nil
-                                   (lambda (n1 n2)
-                                     (> (org-roam-node-file-mtime n1)
-                                        (org-roam-node-file-mtime n2))))))
-    (if other-window
-        (org-roam-node-open node other-window)
-      (org-roam-node-open node))))
-
-(use-package org-roam-ql
-  :after (org-roam)
-  :bind ((:map org-roam-mode-map
-               ;; Have org-roam-ql's transient available in org-roam-mode buffers
-               ("v" . org-roam-ql-buffer-dispatch)
-               :map minibuffer-mode-map
-               ;; Be able to add titles in queries while in minibuffer.
-               ;; This is similar to `org-roam-node-insert', but adds
-               ;; only title as a string.
-               ("C-c n i" . org-roam-ql-insert-node-title))))
+;(setq org-roam-node-search-function #'org-roam-node-find-by-tags)
+;(defun org-roam-node-find-by-tags (&optional other-window initial-input)
+;  "Find and open an Org-roam node by tags.
+;INITIAL-INPUT can be used to pre-fill the prompt."
+;  (interactive current-prefix-arg)
+;  (let* ((initial-input (or initial-input ""))
+;         (node (org-roam-node-read initial-input
+;                                   (lambda (node)
+;                                     (or (org-roam-node-file-title node)
+;                                         (org-roam-node-title node)))
+;                                   nil
+;                                   nil
+;                                   (lambda (n1 n2)
+;                                     (> (org-roam-node-file-mtime n1)
+;                                        (org-roam-node-file-mtime n2))))))
+;    (if other-window
+;        (org-roam-node-open node other-window)
+;      (org-roam-node-open node))))
+;
+;(use-package org-roam-ql
+;  :after (org-roam)
+;  :bind ((:map org-roam-mode-map
+;               ;; Have org-roam-ql's transient available in org-roam-mode buffers
+;               ("v" . org-roam-ql-buffer-dispatch)
+;               :map minibuffer-mode-map
+;               ;; Be able to add titles in queries while in minibuffer.
+;               ;; This is similar to `org-roam-node-insert', but adds
+;               ;; only title as a string.
+;               ("C-c n i" . org-roam-ql-insert-node-title))))
 
 ;; Wrap the lines in org mode so that things are easier to read ; FIXME how to make tables work correctly then?
 (add-hook 'org-mode-hook 'visual-line-mode)
 
-(setq org-roam-v2-ack t)
-(use-package org-roam
-  :ensure f
-  :custom
-  (org-roam-directory "~/doc/org-roam")
-  :bind (("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n f" . org-roam-node-find)
-         ("C-c n i" . org-roam-node-insert))
-  :config
-  (org-roam-setup))
-(org-roam-db-autosync-mode)
+;(setq org-roam-v2-ack t)
+;(use-package org-roam
+;  :ensure f
+;  :custom
+;  (org-roam-directory "~/doc/org-roam")
+;  :bind (("C-c n l" . org-roam-buffer-toggle)
+;         ("C-c n f" . org-roam-node-find)
+;         ("C-c n i" . org-roam-node-insert))
+;  :config
+;  (org-roam-setup))
+;(org-roam-db-autosync-mode)
 
 ;;; Make elfeed store-link store the link to the ORIGINAL article, not to the feed.
 
@@ -663,6 +670,21 @@ INITIAL-INPUT can be used to pre-fill the prompt."
 
 (setq org-capture-templates
       '(
+        ("i" "Capture into ID node"
+         plain (function org-node-capture-target) nil
+         :empty-lines-after 1)
+
+        ("j" "Jump to ID node"
+         plain (function org-node-capture-target) nil
+         :jump-to-captured t
+         :immediate-finish t)
+
+        ;; Sometimes handy after `org-node-insert-link' to
+        ;; make a stub you plan to fill in later
+        ("q" "Make quick stub ID node"
+         plain (function org-node-capture-target) nil
+         :immediate-finish t)
+               
         ("w" "Work Log Entry"
          entry (file+datetree "~/doc/org/work-log.org")
          "* %?"
@@ -926,3 +948,33 @@ argument is given. Choose a file name based on any document
 ; TODO: https://tero.hasu.is/blog/transient-directories-in-notdeft/
 
 (setq buffer-env-script-name '("manifest.scm" ".envrc"))
+
+(use-package org-node
+  :after org
+  :config (org-node-cache-mode))
+
+(keymap-set global-map "C-<Search>" #'org-node-find)
+(keymap-set global-map "M-<Search>" #'org-node-grep) ; Requires consult
+;(global-set-key (kbd "C-c l") 'org-store-link)
+;(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c c") 'org-capture)
+
+(keymap-set org-mode-map "C-s M-i" #'org-node-insert-link)
+(add-hook 'org-mode-hook #'org-node-backlink-mode)
+(setq org-node-creation-fn #'org-capture)
+(setq org-node-alter-candidates t)
+
+;; Prefer visiting node with URL in ROAM_REFS property instead of opening URL in web browser.
+(add-hook 'org-open-at-point-functions
+          #'org-node-try-visit-ref-node)
+
+(setq org-directory "~/doc/org")
+(setq org-default-notes-file (concat org-directory "/notes.org"))
+
+
+;        "~/Syncthing/"
+
+(setq org-node-extra-id-dirs
+      '("~/doc/org-roam/"))
+;Do a M-x org-node-reset and see if it can find your notes now.
+; Then org-id-update-id-locations
