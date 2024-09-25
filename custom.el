@@ -978,3 +978,46 @@ argument is given. Choose a file name based on any document
       '("~/doc/org-roam/"))
 ;Do a M-x org-node-reset and see if it can find your notes now.
 ; Then org-id-update-id-locations
+
+(setq org-node-series-defs
+  (list
+   '("d" :name "Daily-files"
+     :version 2
+     :classifier (lambda (node)
+                   (let ((path (org-node-get-file-path node)))
+                     (when (string-search "~/doc/org/daily" path)
+                       (let ((ymd (org-node-helper-filename->ymd path)))
+                         (when ymd
+                           (cons ymd path))))))
+     :whereami (lambda ()
+                 (org-node-helper-filename->ymd buffer-file-name))
+     :prompter (lambda (key)
+                 (let ((org-node-series-that-marks-calendar key))
+                   (org-read-date)))
+     :try-goto (lambda (item)
+                 (org-node-helper-try-visit-file (cdr item)))
+     :creator (lambda (sortstr key)
+                (let ((org-node-datestamp-format "")
+                      (org-node-ask-directory "~/doc/org/daily"))
+                  (org-node-create sortstr (org-id-new) key))))
+
+   ;; Obviously, this series works best if you have `org-node-put-created' on
+   ;; `org-node-creation-hook'.
+   '("a" :name "All ID-nodes by property :CREATED:"
+     :version 2
+     :capture "n"
+     :classifier (lambda (node)
+                   (let ((time (cdr (assoc "CREATED" (org-node-get-props node)))))
+                     (when (and time (not (string-blank-p time)))
+                       (cons time (org-node-get-id node)))))
+     :whereami (lambda ()
+                 (let ((time (org-entry-get nil "CREATED" t)))
+                   (and time (not (string-blank-p time)) time)))
+     :prompter (lambda (key)
+                 (let ((series (cdr (assoc key org-node--series))))
+                   (completing-read "Go to: " (plist-get series :sorted-items))))
+     :try-goto (lambda (item)
+                 (when (org-node-helper-try-goto-id (cdr item))
+                   t))
+     :creator (lambda (sortstr key)
+                (org-node-create sortstr (org-id-new) key)))))
