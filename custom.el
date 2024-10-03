@@ -1049,3 +1049,19 @@ argument is given. Choose a file name based on any document
 (require 'autoinsert)
 (auto-insert-mode t)
 (setq auto-insert 'other)
+(setq auto-insert-query nil)
+
+;; Java File Template
+(define-auto-insert '(".*\\.java\\'" . "Java program")
+  '("Java"
+    "// SPDX-License-Identifier: GPL-3.0-or-later" \n
+    "/*" \n
+    " * " (file-name-nondirectory (buffer-file-name)) \n
+    " *" \n
+    " * TODO: Describe." \n
+    " */" \n
+    "public class " (file-name-sans-extension (file-name-nondirectory (buffer-file-name))) " {" > \n
+    "public static void main(String[] args) {" > \n
+    > _ \n
+    "}" > \n
+    "}" > \n))
