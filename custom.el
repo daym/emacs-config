@@ -153,6 +153,8 @@
 (global-set-key (kbd "C-s") 'save-buffer)
 (global-set-key (kbd "C-S-s") 'save-buffer)
 
+(keymap-set global-map "C-M-s" #'org-node-series-dispatch)
+
 ;;; ======================
 
 (require 'pulsar)
@@ -446,6 +448,9 @@
 
 ;; Must do this so the agenda knows where to look for my files
 (setq org-agenda-files '("~/doc/org"))
+;(setq org-agenda-deadline-lead-time 7) ;; Notify 7 days before deadlines
+;(setq org-agenda-scheduled-lead-time 1) ;; Notify 1 day before scheduled items
+;   <2021-07-14 Wed 14:40 -1d>  with lead time; https://github.com/orgzly/orgzly-android/issues/636
 
 ;; When a TODO is set to a done state, record a timestamp
 (setq org-log-done 'time)
@@ -1014,10 +1019,33 @@ argument is given. Choose a file name based on any document
                  (let ((time (org-entry-get nil "CREATED" t)))
                    (and time (not (string-blank-p time)) time)))
      :prompter (lambda (key)
-                 (let ((series (cdr (assoc key org-node--series))))
+                 (let ((series (cdr (assoc key org-node--series)))) ; FIXME: replace org-node--series by org-node-built-series somehow
                    (completing-read "Go to: " (plist-get series :sorted-items))))
      :try-goto (lambda (item)
                  (when (org-node-helper-try-goto-id (cdr item))
                    t))
      :creator (lambda (sortstr key)
                 (org-node-create sortstr (org-id-new) key)))))
+
+;(setq tramp-verbose 9)
+; (tramp-cleanup-all-connections)
+; check tramp/foo* and debug tramp/foo*
+
+(setq org-src-tab-acts-natively t)
+(add-hook 'org-mode-hook #'mixed-pitch-mode)
+
+;(add-to-list 'load-path "~/.emacs.d/qemu/")
+;(require 'qemu-qmp)
+;(require 'qemu-dap)
+
+;; TODO: Add to Guix.
+
+(add-to-list 'load-path "~/.emacs.d/org-notify/")
+(require 'org-notify)
+(org-notify-start)
+
+; Autoinsert
+
+(require 'autoinsert)
+(auto-insert-mode t)
+(setq auto-insert 'other)
