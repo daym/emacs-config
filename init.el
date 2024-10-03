@@ -168,7 +168,7 @@
  '(lsp-treemacs-theme "Iconless")
  '(org-support-shift-select t)
  '(package-selected-packages
-   '(org-mime back-button counsel-projectile counsel-tramp magit-popup edit-indirect eat flycheck-rust typescript-mode go-mode git-timemachine web-mode rainbow-delimiters geiser-guile flycheck-guile clojure-mode envrc shackle vertico counsel pkg-info rustic magit-svn magit-gerrit agda2-mode tramp find-file-in-project lsp-ui consult embark pg finalize org-roam eval-in-repl eval-in-repl-slime slime-company ts async ement crdt gptel paredit inheritenv buffer-env))
+   '(org-mime back-button counsel-projectile counsel-tramp magit-popup edit-indirect eat flycheck-rust typescript-mode go-mode git-timemachine web-mode rainbow-delimiters geiser-guile flycheck-guile clojure-mode envrc shackle vertico counsel pkg-info rustic magit-svn magit-gerrit agda2-mode tramp find-file-in-project lsp-ui consult embark pg finalize org-roam eval-in-repl eval-in-repl-slime slime-company ts async ement crdt gptel paredit inheritenv buffer-env ob-async))
  '(smtpmail-smtp-server "w0062d1b.kasserver.com" t)
  '(smtpmail-smtp-service 25 t))
 (custom-set-faces
