@@ -1069,12 +1069,12 @@ argument is given. Choose a file name based on any document
 ;; Java File Template
 (define-auto-insert '(".*\\.java\\'" . "Java program")
   '("Java program"
-    "// SPDX-License-Identifier: GPL-3.0-or-later" \n
-    "/*" \n
-    " * " (file-name-nondirectory (buffer-file-name)) \n
-    " *" \n
-    " * TODO: Describe." \n
-    " */" \n
+    "// SPDX-License-Identifier: GPL-3.0-or-later" > \n
+    "/*" > \n
+    " * " (file-name-nondirectory (buffer-file-name)) > \n
+    " *" > \n
+    " * TODO: Describe." > \n
+    " */" > \n
     "public class " (file-name-sans-extension (file-name-nondirectory (buffer-file-name))) " {" > \n
     "public static void main(String[] args) {" > \n
     > _ \n
@@ -1084,7 +1084,6 @@ argument is given. Choose a file name based on any document
 ;; Guix Package Template
 (define-auto-insert '(".*\\.scm\\'" . "Guix package")
   '("Guix package"
-    "'#lang guile\n"
     "; Guix package definition." \n
     "(use-modules (guix packages))" \n
     "(use-modules (guix gexp))" \n
@@ -1111,3 +1110,10 @@ argument is given. Choose a file name based on any document
     "    (home-page \"TODO: url\")\n"
     "    (license #f)) ; TODO: Put license.\n"
     (file-name-sans-extension (file-name-nondirectory (buffer-file-name))) \n))
+
+;; Guix Manifest Template
+(define-auto-insert '("manifest\\.scm\\'" . "Guix manifest")
+  '("Guix manifest"
+    "; Guix manifest definition." \n
+    "(specifications->manifest" \n
+    " (list \"gcc-toolchain\" \"dvisvgm\"))" \n))
