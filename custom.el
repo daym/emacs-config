@@ -1065,3 +1065,49 @@ argument is given. Choose a file name based on any document
     > _ \n
     "}" > \n
     "}" > \n))
+
+;; Java File Template
+(define-auto-insert '(".*\\.java\\'" . "Java program")
+  '("Java program"
+    "// SPDX-License-Identifier: GPL-3.0-or-later" \n
+    "/*" \n
+    " * " (file-name-nondirectory (buffer-file-name)) \n
+    " *" \n
+    " * TODO: Describe." \n
+    " */" \n
+    "public class " (file-name-sans-extension (file-name-nondirectory (buffer-file-name))) " {" > \n
+    "public static void main(String[] args) {" > \n
+    > _ \n
+    "}" > \n
+    "}" > \n))
+
+;; Guix Package Template
+(define-auto-insert '(".*\\.scm\\'" . "Guix package")
+  '("Guix package"
+    "'#lang guile\n"
+    "; Guix package definition." \n
+    "(use-modules (guix packages))" \n
+    "(use-modules (guix gexp))" \n
+    "(use-modules (guix build-system glib-or-gtk))" \n
+    "(use-modules (guix build-system gnu))" \n
+    ";(use-modules (guix build-system maven))" \n
+    ";(use-modules (guix build-system node))" \n
+    "(use-modules ((guix licenses) #:prefix license:))" \n
+    \n
+    ";(define %source-dir (getcwd))" \n
+    "(define " (file-name-sans-extension (file-name-nondirectory (buffer-file-name))) "\n"
+    "  (package\n"
+    "    (name \"" (file-name-sans-extension (file-name-nondirectory (buffer-file-name))) "\")\n"
+    "    (version \"0.1\")\n"
+    "    (source " _ "(origin\n"
+    "              (method url-fetch)\n"
+    "              (uri (string-append \"TODO:\" name \"-\" version \".tar.gz\"))\n"
+    "              (sha256 (base32 \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"))))\n"
+    "    (build-system gnu-build-system)\n"
+    "    (native-inputs (list))\n"
+    "    (inputs (list))\n"
+    "    (synopsis \"TODO: A brief description of the package.\")\n"
+    "    (description \"TODO: A longer description of the package.\"))\n"
+    "    (home-page \"TODO: url\")\n"
+    "    (license #f)) ; TODO: Put license.\n"
+    (file-name-sans-extension (file-name-nondirectory (buffer-file-name))) \n))
