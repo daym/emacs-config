@@ -41,3 +41,7 @@
 	path = treemacs-nerd-icons
 	url = https://github.com/rainstormstudio/treemacs-nerd-icons.git
 	branch = main
+[submodule "org-notify"]
+	path = org-notify
+	url = https://github.com/p-m/org-notify
+	branch = master
