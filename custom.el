@@ -180,8 +180,9 @@
          ((display-buffer-reuse-window display-buffer-at-top)
           (window-height . 0.25)))
         ("^\\*scratch.*"
-         ((display-buffer-reuse-window display-buffer-at-bottom)
-          (window-height . 0.1)))
+         (display-buffer-in-side-window)
+         (window-width . 0.25) ;; Side window takes up 1/4th of the screen
+         (side . right))
         ("\\*Warnings.*"
          (display-buffer-reuse-window display-buffer-in-side-window)
          (window-width . 0.25) ;; Side window takes up 1/4th of the screen
