@@ -415,7 +415,9 @@
 
 (add-to-list 'load-path "~/.emacs.d/xenops/lisp/")
 (require 'xenops)
+(require 'ob-python) ; optional
 (add-hook 'LaTeX-mode-hook #'xenops-mode)
+(add-hook 'org-mode-hook #'xenops-mode)
 
                                         ; Undefined
                                         ;(latex +cdlatex +latexmk +lsp)
@@ -425,7 +427,7 @@
 (require 'wakib-keys)
 (wakib-keys 1)
 
-(load "/home/dannym/.emacs.d/lisp/copilot.el")
+(load "~/.emacs.d/lisp/copilot.el")
 (global-set-key (kbd "C-.") 'copilot-complete)
 
 (require 'opascal)
@@ -1020,7 +1022,7 @@ argument is given. Choose a file name based on any document
                  (let ((time (org-entry-get nil "CREATED" t)))
                    (and time (not (string-blank-p time)) time)))
      :prompter (lambda (key)
-                 (let ((series (cdr (assoc key org-node--series)))) ; FIXME: replace org-node--series by org-node-built-series somehow
+                 (let ((series (cdr (assoc key org-node-built-series))))
                    (completing-read "Go to: " (plist-get series :sorted-items))))
      :try-goto (lambda (item)
                  (when (org-node-helper-try-goto-id (cdr item))
@@ -1117,4 +1119,4 @@ argument is given. Choose a file name based on any document
   '("Guix manifest"
     "; Guix manifest definition." \n
     "(specifications->manifest" \n
-    " (list \"gcc-toolchain\" \"dvisvgm\"))" \n))
+    " (list \"gcc-toolchain\" \"texlive-minted\" \"texlive-latex-bin\" \"dvisvgm\"))" \n))
