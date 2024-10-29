@@ -1,10 +1,11 @@
-;;; shr-tag-mathml.el --- Handle MathML in HTML rendering -*- lexical-binding: t; -*-
+;;; shr-tag-math.el --- Handle MathML in HTML rendering -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2024  Danny Milosavljevic
 
 ;; Author: Danny Milosavljevic <dannym@friendly-machines.com>
 ;; Keywords: html, mathml
 ;; Version: 1
+;; License: GPL 3
 
 ;;; Commentary:
 
@@ -16,86 +17,151 @@
 (require 'shr)
 (require 'dom)
 
+(defun escape-latex-special (input-string)
+  "Escape special characters in INPUT-STRING for LaTeX."
+  (replace-regexp-in-string
+   "\\^"
+   "\\\\hat{}"
+   (replace-regexp-in-string
+    "[\\\\$&%_{}~]"
+    (lambda (match) (concat "\\\\" match))  ; Escape
+    input-string)))
+
 ;; Recursive
-(defun shr-tag-mathml--convert-to-latex (children)
+(defun shr-tag-mathml--convert-to-latex (root)
   "Convert MATHML DOM element to LaTeX format."
-  (dolist (node children)
-    (cond
-     ((stringp node) (insert node))
-                                        ; TODO (dom-node-name node)
-     ((eq (dom-tag node) 'mrow)
-      (insert "{")
-      (shr-tag-mathml--convert-to-latex (dom-children node))
-      (insert "}"))
-     ((eq (dom-tag node) 'msup)
-      (insert "{")
-      (shr-tag-mathml--convert-to-latex (dom-children (nth 0 (dom-children node))))
-      (insert "}^{")
-      (shr-tag-mathml--convert-to-latex (dom-children (nth 1 (dom-children node))))
-      (insert "}"))
-     ((eq (dom-tag node) 'msub)
-      (insert "{")
-      (shr-tag-mathml--convert-to-latex (dom-children (nth 0 (dom-children node))))
-      (insert "}_{")
-      (shr-tag-mathml--convert-to-latex (dom-children (nth 1 (dom-children node))))
-      (insert "}"))
-     ((eq (dom-tag node) 'msubsup)
-      (insert "{")
-      (shr-tag-mathml--convert-to-latex (dom-children (nth 0 (dom-children node))))
-      (insert "}_{")
-      (shr-tag-mathml--convert-to-latex (dom-children (nth 1 (dom-children node))))
-      (insert "}^{")
-      (shr-tag-mathml--convert-to-latex (dom-children (nth 2 (dom-children node))))
-      (insert "}"))
-     ((eq (dom-tag node) 'mfrac)
-      (insert "\\frac{")
-      (shr-tag-mathml--convert-to-latex (dom-children (nth 0 (dom-children node))))
-      (insert "}{")
-      (shr-tag-mathml--convert-to-latex (dom-children (nth 1 (dom-children node))))
-      (insert "}"))
-     ((eq (dom-tag node) 'mroot)
-      (insert "\\sqrt[")
-      (shr-tag-mathml--convert-to-latex (dom-children (nth 0 (dom-children node))))
-      (insert "]{")
-      (shr-tag-mathml--convert-to-latex (dom-children (nth 1 (dom-children node))))
-      (insert "}"))
-     ((eq (dom-tag node) 'mo)
-      (insert (concat " " (dom-text node) " ")))
-     ((eq (dom-tag node) 'mi)
-      (insert (concat (dom-text node))))
-     ((eq (dom-tag node) 'mn)
-      (insert (concat (dom-text node))))
-     ((eq (dom-tag node) 'mtext)
-      (insert (concat "\\text{FIXME}"))) ;  (s-replace "_" "" (dom-text node)) "}")
-     ((eq (dom-tag node) 'mstyle)
-      (shr-tag-mathml--convert-to-latex (dom-children node)))
-     ((eq (dom-tag node) 'ms) ; for math accents
-      (insert (concat "\\text{" (dom-text node) "}")))
-     ((eq (dom-tag node) 'mspace)
-      ;; Handle space as a command
-      (insert (concat "\\, ")))
-     ;; TODO: Add handling for other MathML elements as required
-     (t
-      (insert "???")
-      (insert (symbol-name (dom-tag node)))
-      (shr-tag-mathml--convert-to-latex (dom-children node))
-      (insert "/")
-      (insert (symbol-name (dom-tag node)))))))
+  (if (stringp root)
+      (progn
+       (insert "{")
+       (insert (escape-latex-special root))
+       (insert "}")
+       )
+    (let ((root-tag (dom-tag root))
+          (children (dom-children root)))
+      (pcase root-tag
+        ('math (mapc #'shr-tag-mathml--convert-to-latex children))
+        ('mrow (mapc #'shr-tag-mathml--convert-to-latex children))
+        ('msup
+         (let ((base (nth 0 children))
+               (extra (nth 1 children)))
+           (insert "{")
+           (shr-tag-mathml--convert-to-latex base)
+           (insert "^")
+           (shr-tag-mathml--convert-to-latex extra)
+           (insert "}")))
+        ('msub
+         (let ((base (nth 0 children))
+               (extra (nth 1 children)))
+           (insert "{")
+           (shr-tag-mathml--convert-to-latex base)
+           (insert "_")
+           (shr-tag-mathml--convert-to-latex extra)
+           (insert "}")))
+        ('msubsup
+         (let ((base (nth 0 children))
+               (extra (nth 1 children))
+               (hyper (nth 2 children)))
+           (insert "{")
+           (shr-tag-mathml--convert-to-latex base)
+           (insert "_")
+           (shr-tag-mathml--convert-to-latex extra)
+           (insert "^")
+           (shr-tag-mathml--convert-to-latex hyper)
+           (insert "}")))
+        ('mfrac
+         (let ((base (nth 0 children))
+               (extra (nth 1 children)))
+           (insert "\\frac{")
+           (shr-tag-mathml--convert-to-latex base)
+           (insert "}{")
+           (shr-tag-mathml--convert-to-latex extra)
+           (insert "}")))
+        ('mover ; TODO: "accent" attr.
+         (let ((base (nth 0 children))
+               (extra (nth 1 children)))
+                                        ; TODO: If you have texlive-mathtools, mathclap
+           (insert "\\stackrel")
+           (insert "{") ; TODO: mathclap
+           (shr-tag-mathml--convert-to-latex extra) ; overscript
+           (insert "}{")
+           (shr-tag-mathml--convert-to-latex base)
+           (insert "}")))
+        ('munder ; TODO: "accentunder" attr.
+         (let ((base (nth 0 children))
+               (extra (nth 1 children)))
+           (insert "\\stackrel{")
+           (shr-tag-mathml--convert-to-latex base)
+           (insert "}{")
+           (shr-tag-mathml--convert-to-latex extra)
+           (insert "}")))
+        ('mroot
+         (let ((base (nth 0 children))
+               (extra (nth 1 children)))
+           (insert "\\sqrt[")
+           (shr-tag-mathml--convert-to-latex base)
+           (insert "]")
+           (shr-tag-mathml--convert-to-latex extra)))
+        ('mfenced ; old mathml
+         (let ((close ")") ; TODO: value of attr "close", or ")"
+               (open "(") ; TODO: value of attr "open", or "("
+               (separators ",")) ; TODO: value of attr "separators", or ","; uses the last one if there are too few
+           (dolist (node children)
+             (shr-tag-mathml--convert-to-latex node)
+             (insert separators)))) ; TODO: Just one of the separators
+        ('mtable
+         (insert "\\begin{pmatrix}")
+         (mapc #'shr-tag-mathml--convert-to-latex children)
+         (insert "\\end{pmatrix}"))
+        ('mtr
+         (mapc #'shr-tag-mathml--convert-to-latex children)
+         (insert "\\\\\n"))
+        ('mtd
+         (mapc #'shr-tag-mathml--convert-to-latex children)
+         (insert "& \\text{}"))
+        ('mo
+         (insert (dom-text root)))
+        ('mi
+         (mapc #'shr-tag-mathml--convert-to-latex children))
+        ('mn
+         (mapc #'shr-tag-mathml--convert-to-latex children))
+        ('mtext
+         (insert "\\text{")
+         (mapc #'shr-tag-mathml--convert-to-latex children)
+         (insert "}"))
+        ('mstyle
+         (mapc #'shr-tag-mathml--convert-to-latex children))
+        ('ms ; for math accents
+         (insert "\\text{")
+         (mapc #'shr-tag-mathml--convert-to-latex children)
+         (insert "}"))
+        ('mspace
+         (insert "\\, ")) ; TODO: Remove space
+        (_
+         (insert "???")
+         (insert (symbol-name root-tag))
+         (mapc #'shr-tag-mathml--convert-to-latex children)
+         (insert "/")
+         (insert (symbol-name root-tag)))))))
 
 (defun shr-tag-math (math)
   "Render the MATH MathML element."
-                                        ; (message "QR %s" math)
-                                        ; TODO: with-temp-buffer
-                                        ;xenops-math-render
-                                        ;(save-excursion
   (let ((start (point)))  ; Save the current point position
     (insert "$") ; "\\begin{equation}\n" ; try $
-    (shr-tag-mathml--convert-to-latex (dom-children math))
+    (shr-tag-mathml--convert-to-latex math)
     (insert "$") ; "\n\\end{equation}\n" ; try $
-                                        ;(save-excursion
-    (xenops-math-render (xenops-math-parse-element-at start))))
+    (let ((e (xenops-math-parse-element-at start)))
+      (if e
+          (progn
+  (setq TeX-header-end (regexp-quote "%**end of header"))
+  (setq TeX-trailer-start (regexp-quote (concat TeX-esc "bye")))
 
-;(debug-on-entry 'xenops-math-render)
+(message "ELEMENT: %S" e)
+;      (xenops-util-plist-update)
+;       :type 'inline-math
+          (xenops-math-render e))
+          (message "NO ELEMENT!\n")))))
+
+                                        ;(debug-on-entry 'xenops-math-render)
 
 
 
