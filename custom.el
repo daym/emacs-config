@@ -41,8 +41,8 @@
   (define-key nov-mode-map (kbd "M-<Right>") #'nov-history-forward))
 
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
-(global-set-key (kbd "<Search>") 'search-forward)
-(global-set-key (kbd "<Search>") 'search-forward)
+(global-set-key (kbd "<Search>") 'isearch-forward)
+(global-set-key (kbd "<Search>") 'isearch-forward)
                                         ;(global-set-key (kbd "<Launch1>") 'async-shell-command)
 (global-set-key (kbd "<Launch1>") 'project-compile)
 
@@ -428,7 +428,7 @@
 (wakib-keys 1)
 
 (load "~/.emacs.d/lisp/copilot.el")
-(global-set-key (kbd "C-.") 'copilot-complete)
+(global-set-key (kbd "C-.") 'gptel-send)
 
 (require 'opascal)
 
@@ -1119,4 +1119,62 @@ argument is given. Choose a file name based on any document
   '("Guix manifest"
     "; Guix manifest definition." \n
     "(specifications->manifest" \n
-    " (list \"gcc-toolchain\" \"texlive-minted\" \"texlive-latex-bin\" \"dvisvgm\"))" \n))
+    " (list \"gcc-toolchain\" \"texlive-minted\" \"texlive-latex-bin\" \"dvisvgm\" \"python-lsp-server\" \"emacs-ediprolog\"))" \n))
+
+(add-to-list 'load-path "~/.emacs.d/kiwix.el")
+(require 'kiwix)
+; duplicate
+(setq kiwix-default-browser-function 'eww-browse-url)
+
+; TODO: Use which-key instead.
+;(require 'discover-my-major)
+;(global-set-key (kbd "C-h C-m") 'discover-my-major)
+
+;(setq which-key-persistent-popup t)
+
+(add-to-list 'load-path "~/.emacs.d/shr-tag-math")
+(require 'shr-tag-math)
+;(add-hook 'nov-mode-hook #'xenops-mode) ; so we render <math>; unfortunately, that fucks up all the other formatting. Also, the size of the rendered images is much too big here.
+
+(require 'emms-setup)
+(emms-all)
+(setq emms-player-list '(emms-player-mpv))
+(emms-add-directory-tree "~/Music")
+
+(defun elfeed-search-print-entry (entry)
+  "Print ENTRY to the buffer."
+  (let* ((date (elfeed-search-format-date (elfeed-entry-date entry)))
+         (title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
+         (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
+         (feed (elfeed-entry-feed entry))
+         (feed-title
+          (when feed
+            (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
+         (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
+         (tags-str (mapconcat
+                    (lambda (s) (propertize s 'face 'elfeed-search-tag-face))
+                    tags ","))
+         (title-width (- (window-width) 10 elfeed-search-trailing-width))
+         (title-column (elfeed-format-column
+                        title (elfeed-clamp
+                               elfeed-search-title-min-width
+                               title-width
+                               elfeed-search-title-max-width)
+                        :left)))
+    (insert (propertize date 'face 'elfeed-search-date-face) " ")
+    (insert (propertize title-column 'face title-faces 'kbd-help title) "\t")
+    (when feed-title
+      (insert (propertize feed-title 'face 'elfeed-search-feed-face) " "))
+    (when tags
+      (insert "(" tags-str ")"))))
+
+(setq elfeed-search-print-entry-function #'elfeed-search-print-entry)
+
+(setq gptel-backend
+ (gptel-make-openai "llama-cpp"
+  :stream t
+  :protocol "http"
+  :host "localhost:8080"
+  :models '(llama)))  ; Any names, doesn't matter for Llama
+
+(setq gptel-model 'llama)
