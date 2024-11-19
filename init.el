@@ -26,7 +26,7 @@
 
 ;; Don't use tabs to indent (by default).
 ;; Note: Major modes and minor modes are allowed to locally change the indent-tabs-mode variable, and a lot of them do.
-;(setq-default indent-tabs-mode nil)
+                                        ;(setq-default indent-tabs-mode nil)
 
 (setq column-number-mode t)
 (setq lsp-ui-doc-enable t)
@@ -222,6 +222,7 @@
  '(lsp-treemacs-theme "Iconless")
  '(org-format-latex-header
    "\\documentclass{article}\12\\usepackage[usenames]{color}\\usepackage{unicodeq}\12[DEFAULT-PACKAGES]\12[PACKAGES]\12\\pagestyle{empty}             % do not remove\12% The settings below are copied from fullpage.sty\12\\setlength{\\textwidth}{\\paperwidth}\12\\addtolength{\\textwidth}{-3cm}\12\\setlength{\\oddsidemargin}{1.5cm}\12\\addtolength{\\oddsidemargin}{-2.54cm}\12\\setlength{\\evensidemargin}{\\oddsidemargin}\12\\setlength{\\textheight}{\\paperheight}\12\\addtolength{\\textheight}{-\\headheight}\12\\addtolength{\\textheight}{-\\headsep}\12\\addtolength{\\textheight}{-\\footskip}\12\\addtolength{\\textheight}{-3cm}\12\\setlength{\\topmargin}{1.5cm}\12\\addtolength{\\topmargin}{-2.54cm}")
+ '(org-replace-disputed-keys t)
  '(org-support-shift-select t)
  '(package-selected-packages
    '(lv concurrent org-mime back-button counsel-projectile counsel-tramp magit-popup edit-indirect eat flycheck-rust typescript-mode go-mode git-timemachine web-mode rainbow-delimiters geiser-guile flycheck-guile clojure-mode envrc shackle vertico counsel pkg-info rustic magit-svn magit-gerrit agda2-mode tramp find-file-in-project lsp-ui consult embark pg finalize org-roam eval-in-repl eval-in-repl-slime slime-company ts async ement crdt gptel paredit inheritenv buffer-env ob-async discover-my-major))
