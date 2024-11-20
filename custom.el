@@ -417,7 +417,7 @@
 (require 'xenops)
 (require 'ob-python) ; optional
 (add-hook 'LaTeX-mode-hook #'xenops-mode)
-(add-hook 'org-mode-hook #'xenops-mode)
+; (add-hook 'org-mode-hook #'xenops-mode) ; fucks up begin_src and end_src (lowercase) handling maybe
 
                                         ; Undefined
                                         ;(latex +cdlatex +latexmk +lsp)
@@ -431,6 +431,37 @@
 (global-set-key (kbd "C-.") 'gptel-send)
 
 (require 'opascal)
+
+; TODO: Python ∈
+
+(add-hook 'c-ts-mode-hook
+          (lambda ()
+            "Prettify C"
+            (push '("<=" . ?≤) prettify-symbols-alist)
+            (push '(">=" . ?≥) prettify-symbols-alist)
+            (push '("==" . "==") prettify-symbols-alist)
+            (push '("=" . "≝") prettify-symbols-alist) ; or ≔
+            (push '("&&" . "∧") prettify-symbols-alist)
+            (push '("||" . "∨") prettify-symbols-alist)
+            (push '("!" . "¬") prettify-symbols-alist)
+            (push '("void" . "⊥") prettify-symbols-alist)))
+
+(add-hook 'c++-ts-mode-hook
+          (lambda ()
+            "Prettify C"
+            (push '("<=" . ?≤) prettify-symbols-alist)
+            (push '(">=" . ?≥) prettify-symbols-alist)
+            (push '("==" . "==") prettify-symbols-alist)
+            (push '("=" . "≝") prettify-symbols-alist) ; or ≔
+            (push '("&&" . "∧") prettify-symbols-alist)
+            (push '("||" . "∨") prettify-symbols-alist)
+            (push '("!" . "¬") prettify-symbols-alist)
+            (push '("void" . "⊥") prettify-symbols-alist)
+
+            ;; C++
+            (push '("->" . "→") prettify-symbols-alist)
+            ;(push '("for" . "∀") prettify-symbols-alist)
+            (push '("*" "·") prettify-symbols-alist)))
 
 (add-hook 'opascal-mode-hook
           (lambda ()
@@ -1178,3 +1209,7 @@ argument is given. Choose a file name based on any document
   :models '(llama)))  ; Any names, doesn't matter for Llama
 
 (setq gptel-model 'llama)
+(setq gptel-default-mode 'org-mode)
+
+; see also org-disputed-keys for CUA mode.
+;(setq org-replace-disputed-keys t)

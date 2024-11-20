@@ -412,6 +412,9 @@
 (add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode))
 (add-to-list 'auto-mode-alist '("\\.PDF\\'" . pdf-view-mode))
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+(add-to-list 'auto-mode-alist '("\\.c\\'" . c-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.cpp\\'" . c++-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.cc\\'" . c++-ts-mode))
 
 (require 'dap-python)
                                         ;(elpy-enable)
