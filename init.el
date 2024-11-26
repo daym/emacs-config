@@ -415,6 +415,7 @@
 (add-to-list 'auto-mode-alist '("\\.c\\'" . c-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.cpp\\'" . c++-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.cc\\'" . c++-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.ixx\\'" . c++-ts-mode))
 
 (require 'dap-python)
                                         ;(elpy-enable)
