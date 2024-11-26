@@ -153,6 +153,10 @@
 (global-set-key (kbd "C-s") 'save-buffer)
 (global-set-key (kbd "C-S-s") 'save-buffer)
 
+;; keys for moving to prev/next code section (Form Feed; ^L)
+(global-set-key (kbd "<C-M-prior>") 'backward-page) ; Ctrl+Alt+PageUp
+(global-set-key (kbd "<C-M-next>") 'forward-page)   ; Ctrl+Alt+PageDown
+
 (keymap-set global-map "C-M-s" #'org-node-series-dispatch)
 
 ;;; ======================
@@ -1213,3 +1217,31 @@ argument is given. Choose a file name based on any document
 
 ; see also org-disputed-keys for CUA mode.
 ;(setq org-replace-disputed-keys t)
+
+;; TODO: Scala; PHP; C++; Kotlin; Swift
+(add-hook 'perl-mode-hook #'page-break-lines-mode)
+(add-hook 'python-mode-hook #'page-break-lines-mode)
+(add-hook 'python-ts-mode-hook #'page-break-lines-mode)
+(add-hook 'scheme-mode-hook #'page-break-lines-mode)
+(add-hook 'lisp-mode-hook #'page-break-lines-mode)
+(add-hook 'fortran-mode-hook #'page-break-lines-mode)
+;(add-hook 'js-mode-hook #'page-break-lines-mode)
+;(add-hook 'js-ts-mode-hook #'page-break-lines-mode)
+(add-hook 'js-base-mode-hook #'page-break-lines-mode)
+(add-hook 'c-ts-base-mode-hook #'page-break-lines-mode)
+(add-hook 'ruby-mode-hook #'page-break-lines-mode)
+(add-hook 'ruby-ts-mode-hook #'page-break-lines-mode)
+(add-hook 'typescript-mode-hook #'page-break-lines-mode)
+(add-hook 'typescript-ts-mode-hook #'page-break-lines-mode)
+(add-hook 'java-mode-hook #'page-break-lines-mode)
+(add-hook 'go-mode-hook #'page-break-lines-mode)
+(add-hook 'go-ts-mode-hook #'page-break-lines-mode)
+(add-hook 'go-mod-ts-mode-hook #'page-break-lines-mode)
+(add-hook 'haskell-mode-hook #'page-break-lines-mode)
+(add-hook 'csharp-mode-hook #'page-break-lines-mode)
+(add-hook 'csharp-ts-mode-hook #'page-break-lines-mode)
+(add-hook 'bash-ts-mode-hook #'page-break-lines-mode)
+(add-hook 'objc-mode-hook #'page-break-lines-mode)
+(add-hook 'rustic-mode-hook #'page-break-lines-mode)
+(add-hook 'rust-mode-hook #'page-break-lines-mode)
+(add-hook 'julia-mode-hook #'page-break-lines-mode)
