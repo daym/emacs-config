@@ -1249,3 +1249,9 @@ argument is given. Choose a file name based on any document
 (use-package savehist
   :ensure nil ; it is built-in
   :hook (after-init . savehist-mode))
+
+;; Don't bother user with emacs warnings
+(add-to-list 'display-buffer-alist
+             '("\\`\\*\\(Warnings\\|Compile-Log\\)\\*\\'"
+               (display-buffer-no-window)
+               (allow-no-window . t)))
