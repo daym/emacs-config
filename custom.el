@@ -1255,3 +1255,11 @@ argument is given. Choose a file name based on any document
              '("\\`\\*\\(Warnings\\|Compile-Log\\)\\*\\'"
                (display-buffer-no-window)
                (allow-no-window . t)))
+
+(use-package vertico
+  :ensure nil
+  :hook (after-init . vertico-mode))
+
+(use-package marginalia
+  :ensure nil
+  :hook (after-init . marginalia-mode))
