@@ -1245,3 +1245,7 @@ argument is given. Choose a file name based on any document
 (add-hook 'rustic-mode-hook #'page-break-lines-mode)
 (add-hook 'rust-mode-hook #'page-break-lines-mode)
 (add-hook 'julia-mode-hook #'page-break-lines-mode)
+
+(use-package savehist
+  :ensure nil ; it is built-in
+  :hook (after-init . savehist-mode))
