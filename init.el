@@ -108,8 +108,8 @@
 					;(bind-key* "cursor down" 'next-logical-line)
 					;(bind-key* "cursor up" 'previous-logical-line)
 					; TODO: only in text editor?
-(global-set-key (kbd "<down>") 'next-logical-line)
-(global-set-key (kbd "<up>") 'previous-logical-line)
+                                        ;(global-set-key (kbd "<down>") 'next-logical-line) ; done by setting line-move-visual
+                                        ;(global-set-key (kbd "<up>") 'previous-logical-line)
 
 ;;; Packages
 
@@ -151,6 +151,7 @@
  ;; If there is more than one, they won't work right.
  '(buffer-env-safe-files
    '(("/home/dannym/src/latex-ex/manifest.scm" . "5200b8ce405410acc7ad0e4baf5bfaa85b0160bff5815265a305bdc9a7fb70ed")))
+ '(dtrt-indent-global-mode t)
  '(elfeed-feeds
    '("https://the-dam.org/rss.xml"
      ("http://planet.emacslife.com/atom.xml" emacs)
@@ -217,6 +218,7 @@
  '(kiwix-server-type 'kiwix-serve-local)
  '(kiwix-zim-dir "~/.local/zim")
  '(large-file-warning-threshold 100000000)
+ '(line-move-visual nil)
  '(lsp-rust-analyzer-rustc-source
    "/usr/local/rustup/toolchains/nightly-2024-08-03-x86_64-unknown-linux-musl/lib/rustlib/rustc-src/rust/compiler/rustc/Cargo.toml")
  '(lsp-treemacs-theme "Iconless")
