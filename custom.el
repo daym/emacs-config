@@ -72,10 +72,15 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
        (t
         (message "No debugger active"))))))
 
+; TODO: <f12>: Compiler messages
+
+
 (eval-after-load 'prog-mode
   '(progn
+     (define-debug-key prog-mode-map (kbd "C-<f3>") #'gud-where #'dap-ui-stackframe)
      (define-debug-key prog-mode-map (kbd "C-<f2>") #'gud-kill #'dap-disconnect)
      (define-debug-key prog-mode-map (kbd "C-<f8>") #'gud-break #'dap-breakpoint-toggle)
+     (define-debug-key prog-mode-map (kbd "C-b") #'gud-break #'dap-breakpoint-toggle) ; Chromium
      (define-debug-key prog-mode-map (kbd "<f5>") #'gud-break #'dap-breakpoint-toggle)
      (define-debug-key prog-mode-map (kbd "<f11>") #'gud-step #'dap-step-in)
      (define-debug-key prog-mode-map (kbd "<f10>") #'gud-next #'dap-next)
@@ -83,6 +88,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
      (define-debug-key prog-mode-map (kbd "C-<f10>") #'gud-nexti)
      ;(define-debug-key prog-mode-map (kbd "s-<f11>") #'gud-finish #'dap-step-out)
      (define-debug-key prog-mode-map (kbd "<f8>") #'gud-cont #'dap-continue)
+     (define-debug-key prog-mode-map (kbd "C-<f11>") #'gud-watch #'dap-ui-expressions-add)
      ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-up)
      ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-down)
      ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-refresh)
@@ -91,7 +97,6 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
      ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-kill)
      (define-debug-key prog-mode-map (kbd "C-<f4>") #'gud-jump)
      (define-debug-key prog-mode-map (kbd "<?>") #'gud-remove)
-     (define-debug-key prog-mode-map (kbd "<?>") #'gud-watch)
      (define-debug-key prog-mode-map (kbd "<f4>") #'gud-until) ; dap-debug-restart-frame
      ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-goto-traceback)
      ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-list-breakpoints)
