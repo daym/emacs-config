@@ -74,6 +74,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 
 (eval-after-load 'prog-mode
   '(progn
+     (define-debug-key prog-mode-map (kbd "C-<f2>") #'gud-kill #'dap-disconnect)
      (define-debug-key prog-mode-map (kbd "C-<f8>") #'gud-break #'dap-breakpoint-toggle)
      (define-debug-key prog-mode-map (kbd "<f5>") #'gud-break #'dap-breakpoint-toggle)
      (define-debug-key prog-mode-map (kbd "<f11>") #'gud-step #'dap-step-in)
