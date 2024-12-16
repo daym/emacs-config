@@ -1342,3 +1342,75 @@ argument is given. Choose a file name based on any document
 (use-package marginalia
   :ensure nil
   :hook (after-init . marginalia-mode))
+
+;; Apparently doesn't do anything
+(use-package orderless
+  :ensure f
+  :config
+  (setq completion-styles '(orderless basic))
+  (setq completion-category-defaults nil)
+  (setq completion-category-overrride nil))
+
+(global-set-key (kbd "C-c r") 'gptel-rewrite-menu)
+; gptel-add-file	 C-u gptel-send	 transient menu
+
+;(add-hook 'vala-mode-hook #'lsp)  ;; Enable LSP for Vala mode
+;(add-hook 'vala-mode-hook #'lsp-mode) ; disconnects immediately
+
+;; DAP Python Configuration
+;(with-eval-after-load 'dap-mode
+;  (dap-register-debug-template "Python :: Uvicorn (FastAPI)"
+;    (list :type "python"
+;          :request "launch"
+;          :name "Python :: Uvicorn (FastAPI)"
+;          :program "${workspaceFolder}/main.py"  ;; Path to your FastAPI app
+;          :args ["run" "main:app" "--reload" "--host" "127.0.0.1" "--port" "8000"]
+;          :env (list (cons "PYTHONPATH" "${workspaceFolder}"))
+;          :justMyCode t
+;          :console "integratedTerminal")))
+
+(with-eval-after-load 'dap-mode
+  (dap-register-debug-template "Python :: Attach via port 5678"
+    (list :type "python"
+          :request "attach"
+          :name "Python :: Attach to Running"
+          :hostName "127.0.0.1"  ;; Address of the Python process
+          :port 5678             ;; Port that debugpy is listening on
+          ; :justMyCode t          ;; Optional: Only debug your code, not external libraries
+          :env (list (cons "PYTHONPATH" "${workspaceFolder}"))
+          :console "integratedTerminal")))
+
+;(which-key-setup-side-window-right-bottom)
+(which-key-setup-side-window-bottom)
+
+
+;; Display which-key keybindings in the right margin
+;(setq which-key-side-window-location 'right) ; Set position to right margin
+;(setq which-key-side-window-max-width 0.25)  ; Set maximum width of the side window (25% of the frame width)
+; what? (setq which-key-side-window-slot -10)        ; Slot for side window
+;(setq which-key-show-early-on-C-h t)         ; Show key hints when pressing C-h
+;(setq which-key-idle-delay 0.5)              ; Delay before the keybindings show up
+;(setq which-key-idle-secondary-delay 0.05)   ; Delay for showing secondary hints
+;; Allow the margin window to take up multiple lines
+;(setq which-key-side-window-multi-line-p t)   ; Allow multi-line keybindings
+;(setq which-key-side-window-max-height 0.5)    ; Max height of the side window (50% of the frame height)
+
+;(custom-set-faces
+; '(which-key-key-face ((t (:foreground "yellow")))) ; Key face color
+; '(which-key-command-description-face ((t (:foreground "green")))) ; Command description color
+; '(which-key-group-description-face ((t (:foreground "cyan"))))) ; Group description color
+
+; Eventually provided by manifest.scm
+(setq lsp-clients-clangd-executable "ccls")
+
+;(setq dired-launch-default-launcher '("xdg-open"))
+(setf dired-launch-extensions-map
+      '(("xlsx" ("libreofficedev5.3"))
+        ("odt" ("libreofficedev5.3" "abiword"))
+        ("jvx" ("/home/dannym/src/mcphas/wrapper/javaview"))))
+
+(add-hook 'python-mode-hook 'eglot-ensure)
+;; Tab Completion: Use company-mode for completion, integrating company-capf with eglot.
+(add-to-list 'auto-mode-alist '("\\.py\\'" . python-ts-mode))
+(add-hook 'python-mode-hook 'flycheck-mode)
+(add-hook 'python-mode-hook (lambda () (add-to-list 'company-backends 'company-jedi)))
