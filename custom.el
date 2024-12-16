@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t -*-
+
 ;; Custom "e" command in eshell
 
 (require 'eshell)
