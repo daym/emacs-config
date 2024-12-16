@@ -77,6 +77,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 
 (eval-after-load 'prog-mode
   '(progn
+     (define-debug-key prog-mode-map (kbd "C-<f7>") #'gud-eval #'dap-eval)
      (define-debug-key prog-mode-map (kbd "C-<f3>") #'gud-where #'dap-ui-stackframe)
      (define-debug-key prog-mode-map (kbd "C-<f2>") #'gud-kill #'dap-disconnect)
      (define-debug-key prog-mode-map (kbd "C-<f8>") #'gud-break #'dap-breakpoint-toggle)
@@ -105,8 +106,6 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
      
                                         ; TODO: Shift-F7 step to next source line!
                                         ;(global-set-key (kbd "<f7>") 'gud-step)
-                                        ; TODO: Evaluate/Modify...
-                                        ; (global-set-key (kbd "C-<f7>") 'gud-eval)
                                         ;(global-set-key (kbd "<f8>") 'gud-next)
                                         ; user! ; gud-remove ?
      ))
