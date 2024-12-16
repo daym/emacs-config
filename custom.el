@@ -57,32 +57,45 @@
 (global-set-key (kbd "C-<f3>") 'find-file-at-point)
 (global-set-key (kbd "M-<f3>") 'ff-get-other-file)
 
-                                        ; f4 exec to cursor
+(defun define-debug-key (mode-map key gud-command &optional dap-command)
+  "Bind KEY to GUD-COMMAND when GUD is active, or DAP-COMMAND when DAP is active.
+KEY should be like (key \"<f8>\").
+GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
+  (define-key mode-map key
+    (lambda ()
+      (interactive)
+      (cond
+       ((bound-and-true-p gud-minor-mode)
+        (command-execute gud-command))
+       ((bound-and-true-p dap-tooltip-mode)
+        (and dap-command (command-execute dap-command)))
+       (t
+        (message "No debugger active"))))))
 
-(eval-after-load 'gud
+(eval-after-load 'prog-mode
   '(progn
-     (define-key gud-mode-map (kbd "C-<f8>") 'gud-break)
-     (define-key gud-mode-map (kbd "<f5>") 'gud-break)
-     (define-key gud-mode-map (kbd "<f11>") 'gud-step)
-     (define-key gud-mode-map (kbd "<f10>") 'gud-next)
-     (define-key gud-mode-map (kbd "C-<f11>") 'gud-stepi)
-     (define-key gud-mode-map (kbd "C-<f10>") 'gud-nexti)
-     ;(define-key gud-mode-map (kbd "<?>") 'gud-finish)
-     (define-key gud-mode-map (kbd "<f8>") 'gud-cont)
-     ;(define-key gud-mode-map (kbd "<?>") 'gud-up)
-     ;(define-key gud-mode-map (kbd "<?>") 'gud-down)
-     ;(define-key gud-mode-map (kbd "<?>") 'gud-refresh)
-     ;(define-key gud-mode-map (kbd "<?>") 'gud-print)
-     ;(define-key gud-mode-map (kbd "<?>") 'gud-tbreak)
-     ;(define-key gud-mode-map (kbd "<?>") 'gud-kill)
-     (define-key gud-mode-map (kbd "C-<f4>") 'gud-jump)
-     (define-key gud-mode-map (kbd "<?>") 'gud-remove)
-     (define-key gud-mode-map (kbd "<?>") 'gud-watch)
-     (define-key gud-mode-map (kbd "<f4>") 'gud-until) ; dap-debug-restart-frame
-     ;(define-key gud-mode-map (kbd "<?>") 'gud-goto-traceback)
-     ;(define-key gud-mode-map (kbd "<?>") 'gud-list-breakpoints)
+     (define-debug-key prog-mode-map (kbd "C-<f8>") #'gud-break #'dap-breakpoint-toggle)
+     (define-debug-key prog-mode-map (kbd "<f5>") #'gud-break #'dap-breakpoint-toggle)
+     (define-debug-key prog-mode-map (kbd "<f11>") #'gud-step #'dap-step-in)
+     (define-debug-key prog-mode-map (kbd "<f10>") #'gud-next #'dap-next)
+     (define-debug-key prog-mode-map (kbd "C-<f11>") #'gud-stepi)
+     (define-debug-key prog-mode-map (kbd "C-<f10>") #'gud-nexti)
+     ;(define-debug-key prog-mode-map (kbd "s-<f11>") #'gud-finish #'dap-step-out)
+     (define-debug-key prog-mode-map (kbd "<f8>") #'gud-cont #'dap-continue)
+     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-up)
+     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-down)
+     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-refresh)
+     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-print)
+     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-tbreak)
+     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-kill)
+     (define-debug-key prog-mode-map (kbd "C-<f4>") #'gud-jump)
+     (define-debug-key prog-mode-map (kbd "<?>") #'gud-remove)
+     (define-debug-key prog-mode-map (kbd "<?>") #'gud-watch)
+     (define-debug-key prog-mode-map (kbd "<f4>") #'gud-until) ; dap-debug-restart-frame
+     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-goto-traceback)
+     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-list-breakpoints)
      ;gud-sentinel gud-statement-end
-     ;(define-key gud-mode-map (kbd "<?>") 'gud-pp)
+     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-pp)
      
                                         ; TODO: Shift-F7 step to next source line!
                                         ;(global-set-key (kbd "<f7>") 'gud-step)
@@ -95,13 +108,7 @@
 (eval-after-load 'dap-mode
   '(progn
      ;; Basic debugging
-     (define-key dap-mode-map (kbd "<f8>") 'dap-continue)
-     (define-key dap-mode-map (kbd "<f11>") 'dap-step-in)
      ;; FIXME need to disable the menu opening then!
-     (define-key dap-mode-map (kbd "<f10>") 'dap-next)
-     ;(define-key dap-mode-map (kbd "S-<f11>") 'dap-step-out)
-     (define-key dap-mode-map (kbd "<f5>") 'dap-breakpoint-toggle)
-     (define-key dap-mode-map (kbd "C-<f8>") 'dap-breakpoint-toggle)
      ;(define-key dap-mode-map (kbd "C-c C-k") 'dap-disconnect)
 
      ;; Breakpoint related
