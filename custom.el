@@ -58,20 +58,89 @@
 (global-set-key (kbd "M-<f3>") 'ff-get-other-file)
 
                                         ; f4 exec to cursor
-(global-set-key (kbd "<f4>") 'gud-until) ; dap-debug-restart-frame
-(global-set-key (kbd "C-<f4>") 'gud-jump)
 
+(eval-after-load 'gud
+  '(progn
+     (define-key gud-mode-map (kbd "C-<f8>") 'gud-break)
+     (define-key gud-mode-map (kbd "<f5>") 'gud-break)
+     (define-key gud-mode-map (kbd "<f11>") 'gud-step)
+     (define-key gud-mode-map (kbd "<f10>") 'gud-next)
+     (define-key gud-mode-map (kbd "C-<f11>") 'gud-stepi)
+     (define-key gud-mode-map (kbd "C-<f10>") 'gud-nexti)
+     ;(define-key gud-mode-map (kbd "<?>") 'gud-finish)
+     (define-key gud-mode-map (kbd "<f8>") 'gud-cont)
+     ;(define-key gud-mode-map (kbd "<?>") 'gud-up)
+     ;(define-key gud-mode-map (kbd "<?>") 'gud-down)
+     ;(define-key gud-mode-map (kbd "<?>") 'gud-refresh)
+     ;(define-key gud-mode-map (kbd "<?>") 'gud-print)
+     ;(define-key gud-mode-map (kbd "<?>") 'gud-tbreak)
+     ;(define-key gud-mode-map (kbd "<?>") 'gud-kill)
+     (define-key gud-mode-map (kbd "C-<f4>") 'gud-jump)
+     (define-key gud-mode-map (kbd "<?>") 'gud-remove)
+     (define-key gud-mode-map (kbd "<?>") 'gud-watch)
+     (define-key gud-mode-map (kbd "<f4>") 'gud-until) ; dap-debug-restart-frame
+     ;(define-key gud-mode-map (kbd "<?>") 'gud-goto-traceback)
+     ;(define-key gud-mode-map (kbd "<?>") 'gud-list-breakpoints)
+     ;gud-sentinel gud-statement-end
+     ;(define-key gud-mode-map (kbd "<?>") 'gud-pp)
+     
                                         ; TODO: Shift-F7 step to next source line!
                                         ;(global-set-key (kbd "<f7>") 'gud-step)
                                         ; TODO: Evaluate/Modify...
                                         ; (global-set-key (kbd "C-<f7>") 'gud-eval)
                                         ;(global-set-key (kbd "<f8>") 'gud-next)
+                                        ; user! ; gud-remove ?
+     ))
+
+(eval-after-load 'dap-mode
+  '(progn
+     ;; Basic debugging
+     (define-key dap-mode-map (kbd "<f8>") 'dap-continue)
+     (define-key dap-mode-map (kbd "<f11>") 'dap-step-in)
+     ;; FIXME need to disable the menu opening then!
+     (define-key dap-mode-map (kbd "<f10>") 'dap-next)
+     ;(define-key dap-mode-map (kbd "S-<f11>") 'dap-step-out)
+     (define-key dap-mode-map (kbd "<f5>") 'dap-breakpoint-toggle)
+     (define-key dap-mode-map (kbd "C-<f8>") 'dap-breakpoint-toggle)
+     ;(define-key dap-mode-map (kbd "C-c C-k") 'dap-disconnect)
+
+     ;; Breakpoint related
+     ;(define-key dap-mode-map (kbd "C-c C-b c") 'dap-breakpoint-condition)
+     ;(define-key dap-mode-map (kbd "C-c C-b h") 'dap-breakpoint-hit-condition)
+     ;(define-key dap-mode-map (kbd "C-c C-b l") 'dap-breakpoint-log-message)
+     ;(define-key dap-mode-map (kbd "C-c C-b d") 'dap-breakpoint-delete)
+     ;(define-key dap-mode-map (kbd "C-c C-b D") 'dap-breakpoint-delete-all)
+
+     ;; Debug windows
+     ;(define-key dap-mode-map (kbd "C-c C-r") 'dap-ui-repl)
+     ;(define-key dap-mode-map (kbd "C-c C-l") 'dap-ui-locals)
+     ;(define-key dap-mode-map (kbd "C-c C-b") 'dap-ui-breakpoints)
+     ;(define-key dap-mode-map (kbd "C-c C-t") 'dap-ui-sessions)
+     ;(define-key dap-mode-map (kbd "C-c C-v") 'dap-eval)
+     ;(define-key dap-mode-map (kbd "C-c C-w") 'dap-ui-expressions)
+     ;(define-key dap-mode-map (kbd "C-c C-i") 'dap-step-in)
+     ;(define-key dap-mode-map (kbd "C-c C-u") 'dap-up-stack-frame)
+     ;(define-key dap-mode-map (kbd "C-c C-d") 'dap-down-stack-frame)
+
+     ;; Additional commands
+     ;(define-key dap-mode-map (kbd "C-c C-p") 'dap-debug-restart-frame)
+     ;(define-key dap-mode-map (kbd "C-c C-a") 'dap-ui-inspect)
+     ;(define-key dap-mode-map (kbd "C-c C-m") 'dap-mouse-eval)
+     ;(define-key dap-mode-map (kbd "C-c C-e e") 'dap-eval-thing-at-point)
+     ;(define-key dap-mode-map (kbd "C-c C-e r") 'dap-eval-region)
+     ;(define-key dap-mode-map (kbd "C-c C-h") 'dap-hydra)
+
+     ;; Launch/terminate
+     ;(define-key dap-mode-map (kbd "C-c C-x") 'dap-start-debugging)
+     ;(define-key dap-mode-map (kbd "C-c C-q") 'dap-disconnect)
+     ;(define-key dap-mode-map (kbd "C-c C-g") 'dap-debug-restart)
+))
 
                                         ; paredit was older than combobulate
                                         ; next sibling; via combobulate
 (global-set-key (kbd "C-M-<down>") 'forward-sexp)
 
-                                        ; user! ; gud-remove ?
+                                        ;; FIXME also C-<f8> maybe
 (global-set-key (kbd "<f5>") 'dap-breakpoint-toggle)
 
                                         ; TODO: C-<f5>: Add watch...
@@ -111,16 +180,9 @@
 
                                         ; https://delphi.fandom.com/wiki/Default_IDE_Shortcut_Keys
                                         ; FIXME: also run under debugger
-(global-set-key (kbd "<f8>") 'dap-continue)
 (global-set-key (kbd "<f9>") 'project-compile)
                                         ; FIXME: Alt+F9 recompile all, Shift-F9 same
 (global-set-key (kbd "C-<f9>") 'compile)
-(global-set-key (kbd "<f11>") 'dap-step-in)
-(global-set-key (kbd "C-<f11>") 'gud-stepi)
-(global-set-key (kbd "S-<f11>") 'dap-step-out)
-;; FIXME need to disable the menu opening then!
-(global-set-key (kbd "<f10>") 'dap-next)
-(global-set-key (kbd "C-<f10>") 'gud-nexti)
                                         ; TODO: shift-ctrl-f find in files
                                         ; TODO: ctrl-h search replace
                                         ; Ctrl+Alt+B breakpoint list
