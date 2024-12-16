@@ -1168,19 +1168,34 @@ argument is given. Choose a file name based on any document
     "}" > \n
     "}" > \n))
 
-;; Java File Template
-(define-auto-insert '(".*\\.java\\'" . "Java program")
-  '("Java program"
+;; Vala File Template
+(define-auto-insert '(".*\\.vala\\'" . "Vala program")
+  '("Vala program"
     "// SPDX-License-Identifier: GPL-3.0-or-later" > \n
     "/*" > \n
     " * " (file-name-nondirectory (buffer-file-name)) > \n
     " *" > \n
     " * TODO: Describe." > \n
     " */" > \n
-    "public class " (file-name-sans-extension (file-name-nondirectory (buffer-file-name))) " {" > \n
-    "public static void main(String[] args) {" > \n
+    "using Gtk;" > \n
+    "" > \n
+    "int main (string[] args) {" > \n
+    "    Gtk.init (ref args);" > \n
+    "    var window = new Window ();" > \n
+    "    window.title = \"First GTK+ Program\";" > \n
+    "    window.border_width = 10;" > \n
+    "    window.window_position = WindowPosition.CENTER;" > \n
+    "    window.set_default_size (350, 70);" > \n
+    "    window.destroy.connect (Gtk.main_quit);" > \n
+    "    var button = new Button.with_label (\"Click me!\");" > \n
+    "    button.clicked.connect (() => {" > \n
+    "        button.label = \"Thank you\";" > \n
+    "    });" > \n
+    "    window.add (button);" > \n
+    "    window.show_all ();" > \n
     > _ \n
-    "}" > \n
+    "    Gtk.main ();" > \n
+    "    return 0;" > \n
     "}" > \n))
 
 ;; Guix Package Template
