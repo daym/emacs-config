@@ -268,7 +268,7 @@
                      (java-mode . java-ts-mode)
                      (javascript-mode . js-ts-mode)
                      (js-json-mode . json-ts-mode)
-                     (python-mode . python-ts-mode)
+                     ; FIXME (python-mode . python-ts-mode)
                                         ;(rust-mode . rust-ts-mode)
                      (typescript-mode . tsx-ts-mode) ; or typescript-ts-mode
 					;(js-mode . js-ts-mode)
@@ -294,7 +294,7 @@
     ;; You can manually enable Combobulate with `M-x
     ;; combobulate-mode'.
     :commands combobulate-mode ; XXX
-    :hook ((python-ts-mode . combobulate-mode)
+    :hook ( ;(python-ts-mode . combobulate-mode)
            (js-ts-mode . combobulate-mode)
            (css-ts-mode . combobulate-mode)
 					;(html-ts-mode . combobulate-mode)
