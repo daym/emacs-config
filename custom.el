@@ -10,8 +10,8 @@
 ;; Sway config has: exec --no-startup-id bash --login -c 'exec dex --autostart --environment i3'
 ;; Sway has .local/bin in PATH
 ;; Emacs --daemon has .local/bin in PATH
-;(setenv "PATH" (concat (getenv "PATH") ":/sw/bin"))
-;(setq exec-path (append exec-path '("/sw/bin")))
+                                        ;(setenv "PATH" (concat (getenv "PATH") ":/sw/bin"))
+                                        ;(setq exec-path (append exec-path '("/sw/bin")))
 
 (defun eshell/e (&rest args)
   "Open a file in Emacs, similar to the 'find-file' function."
@@ -87,23 +87,23 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
      (define-debug-key prog-mode-map (kbd "<f10>") #'gud-next #'dap-next)
      (define-debug-key prog-mode-map (kbd "C-<f11>") #'gud-stepi)
      (define-debug-key prog-mode-map (kbd "C-<f10>") #'gud-nexti)
-     ;(define-debug-key prog-mode-map (kbd "s-<f11>") #'gud-finish #'dap-step-out)
+                                        ;(define-debug-key prog-mode-map (kbd "s-<f11>") #'gud-finish #'dap-step-out)
      (define-debug-key prog-mode-map (kbd "<f8>") #'gud-cont #'dap-continue)
      (define-debug-key prog-mode-map (kbd "C-<f11>") #'gud-watch #'dap-ui-expressions-add)
-     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-up)
-     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-down)
-     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-refresh)
-     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-print)
-     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-tbreak)
-     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-kill)
+                                        ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-up)
+                                        ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-down)
+                                        ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-refresh)
+                                        ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-print)
+                                        ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-tbreak)
+                                        ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-kill)
      (define-debug-key prog-mode-map (kbd "C-<f4>") #'gud-jump)
      (define-debug-key prog-mode-map (kbd "<?>") #'gud-remove)
      (define-debug-key prog-mode-map (kbd "<f4>") #'gud-until) ; dap-debug-restart-frame
-     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-goto-traceback)
-     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-list-breakpoints)
-     ;gud-sentinel gud-statement-end
-     ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-pp)
-     
+                                        ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-goto-traceback)
+                                        ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-list-breakpoints)
+                                        ;gud-sentinel gud-statement-end
+                                        ;(define-debug-key prog-mode-map (kbd "<?>") #'gud-pp)
+
                                         ; TODO: Shift-F7 step to next source line!
                                         ;(global-set-key (kbd "<f7>") 'gud-step)
                                         ;(global-set-key (kbd "<f8>") 'gud-next)
@@ -562,9 +562,9 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 
 ;; Must do this so the agenda knows where to look for my files
 (setq org-agenda-files '("~/doc/org"))
-;(setq org-agenda-deadline-lead-time 7) ;; Notify 7 days before deadlines
-;(setq org-agenda-scheduled-lead-time 1) ;; Notify 1 day before scheduled items
-;   <2021-07-14 Wed 14:40 -1d>  with lead time; https://github.com/orgzly/orgzly-android/issues/636
+                                        ;(setq org-agenda-deadline-lead-time 7) ;; Notify 7 days before deadlines
+                                        ;(setq org-agenda-scheduled-lead-time 1) ;; Notify 1 day before scheduled items
+                                        ;   <2021-07-14 Wed 14:40 -1d>  with lead time; https://github.com/orgzly/orgzly-android/issues/636
 
 ;; When a TODO is set to a done state, record a timestamp
 (setq org-log-done 'time)
@@ -593,78 +593,78 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 ;; Hide the markers so you just see bold text as BOLD-TEXT and not *BOLD-TEXT*
 (setq org-hide-emphasis-markers t)
 
-;(setq org-roam-node-display-template
-;      (concat "${title:*} " (propertize "${tags}" 'face 'org-tag)))
+                                        ;(setq org-roam-node-display-template
+                                        ;      (concat "${title:*} " (propertize "${tags}" 'face 'org-tag)))
 
 ;; Uhh.
-;(setq org-roam-completion-everywhere t)
+                                        ;(setq org-roam-completion-everywhere t)
 
-; TODO: (org-roam-node-list)
-;(defun org-roam-update-recent-nodes ()
-;  "Update the list of recent nodes in the org-roam recent.org file."
-;  (interactive)
-;  (with-temp-file "~/doc/org-roam/recent.org"
-;    (insert "#+title: Recent Nodes\n\n")
-;    (dolist (node (org-roam-node-list))
-;      (insert (format "- [[node:%s][%s]]\n"
-;                      node
-;                      (org-roam-node-title node))))))
-;(run-with-timer 0 3600 'org-roam-update-recent-nodes)  ; Update every hour
+                                        ; TODO: (org-roam-node-list)
+                                        ;(defun org-roam-update-recent-nodes ()
+                                        ;  "Update the list of recent nodes in the org-roam recent.org file."
+                                        ;  (interactive)
+                                        ;  (with-temp-file "~/doc/org-roam/recent.org"
+                                        ;    (insert "#+title: Recent Nodes\n\n")
+                                        ;    (dolist (node (org-roam-node-list))
+                                        ;      (insert (format "- [[node:%s][%s]]\n"
+                                        ;                      node
+                                        ;                      (org-roam-node-title node))))))
+                                        ;(run-with-timer 0 3600 'org-roam-update-recent-nodes)  ; Update every hour
 
-;(defun org-roam-open-index ()
-;  "Open the org-roam index file."
-;  (interactive)
-;  (find-file "~/doc/org-roam/org-roam-index.org"))
-;(global-set-key (kbd "C-c i") 'org-roam-open-index)
+                                        ;(defun org-roam-open-index ()
+                                        ;  "Open the org-roam index file."
+                                        ;  (interactive)
+                                        ;  (find-file "~/doc/org-roam/org-roam-index.org"))
+                                        ;(global-set-key (kbd "C-c i") 'org-roam-open-index)
 
-;(setq org-roam-index-file "~/doc/org-roam/org-roam-index.org")
+                                        ;(setq org-roam-index-file "~/doc/org-roam/org-roam-index.org")
 
-;(add-hook 'after-init-hook 'org-roam-open-index) ; Automatically open org-roam index when you open emacs (yeah, right--we'll see)
+                                        ;(add-hook 'after-init-hook 'org-roam-open-index) ; Automatically open org-roam index when you open emacs (yeah, right--we'll see)
 
-;(setq org-roam-node-search-function #'org-roam-node-find-by-tags)
-;(defun org-roam-node-find-by-tags (&optional other-window initial-input)
-;  "Find and open an Org-roam node by tags.
-;INITIAL-INPUT can be used to pre-fill the prompt."
-;  (interactive current-prefix-arg)
-;  (let* ((initial-input (or initial-input ""))
-;         (node (org-roam-node-read initial-input
-;                                   (lambda (node)
-;                                     (or (org-roam-node-file-title node)
-;                                         (org-roam-node-title node)))
-;                                   nil
-;                                   nil
-;                                   (lambda (n1 n2)
-;                                     (> (org-roam-node-file-mtime n1)
-;                                        (org-roam-node-file-mtime n2))))))
-;    (if other-window
-;        (org-roam-node-open node other-window)
-;      (org-roam-node-open node))))
-;
-;(use-package org-roam-ql
-;  :after (org-roam)
-;  :bind ((:map org-roam-mode-map
-;               ;; Have org-roam-ql's transient available in org-roam-mode buffers
-;               ("v" . org-roam-ql-buffer-dispatch)
-;               :map minibuffer-mode-map
-;               ;; Be able to add titles in queries while in minibuffer.
-;               ;; This is similar to `org-roam-node-insert', but adds
-;               ;; only title as a string.
-;               ("C-c n i" . org-roam-ql-insert-node-title))))
+                                        ;(setq org-roam-node-search-function #'org-roam-node-find-by-tags)
+                                        ;(defun org-roam-node-find-by-tags (&optional other-window initial-input)
+                                        ;  "Find and open an Org-roam node by tags.
+                                        ;INITIAL-INPUT can be used to pre-fill the prompt."
+                                        ;  (interactive current-prefix-arg)
+                                        ;  (let* ((initial-input (or initial-input ""))
+                                        ;         (node (org-roam-node-read initial-input
+                                        ;                                   (lambda (node)
+                                        ;                                     (or (org-roam-node-file-title node)
+                                        ;                                         (org-roam-node-title node)))
+                                        ;                                   nil
+                                        ;                                   nil
+                                        ;                                   (lambda (n1 n2)
+                                        ;                                     (> (org-roam-node-file-mtime n1)
+                                        ;                                        (org-roam-node-file-mtime n2))))))
+                                        ;    (if other-window
+                                        ;        (org-roam-node-open node other-window)
+                                        ;      (org-roam-node-open node))))
+                                        ;
+                                        ;(use-package org-roam-ql
+                                        ;  :after (org-roam)
+                                        ;  :bind ((:map org-roam-mode-map
+                                        ;               ;; Have org-roam-ql's transient available in org-roam-mode buffers
+                                        ;               ("v" . org-roam-ql-buffer-dispatch)
+                                        ;               :map minibuffer-mode-map
+                                        ;               ;; Be able to add titles in queries while in minibuffer.
+                                        ;               ;; This is similar to `org-roam-node-insert', but adds
+                                        ;               ;; only title as a string.
+                                        ;               ("C-c n i" . org-roam-ql-insert-node-title))))
 
 ;; Wrap the lines in org mode so that things are easier to read ; FIXME how to make tables work correctly then?
 (add-hook 'org-mode-hook 'visual-line-mode)
 
-;(setq org-roam-v2-ack t)
-;(use-package org-roam
-;  :ensure f
-;  :custom
-;  (org-roam-directory "~/doc/org-roam")
-;  :bind (("C-c n l" . org-roam-buffer-toggle)
-;         ("C-c n f" . org-roam-node-find)
-;         ("C-c n i" . org-roam-node-insert))
-;  :config
-;  (org-roam-setup))
-;(org-roam-db-autosync-mode)
+                                        ;(setq org-roam-v2-ack t)
+                                        ;(use-package org-roam
+                                        ;  :ensure f
+                                        ;  :custom
+                                        ;  (org-roam-directory "~/doc/org-roam")
+                                        ;  :bind (("C-c n l" . org-roam-buffer-toggle)
+                                        ;         ("C-c n f" . org-roam-node-find)
+                                        ;         ("C-c n i" . org-roam-node-insert))
+                                        ;  :config
+                                        ;  (org-roam-setup))
+                                        ;(org-roam-db-autosync-mode)
 
 ;;; Make elfeed store-link store the link to the ORIGINAL article, not to the feed.
 
@@ -803,7 +803,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
         ("q" "Make quick stub ID node"
          plain (function org-node-capture-target) nil
          :immediate-finish t)
-               
+
         ("w" "Work Log Entry"
          entry (file+datetree "~/doc/org/work-log.org")
          "* %?"
@@ -975,7 +975,7 @@ the cdr is the executable name."
   (let ((variable-name (car repl-config))
         (executable-name (cdr repl-config)))
     (make-local-variable variable-name)
-    ;(message (executable-find executable-name))
+                                        ;(message (executable-find executable-name))
     (set variable-name (or (executable-find executable-name) executable-name))))
 
                                         ; TODO inferior-js-program-command ?
@@ -1064,7 +1064,7 @@ argument is given. Choose a file name based on any document
      (and title `(title, title))
      "org" s)))
 
-; TODO: https://tero.hasu.is/blog/transient-directories-in-notdeft/
+                                        ; TODO: https://tero.hasu.is/blog/transient-directories-in-notdeft/
 
 (setq buffer-env-script-name '("manifest.scm" ".envrc"))
 
@@ -1072,10 +1072,13 @@ argument is given. Choose a file name based on any document
   :after org
   :config (org-node-cache-mode))
 
+;; Original wakib binding would save and quit emacs (using save-buffers-kill-terminal).  Who wants that?
+(keymap-set wakib-keys-overriding-map "C-q" #'quoted-insert)
+
 (keymap-set global-map "C-<Search>" #'org-node-find)
 (keymap-set global-map "M-<Search>" #'org-node-grep) ; Requires consult
-;(global-set-key (kbd "C-c l") 'org-store-link)
-;(global-set-key (kbd "C-c a") 'org-agenda)
+                                        ;(global-set-key (kbd "C-c l") 'org-store-link)
+                                        ;(global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
 
 (keymap-set org-mode-map "C-s M-i" #'org-node-insert-link)
@@ -1091,66 +1094,66 @@ argument is given. Choose a file name based on any document
 (setq org-default-notes-file (concat org-directory "/notes.org"))
 
 
-;        "~/Syncthing/"
+                                        ;        "~/Syncthing/"
 
 (setq org-node-extra-id-dirs
       '("~/doc/org-roam/"))
-;Do a M-x org-node-reset and see if it can find your notes now.
-; Then org-id-update-id-locations
+                                        ;Do a M-x org-node-reset and see if it can find your notes now.
+                                        ; Then org-id-update-id-locations
 
 (setq org-node-series-defs
-  (list
-   '("d" :name "Daily-files"
-     :version 2
-     :classifier (lambda (node)
-                   (let ((path (org-node-get-file-path node)))
-                     (when (string-search "~/doc/org/daily" path)
-                       (let ((ymd (org-node-helper-filename->ymd path)))
-                         (when ymd
-                           (cons ymd path))))))
-     :whereami (lambda ()
-                 (org-node-helper-filename->ymd buffer-file-name))
-     :prompter (lambda (key)
-                 (let ((org-node-series-that-marks-calendar key))
-                   (org-read-date)))
-     :try-goto (lambda (item)
-                 (org-node-helper-try-visit-file (cdr item)))
-     :creator (lambda (sortstr key)
-                (let ((org-node-datestamp-format "")
-                      (org-node-ask-directory "~/doc/org/daily"))
-                  (org-node-create sortstr (org-id-new) key))))
+      (list
+       '("d" :name "Daily-files"
+         :version 2
+         :classifier (lambda (node)
+                       (let ((path (org-node-get-file-path node)))
+                         (when (string-search "~/doc/org/daily" path)
+                           (let ((ymd (org-node-helper-filename->ymd path)))
+                             (when ymd
+                               (cons ymd path))))))
+         :whereami (lambda ()
+                     (org-node-helper-filename->ymd buffer-file-name))
+         :prompter (lambda (key)
+                     (let ((org-node-series-that-marks-calendar key))
+                       (org-read-date)))
+         :try-goto (lambda (item)
+                     (org-node-helper-try-visit-file (cdr item)))
+         :creator (lambda (sortstr key)
+                    (let ((org-node-datestamp-format "")
+                          (org-node-ask-directory "~/doc/org/daily"))
+                      (org-node-create sortstr (org-id-new) key))))
 
-   ;; Obviously, this series works best if you have `org-node-put-created' on
-   ;; `org-node-creation-hook'.
-   '("a" :name "All ID-nodes by property :CREATED:"
-     :version 2
-     :capture "n"
-     :classifier (lambda (node)
-                   (let ((time (cdr (assoc "CREATED" (org-node-get-props node)))))
-                     (when (and time (not (string-blank-p time)))
-                       (cons time (org-node-get-id node)))))
-     :whereami (lambda ()
-                 (let ((time (org-entry-get nil "CREATED" t)))
-                   (and time (not (string-blank-p time)) time)))
-     :prompter (lambda (key)
-                 (let ((series (cdr (assoc key org-node-built-series))))
-                   (completing-read "Go to: " (plist-get series :sorted-items))))
-     :try-goto (lambda (item)
-                 (when (org-node-helper-try-goto-id (cdr item))
-                   t))
-     :creator (lambda (sortstr key)
-                (org-node-create sortstr (org-id-new) key)))))
+       ;; Obviously, this series works best if you have `org-node-put-created' on
+       ;; `org-node-creation-hook'.
+       '("a" :name "All ID-nodes by property :CREATED:"
+         :version 2
+         :capture "n"
+         :classifier (lambda (node)
+                       (let ((time (cdr (assoc "CREATED" (org-node-get-props node)))))
+                         (when (and time (not (string-blank-p time)))
+                           (cons time (org-node-get-id node)))))
+         :whereami (lambda ()
+                     (let ((time (org-entry-get nil "CREATED" t)))
+                       (and time (not (string-blank-p time)) time)))
+         :prompter (lambda (key)
+                     (let ((series (cdr (assoc key org-node-built-series))))
+                       (completing-read "Go to: " (plist-get series :sorted-items))))
+         :try-goto (lambda (item)
+                     (when (org-node-helper-try-goto-id (cdr item))
+                       t))
+         :creator (lambda (sortstr key)
+                    (org-node-create sortstr (org-id-new) key)))))
 
-;(setq tramp-verbose 9)
-; (tramp-cleanup-all-connections)
-; check tramp/foo* and debug tramp/foo*
+                                        ;(setq tramp-verbose 9)
+                                        ; (tramp-cleanup-all-connections)
+                                        ; check tramp/foo* and debug tramp/foo*
 
 (setq org-src-tab-acts-natively t)
 (add-hook 'org-mode-hook #'mixed-pitch-mode)
 
-;(add-to-list 'load-path "~/.emacs.d/qemu/")
-;(require 'qemu-qmp)
-;(require 'qemu-dap)
+                                        ;(add-to-list 'load-path "~/.emacs.d/qemu/")
+                                        ;(require 'qemu-qmp)
+                                        ;(require 'qemu-dap)
 
 ;; TODO: Add to Guix.
 
@@ -1158,7 +1161,7 @@ argument is given. Choose a file name based on any document
 (require 'org-notify)
 (org-notify-start)
 
-; Autoinsert
+                                        ; Autoinsert
 
 (require 'autoinsert)
 (auto-insert-mode t)
@@ -1249,18 +1252,18 @@ argument is given. Choose a file name based on any document
 
 (add-to-list 'load-path "~/.emacs.d/kiwix.el")
 (require 'kiwix)
-; duplicate
+                                        ; duplicate
 (setq kiwix-default-browser-function 'eww-browse-url)
 
-; TODO: Use which-key instead.
-;(require 'discover-my-major)
-;(global-set-key (kbd "C-h C-m") 'discover-my-major)
+                                        ; TODO: Use which-key instead.
+                                        ;(require 'discover-my-major)
+                                        ;(global-set-key (kbd "C-h C-m") 'discover-my-major)
 
-;(setq which-key-persistent-popup t)
+                                        ;(setq which-key-persistent-popup t)
 
 (add-to-list 'load-path "~/.emacs.d/shr-tag-math")
 (require 'shr-tag-math)
-;(add-hook 'nov-mode-hook #'xenops-mode) ; so we render <math>; unfortunately, that fucks up all the other formatting. Also, the size of the rendered images is much too big here.
+                                        ;(add-hook 'nov-mode-hook #'xenops-mode) ; so we render <math>; unfortunately, that fucks up all the other formatting. Also, the size of the rendered images is much too big here.
 
 (require 'emms-setup)
 (emms-all)
@@ -1364,58 +1367,58 @@ argument is given. Choose a file name based on any document
   (setq completion-category-overrride nil))
 
 (global-set-key (kbd "C-c r") 'gptel-rewrite-menu)
-; gptel-add-file	 C-u gptel-send	 transient menu
+                                        ; gptel-add-file	 C-u gptel-send	 transient menu
 
-;(add-hook 'vala-mode-hook #'lsp)  ;; Enable LSP for Vala mode
-;(add-hook 'vala-mode-hook #'lsp-mode) ; disconnects immediately
+                                        ;(add-hook 'vala-mode-hook #'lsp)  ;; Enable LSP for Vala mode
+                                        ;(add-hook 'vala-mode-hook #'lsp-mode) ; disconnects immediately
 
 ;; DAP Python Configuration
-;(with-eval-after-load 'dap-mode
-;  (dap-register-debug-template "Python :: Uvicorn (FastAPI)"
-;    (list :type "python"
-;          :request "launch"
-;          :name "Python :: Uvicorn (FastAPI)"
-;          :program "${workspaceFolder}/main.py"  ;; Path to your FastAPI app
-;          :args ["run" "main:app" "--reload" "--host" "127.0.0.1" "--port" "8000"]
-;          :env (list (cons "PYTHONPATH" "${workspaceFolder}"))
-;          :justMyCode t
-;          :console "integratedTerminal")))
+                                        ;(with-eval-after-load 'dap-mode
+                                        ;  (dap-register-debug-template "Python :: Uvicorn (FastAPI)"
+                                        ;    (list :type "python"
+                                        ;          :request "launch"
+                                        ;          :name "Python :: Uvicorn (FastAPI)"
+                                        ;          :program "${workspaceFolder}/main.py"  ;; Path to your FastAPI app
+                                        ;          :args ["run" "main:app" "--reload" "--host" "127.0.0.1" "--port" "8000"]
+                                        ;          :env (list (cons "PYTHONPATH" "${workspaceFolder}"))
+                                        ;          :justMyCode t
+                                        ;          :console "integratedTerminal")))
 
 (with-eval-after-load 'dap-mode
   (dap-register-debug-template "Python :: Attach via port 5678"
-    (list :type "python"
-          :request "attach"
-          :name "Python :: Attach to Running"
-          :hostName "127.0.0.1"  ;; Address of the Python process
-          :port 5678             ;; Port that debugpy is listening on
-          ; :justMyCode t          ;; Optional: Only debug your code, not external libraries
-          :env (list (cons "PYTHONPATH" "${workspaceFolder}"))
-          :console "integratedTerminal")))
+                               (list :type "python"
+                                     :request "attach"
+                                     :name "Python :: Attach to Running"
+                                     :hostName "127.0.0.1"  ;; Address of the Python process
+                                     :port 5678             ;; Port that debugpy is listening on
+                                        ; :justMyCode t          ;; Optional: Only debug your code, not external libraries
+                                     :env (list (cons "PYTHONPATH" "${workspaceFolder}"))
+                                     :console "integratedTerminal")))
 
-;(which-key-setup-side-window-right-bottom)
+                                        ;(which-key-setup-side-window-right-bottom)
 (which-key-setup-side-window-bottom)
 
 
 ;; Display which-key keybindings in the right margin
-;(setq which-key-side-window-location 'right) ; Set position to right margin
-;(setq which-key-side-window-max-width 0.25)  ; Set maximum width of the side window (25% of the frame width)
-; what? (setq which-key-side-window-slot -10)        ; Slot for side window
-;(setq which-key-show-early-on-C-h t)         ; Show key hints when pressing C-h
-;(setq which-key-idle-delay 0.5)              ; Delay before the keybindings show up
-;(setq which-key-idle-secondary-delay 0.05)   ; Delay for showing secondary hints
+                                        ;(setq which-key-side-window-location 'right) ; Set position to right margin
+                                        ;(setq which-key-side-window-max-width 0.25)  ; Set maximum width of the side window (25% of the frame width)
+                                        ; what? (setq which-key-side-window-slot -10)        ; Slot for side window
+                                        ;(setq which-key-show-early-on-C-h t)         ; Show key hints when pressing C-h
+                                        ;(setq which-key-idle-delay 0.5)              ; Delay before the keybindings show up
+                                        ;(setq which-key-idle-secondary-delay 0.05)   ; Delay for showing secondary hints
 ;; Allow the margin window to take up multiple lines
-;(setq which-key-side-window-multi-line-p t)   ; Allow multi-line keybindings
-;(setq which-key-side-window-max-height 0.5)    ; Max height of the side window (50% of the frame height)
+                                        ;(setq which-key-side-window-multi-line-p t)   ; Allow multi-line keybindings
+                                        ;(setq which-key-side-window-max-height 0.5)    ; Max height of the side window (50% of the frame height)
 
-;(custom-set-faces
-; '(which-key-key-face ((t (:foreground "yellow")))) ; Key face color
-; '(which-key-command-description-face ((t (:foreground "green")))) ; Command description color
-; '(which-key-group-description-face ((t (:foreground "cyan"))))) ; Group description color
+                                        ;(custom-set-faces
+                                        ; '(which-key-key-face ((t (:foreground "yellow")))) ; Key face color
+                                        ; '(which-key-command-description-face ((t (:foreground "green")))) ; Command description color
+                                        ; '(which-key-group-description-face ((t (:foreground "cyan"))))) ; Group description color
 
-; Eventually provided by manifest.scm
+                                        ; Eventually provided by manifest.scm
 (setq lsp-clients-clangd-executable "ccls")
 
-;(setq dired-launch-default-launcher '("xdg-open"))
+                                        ;(setq dired-launch-default-launcher '("xdg-open"))
 (setf dired-launch-extensions-map
       '(("xlsx" ("libreofficedev5.3"))
         ("odt" ("libreofficedev5.3" "abiword"))
