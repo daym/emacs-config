@@ -497,7 +497,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 (require 'xenops)
 (require 'ob-python) ; optional
 (add-hook 'LaTeX-mode-hook #'xenops-mode)
-; (add-hook 'org-mode-hook #'xenops-mode) ; fucks up begin_src and end_src (lowercase) handling maybe
+                                        ; (add-hook 'org-mode-hook #'xenops-mode) ; fucks up begin_src and end_src (lowercase) handling maybe
 
                                         ; Undefined
                                         ;(latex +cdlatex +latexmk +lsp)
@@ -512,7 +512,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 
 (require 'opascal)
 
-; TODO: Python ∈
+                                        ; TODO: Python ∈
 
 (add-hook 'c-ts-mode-hook
           (lambda ()
@@ -540,7 +540,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 
             ;; C++
             (push '("->" . "→") prettify-symbols-alist)
-            ;(push '("for" . "∀") prettify-symbols-alist)
+                                        ;(push '("for" . "∀") prettify-symbols-alist)
             (push '("*" "·") prettify-symbols-alist)))
 
 (add-hook 'opascal-mode-hook
