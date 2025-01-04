@@ -62,17 +62,17 @@
 KEY should be like (key \"<f8>\").
 GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
   (define-key mode-map key
-    (lambda ()
-      (interactive)
-      (cond
-       ((bound-and-true-p gud-minor-mode)
-        (command-execute gud-command))
-       ((bound-and-true-p dap-tooltip-mode)
-        (and dap-command (command-execute dap-command)))
-       (t
-        (message "No debugger active"))))))
+              (lambda ()
+                (interactive)
+                (cond
+                 ((bound-and-true-p gud-minor-mode)
+                  (command-execute gud-command))
+                 ((bound-and-true-p dap-tooltip-mode)
+                  (and dap-command (command-execute dap-command)))
+                 (t
+                  (message "No debugger active"))))))
 
-; TODO: <f12>: Compiler messages
+                                        ; TODO: <f12>: Compiler messages
 
 
 (eval-after-load 'prog-mode
@@ -114,45 +114,45 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
   '(progn
      ;; Basic debugging
      ;; FIXME need to disable the menu opening then!
-     ;(define-key dap-mode-map (kbd "C-c C-k") 'dap-disconnect)
+                                        ;(define-key dap-mode-map (kbd "C-c C-k") 'dap-disconnect)
 
      ;; Breakpoint related
-     ;(define-key dap-mode-map (kbd "C-c C-b c") 'dap-breakpoint-condition)
-     ;(define-key dap-mode-map (kbd "C-c C-b h") 'dap-breakpoint-hit-condition)
-     ;(define-key dap-mode-map (kbd "C-c C-b l") 'dap-breakpoint-log-message)
-     ;(define-key dap-mode-map (kbd "C-c C-b d") 'dap-breakpoint-delete)
-     ;(define-key dap-mode-map (kbd "C-c C-b D") 'dap-breakpoint-delete-all)
+                                        ;(define-key dap-mode-map (kbd "C-c C-b c") 'dap-breakpoint-condition)
+                                        ;(define-key dap-mode-map (kbd "C-c C-b h") 'dap-breakpoint-hit-condition)
+                                        ;(define-key dap-mode-map (kbd "C-c C-b l") 'dap-breakpoint-log-message)
+                                        ;(define-key dap-mode-map (kbd "C-c C-b d") 'dap-breakpoint-delete)
+                                        ;(define-key dap-mode-map (kbd "C-c C-b D") 'dap-breakpoint-delete-all)
 
      ;; Debug windows
-     ;(define-key dap-mode-map (kbd "C-c C-r") 'dap-ui-repl)
-     ;(define-key dap-mode-map (kbd "C-c C-l") 'dap-ui-locals)
-     ;(define-key dap-mode-map (kbd "C-c C-b") 'dap-ui-breakpoints)
-     ;(define-key dap-mode-map (kbd "C-c C-t") 'dap-ui-sessions)
-     ;(define-key dap-mode-map (kbd "C-c C-v") 'dap-eval)
-     ;(define-key dap-mode-map (kbd "C-c C-w") 'dap-ui-expressions)
-     ;(define-key dap-mode-map (kbd "C-c C-i") 'dap-step-in)
-     ;(define-key dap-mode-map (kbd "C-c C-u") 'dap-up-stack-frame)
-     ;(define-key dap-mode-map (kbd "C-c C-d") 'dap-down-stack-frame)
+                                        ;(define-key dap-mode-map (kbd "C-c C-r") 'dap-ui-repl)
+                                        ;(define-key dap-mode-map (kbd "C-c C-l") 'dap-ui-locals)
+                                        ;(define-key dap-mode-map (kbd "C-c C-b") 'dap-ui-breakpoints)
+                                        ;(define-key dap-mode-map (kbd "C-c C-t") 'dap-ui-sessions)
+                                        ;(define-key dap-mode-map (kbd "C-c C-v") 'dap-eval)
+                                        ;(define-key dap-mode-map (kbd "C-c C-w") 'dap-ui-expressions)
+                                        ;(define-key dap-mode-map (kbd "C-c C-i") 'dap-step-in)
+                                        ;(define-key dap-mode-map (kbd "C-c C-u") 'dap-up-stack-frame)
+                                        ;(define-key dap-mode-map (kbd "C-c C-d") 'dap-down-stack-frame)
 
      ;; Additional commands
-     ;(define-key dap-mode-map (kbd "C-c C-p") 'dap-debug-restart-frame)
-     ;(define-key dap-mode-map (kbd "C-c C-a") 'dap-ui-inspect)
-     ;(define-key dap-mode-map (kbd "C-c C-m") 'dap-mouse-eval)
-     ;(define-key dap-mode-map (kbd "C-c C-e e") 'dap-eval-thing-at-point)
-     ;(define-key dap-mode-map (kbd "C-c C-e r") 'dap-eval-region)
-     ;(define-key dap-mode-map (kbd "C-c C-h") 'dap-hydra)
+                                        ;(define-key dap-mode-map (kbd "C-c C-p") 'dap-debug-restart-frame)
+                                        ;(define-key dap-mode-map (kbd "C-c C-a") 'dap-ui-inspect)
+                                        ;(define-key dap-mode-map (kbd "C-c C-m") 'dap-mouse-eval)
+                                        ;(define-key dap-mode-map (kbd "C-c C-e e") 'dap-eval-thing-at-point)
+                                        ;(define-key dap-mode-map (kbd "C-c C-e r") 'dap-eval-region)
+                                        ;(define-key dap-mode-map (kbd "C-c C-h") 'dap-hydra)
 
      ;; Launch/terminate
-     ;(define-key dap-mode-map (kbd "C-c C-x") 'dap-start-debugging)
-     ;(define-key dap-mode-map (kbd "C-c C-q") 'dap-disconnect)
-     ;(define-key dap-mode-map (kbd "C-c C-g") 'dap-debug-restart)
-))
+                                        ;(define-key dap-mode-map (kbd "C-c C-x") 'dap-start-debugging)
+                                        ;(define-key dap-mode-map (kbd "C-c C-q") 'dap-disconnect)
+                                        ;(define-key dap-mode-map (kbd "C-c C-g") 'dap-debug-restart)
+     ))
 
                                         ; paredit was older than combobulate
                                         ; next sibling; via combobulate
 (global-set-key (kbd "C-M-<down>") 'forward-sexp)
 
-                                        ;; FIXME also C-<f8> maybe
+;; FIXME also C-<f8> maybe
 (global-set-key (kbd "<f5>") 'dap-breakpoint-toggle)
 
                                         ; TODO: C-<f5>: Add watch...
