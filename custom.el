@@ -274,9 +274,6 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 
 (add-to-list 'treesit-extra-load-path "/home/dannym/.guix-home/profile/lib/tree-sitter/")
 
-(setq user-full-name "Danny Milosavljevic")
-(setq user-mail-address "dannym@scratchpost.org")
-
 (setq send-mail-function    'smtpmail-send-it
       smtpmail-smtp-server  "w0062d1b.kasserver.com"
       smtpmail-stream-type  'starttls
@@ -287,7 +284,6 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 
                                         ;(setq vc-handled-backends '("git"))
 (setq message-send-mail-function 'smtpmail-send-it)
-(setq user-mail-address "dannym@scratchpost.org")
 
 (setq mu4e-get-mail-command "offlineimap"
       mu4e-maildir (expand-file-name "~/Mail")
@@ -340,6 +336,10 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
                                         ;(smtpmail-smtp-service . 587)
                 (mu4e-get-mail-command . "offlineimap -a dannym@scratchpost.org")
                 (mu4e-sent-messages-behavior . sent)
+                (send-mail-function . 'smtpmail-send-it)
+                (smtpmail-smtp-server . "smtp.scratchpost.org")
+                (smtpmail-stream-type . 'starttls)
+                (smtpmail-smtp-service . 587)
                 (mu4e-maildir-shortcuts . ( ("/scratchpost.org/inbox" . ?i)
                                             ("/scratchpost.org/sent" . ?s)
                                             ("/scratchpost.org/trash" . ?t)
