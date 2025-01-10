@@ -652,7 +652,8 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
                                         ;               ("C-c n i" . org-roam-ql-insert-node-title))))
 
 ;; Wrap the lines in org mode so that things are easier to read ; FIXME how to make tables work correctly then?
-(add-hook 'org-mode-hook 'visual-line-mode)
+;(add-hook 'org-mode-hook 'visual-line-mode)
+(add-hook 'text-mode-hook #'visual-line-mode)
 
                                         ;(setq org-roam-v2-ack t)
                                         ;(use-package org-roam
