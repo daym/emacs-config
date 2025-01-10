@@ -1438,3 +1438,5 @@ argument is given. Choose a file name based on any document
 
 (eval-after-load 'company
     '(push 'company-robe company-backends))
+
+(require 'vlf-setup) ; very large files
