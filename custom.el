@@ -1481,3 +1481,7 @@ argument is given. Choose a file name based on any document
   (add-to-list 'ispell-skip-region-alist '("=" "="))
   (add-to-list 'ispell-skip-region-alist '("^#\\+BEGIN_SRC" . "^#\\+END_SRC")))
 (add-hook 'org-mode-hook #'endless/org-ispell)
+(defun unset-line-move-visual ()
+  (setq line-move-visual nil))
+
+(add-hook 'org-mode-hook #'unset-line-move-visual)
