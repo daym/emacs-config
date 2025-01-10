@@ -1448,3 +1448,11 @@ argument is given. Choose a file name based on any document
 				  :run "npm start"
 				  :test-suffix ".test")
 
+;; Rails & RSpec
+(projectile-register-project-type 'rails-rspec '("Gemfile") ; "app" "lib" "db" "config" "spec"
+                                  :project-file "Gemfile"
+                                  :compile "bundle exec rails server"
+                                  :src-dir "lib/"
+                                  :test "bundle exec rspec"
+                                  :test-dir "spec/"
+                                  :test-suffix "_spec")
