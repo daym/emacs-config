@@ -1431,6 +1431,7 @@ argument is given. Choose a file name based on any document
 
 (add-hook 'python-mode-hook 'eglot-ensure)
 ;; Tab Completion: Use company-mode for completion, integrating company-capf with eglot.
-(add-to-list 'auto-mode-alist '("\\.py\\'" . python-ts-mode))
+;; elpy or something.
+(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-hook 'python-mode-hook 'flycheck-mode)
 (add-hook 'python-mode-hook (lambda () (add-to-list 'company-backends 'company-jedi)))
