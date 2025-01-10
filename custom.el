@@ -1469,3 +1469,15 @@ argument is given. Choose a file name based on any document
 ;(defun fix-org-indent-form-feed ()
 ;  (setq-local org-heading-regexp "^\\(\f?\\*+\\)\\(?: +\\(.*?\\)\\)?[ 	]*$"))
 ;(add-hook 'org-mode-hook #'fix-org-indent-form-feed)
+
+;; Skip flyspell on code blocks
+
+; See https://endlessparentheses.com/ispell-and-org-mode.html
+(defun endless/org-ispell ()
+  "Configure `ispell-skip-region-alist' for `org-mode'."
+  (make-local-variable 'ispell-skip-region-alist)
+  (add-to-list 'ispell-skip-region-alist '(org-property-drawer-re))
+  (add-to-list 'ispell-skip-region-alist '("~" "~"))
+  (add-to-list 'ispell-skip-region-alist '("=" "="))
+  (add-to-list 'ispell-skip-region-alist '("^#\\+BEGIN_SRC" . "^#\\+END_SRC")))
+(add-hook 'org-mode-hook #'endless/org-ispell)
