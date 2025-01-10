@@ -1440,3 +1440,11 @@ argument is given. Choose a file name based on any document
     '(push 'company-robe company-backends))
 
 (require 'vlf-setup) ; very large files
+
+(projectile-register-project-type 'npm '("package.json")
+                                  :project-file "package.json"
+				  :compile "npm run build" ; or "npm install" or something
+				  :test "npm test"
+				  :run "npm start"
+				  :test-suffix ".test")
+
