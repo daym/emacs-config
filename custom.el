@@ -1301,45 +1301,49 @@ argument is given. Choose a file name based on any document
 (setq elfeed-search-print-entry-function #'elfeed-search-print-entry)
 
 (setq gptel-backend
- (gptel-make-openai "llama-cpp"
-  :stream t
-  :protocol "http"
-  :host "localhost:8080"
-  :models '(llama)))  ; Any names, doesn't matter for Llama
+      (gptel-make-openai "llama-cpp"
+        :stream t
+        :protocol "http"
+        :host "localhost:8080"
+        :models '(llama)))  ; Any names, doesn't matter for Llama
 
 (setq gptel-model 'llama)
 (setq gptel-default-mode 'org-mode)
 
-; see also org-disputed-keys for CUA mode.
-;(setq org-replace-disputed-keys t)
+                                        ; see also org-disputed-keys for CUA mode.
+                                        ;(setq org-replace-disputed-keys t)
 
+(setq-default line-spacing 0.2) ; compromise between Rust source code and org mode
 ;; TODO: Scala; PHP; C++; Kotlin; Swift
-(add-hook 'perl-mode-hook #'page-break-lines-mode)
-(add-hook 'python-mode-hook #'page-break-lines-mode)
-(add-hook 'python-ts-mode-hook #'page-break-lines-mode)
-(add-hook 'scheme-mode-hook #'page-break-lines-mode)
-(add-hook 'lisp-mode-hook #'page-break-lines-mode)
-(add-hook 'fortran-mode-hook #'page-break-lines-mode)
-;(add-hook 'js-mode-hook #'page-break-lines-mode)
-;(add-hook 'js-ts-mode-hook #'page-break-lines-mode)
-(add-hook 'js-base-mode-hook #'page-break-lines-mode)
-(add-hook 'c-ts-base-mode-hook #'page-break-lines-mode)
-(add-hook 'ruby-mode-hook #'page-break-lines-mode)
-(add-hook 'ruby-ts-mode-hook #'page-break-lines-mode)
-(add-hook 'typescript-mode-hook #'page-break-lines-mode)
-(add-hook 'typescript-ts-mode-hook #'page-break-lines-mode)
-(add-hook 'java-mode-hook #'page-break-lines-mode)
-(add-hook 'go-mode-hook #'page-break-lines-mode)
-(add-hook 'go-ts-mode-hook #'page-break-lines-mode)
-(add-hook 'go-mod-ts-mode-hook #'page-break-lines-mode)
-(add-hook 'haskell-mode-hook #'page-break-lines-mode)
-(add-hook 'csharp-mode-hook #'page-break-lines-mode)
-(add-hook 'csharp-ts-mode-hook #'page-break-lines-mode)
-(add-hook 'bash-ts-mode-hook #'page-break-lines-mode)
-(add-hook 'objc-mode-hook #'page-break-lines-mode)
-(add-hook 'rustic-mode-hook #'page-break-lines-mode)
-(add-hook 'rust-mode-hook #'page-break-lines-mode)
-(add-hook 'julia-mode-hook #'page-break-lines-mode)
+(add-hook 'perl-mode-hook #'form-feed-mode)
+(add-hook 'python-mode-hook #'form-feed-mode)
+(add-hook 'python-ts-mode-hook #'form-feed-mode)
+(add-hook 'scheme-mode-hook #'form-feed-mode)
+(add-hook 'lisp-mode-hook #'form-feed-mode)
+(add-hook 'fortran-mode-hook #'form-feed-mode)
+                                        ;(add-hook 'js-mode-hook #'form-feed-mode)
+                                        ;(add-hook 'js-ts-mode-hook #'form-feed-mode)
+(add-hook 'js-base-mode-hook #'form-feed-mode)
+(add-hook 'c-ts-base-mode-hook #'form-feed-mode)
+(add-hook 'ruby-mode-hook #'form-feed-mode)
+(add-hook 'ruby-ts-mode-hook #'form-feed-mode)
+(add-hook 'typescript-mode-hook #'form-feed-mode)
+(add-hook 'typescript-ts-mode-hook #'form-feed-mode)
+(add-hook 'java-mode-hook #'form-feed-mode)
+(add-hook 'go-mode-hook #'form-feed-mode)
+(add-hook 'go-ts-mode-hook #'form-feed-mode)
+(add-hook 'go-mod-ts-mode-hook #'form-feed-mode)
+(add-hook 'haskell-mode-hook #'form-feed-mode)
+(add-hook 'csharp-mode-hook #'form-feed-mode)
+(add-hook 'csharp-ts-mode-hook #'form-feed-mode)
+(add-hook 'bash-ts-mode-hook #'form-feed-mode)
+(add-hook 'objc-mode-hook #'form-feed-mode)
+(add-hook 'rustic-mode-hook #'form-feed-mode)
+(add-hook 'rust-mode-hook #'form-feed-mode)
+(add-hook 'julia-mode-hook #'form-feed-mode)
+(add-hook 'org-mode-hook #'form-feed-mode) ; looks weird and sometimes disappears on save
+(add-hook 'elisp-mode-hook #'paredit-mode)
+(add-hook 'scheme-mode-hook #'paredit-mode)
 
 (use-package savehist
   :ensure nil ; it is built-in
