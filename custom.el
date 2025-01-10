@@ -1456,3 +1456,6 @@ argument is given. Choose a file name based on any document
                                   :test "bundle exec rspec"
                                   :test-dir "spec/"
                                   :test-suffix "_spec")
+
+(setq org-agenda-files '("~/doc/org-agenda"))
+(setq org-agenda-file-regexp "\\`[^.].*\\.org\\'")
