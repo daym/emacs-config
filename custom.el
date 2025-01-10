@@ -1434,4 +1434,7 @@ argument is given. Choose a file name based on any document
 ;; elpy or something.
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-hook 'python-mode-hook 'flycheck-mode)
-(add-hook 'python-mode-hook (lambda () (add-to-list 'company-backends 'company-jedi)))
+;(add-hook 'python-mode-hook (lambda () (add-to-list 'company-backends 'company-jedi)))
+
+(eval-after-load 'company
+    '(push 'company-robe company-backends))
