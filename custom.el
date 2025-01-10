@@ -1459,3 +1459,13 @@ argument is given. Choose a file name based on any document
 
 (setq org-agenda-files '("~/doc/org-agenda"))
 (setq org-agenda-file-regexp "\\`[^.].*\\.org\\'")
+
+;; I'm using org-indent-mode together with form-feed-mode: org-indent-mode interprets the form feed character as part of the previous section and indents it--which is not what I want.  I'm use the form feed for sections. So the form feed should belong to no section.
+(defun fix-org-indent-form-feed ()
+  (setq-local org-outline-regexp "\\*+ \\|\\(^\f$\\)"))
+(add-hook 'org-mode-hook #'fix-org-indent-form-feed)
+
+;; Doesn't work. Sigh.
+;(defun fix-org-indent-form-feed ()
+;  (setq-local org-heading-regexp "^\\(\f?\\*+\\)\\(?: +\\(.*?\\)\\)?[ 	]*$"))
+;(add-hook 'org-mode-hook #'fix-org-indent-form-feed)
