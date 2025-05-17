@@ -2565,8 +2565,8 @@ This function is called by `org-babel-execute-src-block'."
       (tool-bar-local-item-from-menu 'message-send-and-exit "gnus/mail-send" tool-bar-map message-mode-map)
       ;; (tool-bar-local-item-from-menu 'message-dont-send "gnus/save-draft" tool-bar-map message-mode-map)
       (tool-bar-local-item-from-menu 'message-kill-buffer "gnus/kill-group" tool-bar-map message-mode-map)
-;       :label "Reply to all"
-;       :help "Reply to all recipients"
+                                        ;       :label "Reply to all"
+                                        ;       :help "Reply to all recipients"
       tool-bar-map))
 
   (defun my-message-mode-setup-toolbar () ; FIXME: maybe that's also used for mu4e ?! That might not be so great.
