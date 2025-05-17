@@ -3033,5 +3033,19 @@ This function is called by `org-babel-execute-src-block'."
   :ensure t
   :config
   (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
+
+(use-package org-modern
+  :ensure t
+  :custom
+  (org-modern-hide-stars nil)		; adds extra indentation
+  (org-modern-table nil)
+  (org-modern-list 
+   '(;; (?- . "-")
+     (?* . "•")
+     (?+ . "‣")))
+  :hook
+  (org-mode . org-modern-mode)
+  (org-agenda-finalize . org-modern-agenda))
+
 (load (locate-user-emacs-file "guix-build-failure3.el")
       :no-error-if-file-is-missing)
