@@ -1318,7 +1318,7 @@ argument is given.  Choose a file name based on any document
                                         ; check tramp/foo* and debug tramp/foo*
 
 
-  (wrap-with-global-env #'el-job-launch)
+;  (wrap-with-global-env #'el-job-launch)
   (wrap-with-global-env #'org-node-find)
 )
 
