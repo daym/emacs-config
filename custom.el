@@ -3047,5 +3047,19 @@ This function is called by `org-babel-execute-src-block'."
   (org-mode . org-modern-mode)
   (org-agenda-finalize . org-modern-agenda))
 
+(use-package indent-bars
+  :custom
+  (indent-bars-no-descend-lists t) ; no extra bars in continued func arg lists
+  (indent-bars-treesit-support t)
+  (indent-bars-treesit-ignore-blank-lines-types '("module"))
+  ;; Add other languages as needed
+  (indent-bars-treesit-scope '((python function_definition class_definition for_statement
+	  if_statement with_statement while_statement)))
+  ;; Note: wrap may not be needed if no-descend-list is enough
+  ;;(indent-bars-treesit-wrap '((python argument_list parameters ; for python, as an example
+  ;;				      list list_comprehension
+  ;;				      dictionary dictionary_comprehension
+  ;;				      parenthesized_expression subscript)))
+  :hook ((python-base-mode yaml-mode) . indent-bars-mode))
 (load (locate-user-emacs-file "guix-build-failure3.el")
       :no-error-if-file-is-missing)
