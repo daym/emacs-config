@@ -2628,7 +2628,7 @@ This function is called by `org-babel-execute-src-block'."
 (wakib-define-keys wakib-keys-overriding-map `(("<escape>" . ,#'keyboard-escape-quit)))
 
 ;; Org mode stuff is too small for me (since it often contains math). Increase font size slightly.
-;(face-remap-add-relative 'stripe-highlight '(:foreground "black" :background "yellow"))
+                                        ;(face-remap-add-relative 'stripe-highlight '(:foreground "black" :background "yellow"))
 (defun my/org-scale-up-font ()
   "Org mode a a bit too small text for me (since I use a lot of embedded math in it).  Increase font size slightly."
   (text-scale-increase 1)
