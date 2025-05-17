@@ -3029,5 +3029,9 @@ This function is called by `org-babel-execute-src-block'."
      :latex-compiler ("pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f")
      :image-converter ("convert -density %D -trim -antialias %f -quality 100 %O")))))
 
+(use-package org-modern-indent
+  :ensure t
+  :config
+  (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
 (load (locate-user-emacs-file "guix-build-failure3.el")
       :no-error-if-file-is-missing)
