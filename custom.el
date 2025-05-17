@@ -2794,8 +2794,8 @@ This function is called by `org-babel-execute-src-block'."
       (tool-bar-local-item-from-menu 'magit-pull "custom/down" tool-bar-map magit-status-mode-map)
       (tool-bar-local-item-from-menu 'magit-push "up-arrow" tool-bar-map magit-status-mode-map)
       (tool-bar-local-item-from-menu 'magit-commit "data-save" tool-bar-map magit-status-mode-map)
-      ;(tool-bar-local-item-from-menu 'magit-init "attach" tool-bar-map magit-status-mode-map) ; well yeah--but how do I reach it?
-      ; magit-clone ; well yeah--but how do I reach it?
+                                        ;(tool-bar-local-item-from-menu 'magit-init "attach" tool-bar-map magit-status-mode-map) ; well yeah--but how do I reach it?
+                                        ; magit-clone ; well yeah--but how do I reach it?
       tool-bar-map))
   (defun my-magit-status-mode-setup-toolbar ()
     "Set up the toolbar for `magit-status-mode'."
@@ -2804,12 +2804,12 @@ This function is called by `org-babel-execute-src-block'."
 
 ;; I already set mediainfo-mode-file-regexp--but apparently, that's not enough.
 
-; If I add that then album mode of emms-smart doesn't work anymore.
-;(add-to-list
-; 'file-name-handler-alist
-; (cons (rx "." (or "jpg" "jpeg" "gif" "png")
-;           eos)
-;       'mediainfo-mode--file-handler))
+                                        ; If I add that then album mode of emms-smart doesn't work anymore.
+                                        ;(add-to-list
+                                        ; 'file-name-handler-alist
+                                        ; (cons (rx "." (or "jpg" "jpeg" "gif" "png")
+                                        ;           eos)
+                                        ;       'mediainfo-mode--file-handler))
 
 (add-to-list
  'auto-mode-alist
@@ -2829,7 +2829,8 @@ This function is called by `org-babel-execute-src-block'."
 (require 'inheritenv)
 
 (advice-add 'org-babel-execute-src-block :around #'inheritenv-apply)
-;(advice-add 'org-babel-execute:shell :around #'inheritenv-apply)
+                                        ;(advice-add 'org-babel-execute:shell :around #'inheritenv-apply)
+
 ;; Tools menu is too big.
 (defun my-remove-tools-menu-items ()
   "Remove unwanted items from the Tools menu."
@@ -2841,7 +2842,7 @@ This function is called by `org-babel-execute-src-block'."
   (define-key global-map [menu-bar tools directory-search] nil) ; outdated
   (define-key global-map [menu-bar tools simple-calculator] nil) ; there's a scientific one anyway
   (define-key global-map [menu-bar tools games] nil) ; I'm just out of space in the menu
-  ;(easy-menu-remove-item '("Tools" "Project:"))
+                                        ;(easy-menu-remove-item '("Tools" "Project:"))
   )
 
 (add-hook 'emacs-startup-hook #'my-remove-tools-menu-items)
