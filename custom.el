@@ -710,6 +710,23 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 (add-hook 'org-mode-hook 'org-indent-mode)
 (add-hook 'org-mode-hook 'org-sticky-header-mode) ; would kill window tool bar; so I could set org-sticky-header-prefix (to 'window-tool-bar-string); TODO: org-sticky-header--indent-prefix
 
+                                        ; TODO: Maybe (bind-key* "C-M-&" 'override-global-mode)
+(with-eval-after-load 'org
+  ;; Was org-metaleft (Calls ‘org-do-promote’, ‘org-outdent-item’ or ‘org-table-move-column’, depending on context.  Otherwise, calls the Emacs default ‘backward-word’).
+  (define-key org-mode-map [M-left] nil)
+  ;; Was org-metaright. (Calls ‘org-do-demote’, ‘org-indent-item’, ‘org-table-move-column’, ‘org-indent-drawer’ or ‘org-indent-block’. Otherwise calls the Emacs default `forward-word').
+  ;(define-key org-mode-map [M-right] nil)
+;;; There's also S-M-<Up> but that's maybe okay.
+  ;; Was org-shiftcontrolleft (switches to the previous todo set).  I want to be able to mark things so fuck off.
+  (define-key org-mode-map [C-S-left] nil)
+  ;; Was org-shiftcontrolright (switches to the next todo set).
+  (define-key org-mode-map [C-S-right] nil)
+  ;; Was (org-shiftup &optional ARG).  Context dependent.  Call ‘org-timestamp-up’ or ‘org-priority-up’, or `org-previous-item’, or ‘org-table-move-cell-up’.
+  (define-key org-mode-map [S-up] nil)
+  ;; Was (org-shiftdown &optional ARG).  Context dependent.
+  (define-key org-mode-map [S-down] nil)
+)
+
 ;; Hide the markers so you just see bold text as BOLD-TEXT and not *BOLD-TEXT*
 (setq org-hide-emphasis-markers t)
 
