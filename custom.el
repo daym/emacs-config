@@ -2986,6 +2986,18 @@ This function is called by `org-babel-execute-src-block'."
 (add-hook 'dired-mode-hook #'amitp/set-modeline-color)
 (add-hook 'change-major-mode-hook #'amitp/set-modeline-color)
 (add-hook 'temp-buffer-setup-hook #'amitp/set-modeline-color)
+(dolist (hook '(text-mode-hook prog-mode-hook conf-mode-hook org-mode-hook))
+  (add-hook hook #'jinx-mode))
+(keymap-global-set "M-$" #'jinx-correct)
+(keymap-global-set "C-M-$" #'jinx-languages)
+;(add-to-list 'vertico-multiform-categories
+;             '(jinx grid (vertico-grid-annotate . 20) (vertico-count . 4)))
+;(vertico-multiform-mode 1)
+;(use-package jinx
+;  :hook (emacs-startup . global-jinx-mode)
+;  :bind (("M-$" . jinx-correct)
+;         ("C-M-$" . jinx-languages)))
+
 (use-package xenops
   :config
   (setq xenops-math-latex-process-alist
