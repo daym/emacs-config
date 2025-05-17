@@ -2374,9 +2374,9 @@ This function is called by `org-babel-execute-src-block'."
          ;; Other attributes are displayed in the order they appear in this list.
          '(git-msg file-time file-size))))
 
-(use-package org-books
-  :config
-  (setq org-books-file "~/doc/org/books.org"))
+;(use-package org-books
+;  :config
+;  (setq org-books-file "~/doc/org/books.org"))
 
 ;; TODO: emacs-lisp r sql ruby js perl c c++ java haskell scala octave[!] maxima awk ditaa dot gnuplot plantuml latex ledger picolisp ocaml sed go julia sage[!] mathematica scheme sass fortran lua coq[!] d
 (org-babel-do-load-languages
