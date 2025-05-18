@@ -2049,6 +2049,7 @@ later form of vector is passed return 0."
   (ultra-scroll-mode 1))
 
 (require 'mu4e)
+(add-hook 'mu4e-compose-mode-hook 'turn-off-auto-fill)
 ;; Patch mu4e user-unfriendliness.  TODO: Upstream.
 (defvar mu4e-view-tool-bar-map
   (let ((tool-bar-map (make-sparse-keymap)))
