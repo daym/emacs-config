@@ -787,6 +787,8 @@
                                         ;      :no-error-if-file-is-missing)
 (load (locate-user-emacs-file "git-commit-message.el")
       :no-error-if-file-is-missing)
+(load (locate-user-emacs-file "guix-build-failure3.el")
+      :no-error-if-file-is-missing)
 (load (locate-user-emacs-file "autoresize.el")
       :no-error-if-file-is-missing)
 (load (locate-user-emacs-file "wolfram.el")
