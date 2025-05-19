@@ -122,35 +122,21 @@ index 0000001..1234567
 + (define-public another-package-0.8)"))
     (should (equal (my/diff-lines->files (split-string diff "\n"))
                    '("a/path/filename1.scm" "a/path/filename2.scm")))))
-
 (defun my/diff-lines->block-lines (lines)
-  "Collect one continuous block starting with a single '+'.
-It is an error if there's more than one block.
-"
-  (let ((block-lines nil)
-        (block-seen nil))
-    (cl-loop for line in lines
-             when (and block-lines
-                       (string-match "^[+]" line)
-                       (not (string-match "^[+][+][+]" line))
-                       block-seen) ; more than one block
-             return nil
-             do
-             (cond
-              ((and (not block-lines)
-                    (string-match "^[+]" line)
-                    (not (string-match "^[+][+][+]" line)))
-               (setq block-lines (list (substring line 1))))
-              ((and block-lines
-                    (string-match "^[+]" line)
-                    (not (string-match "^[+][+][+]" line)))
-               (if block-seen
-                   (throw 'break nil))
-               (push (substring line 1) block-lines))
-              (block-lines ; more than one block, maybe
-               (setq block-seen t))
-              (t nil)))
-    (reverse block-lines)))
+  "Collect one continuous block starting with a single '+'."
+  (let ((result nil)
+        (in-block nil))
+    (catch 'multiple-blocks
+      (dolist (line lines)
+        (cond
+         ((string-prefix-p "+++ " line) nil) ; Skip diff headers
+         ((string-prefix-p "+" line)
+          (if (and (not in-block) result)
+              (throw 'multiple-blocks nil)
+            (setq in-block t)
+            (push (substring line 1) result)))
+         (t (setq in-block nil))))
+      (nreverse result))))
 
 (ert-deftest my/test-diff-lines->block-lines ()
   "Test the my/diff-lines->blocks function."
@@ -218,37 +204,34 @@ to be impossible to put in a list)."
            (block-lines (my/diff-lines->block-lines lines)))
       (when (and (= (length files) 1) block-lines)
         (let* ((block-string (mapconcat 'identity block-lines "\n"))
-               (block-string (string-trim (condition-case ex
-                                              (my/parse-exactly-one-list block-string)
-                                            ('scan-error (progn
-                                                           (message "error: %S" ex)
-                                                           ""))))))
-          (let ((package-name-version
-                 (and (string-match "^(define-public \\([a-z0-9*?.-]+\\)" block-string)
-                      (match-string 1 block-string))))
-            (pcase (my/guix-split-variable-name package-name-version)
-              (`(nil nil)
-               nil)
-              `(,package-name ,package-version)
-              (message "STAGED YES5")
-              (save-excursion
-                (goto-char (point-min))
-                (delete-region (point-min) (point-max)) ;; Clear the buffer (... we shouldn't need that)
-                (insert (format "gnu: Add %s.
+               (block-string (string-trim (or (my/parse-exactly-one-list block-string) "")))
+               (package-name-version
+                (and (string-match "^(define-public \\([a-z0-9*?.-]+\\)" block-string)
+                     (match-string 1 block-string))))
+          (pcase (my/guix-split-variable-name package-name-version)
+            (`(nil nil) nil)
+            (`(,package-name ,package-version)
+             (save-excursion
+               (goto-char (point-min))
+               (delete-region (point-min) (point-max)) ;; Clear the buffer (... we shouldn't need that)
+               (insert (format "gnu: Add %s@%s.
 
 * %s (%s-%s): New variable."
-                                package-name
-                                (my/strip-prefix "c/" (car files))
-                                package-name
-                                package-version))
-                (buffer-string)))))))))
+                               package-name
+                               package-version
+                               (my/strip-prefix "c/" (car files))
+                               package-name
+                               package-version))
+               (buffer-string)))))))))
 
 (defun my/test-generate-lisp-commit-message-setup (diff-content)
   "Helper function to set up the buffer with diff content and to mock magit-git-string."
   (with-temp-buffer
     (insert diff-content)
-    (flet ((magit-git-lines (cmd &rest args) (string-split (buffer-string) "\n"))
-           (magit-anything-staged-p (&rest args) t))
+    (cl-letf (((symbol-function #'magit-git-lines)
+               (lambda (cmd &rest args) (string-split (buffer-string) "\n")))
+              ((symbol-function #'magit-anything-staged-p)
+               (lambda (&rest args) t)))
       (my/generate-lisp-commit-message))))
 
 ;; Define the test cases
