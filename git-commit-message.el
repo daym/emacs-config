@@ -222,6 +222,7 @@ to be impossible to put in a list)."
                                (my/strip-prefix "c/" (car files))
                                package-name
                                package-version))
+               (save-buffer) ; otherwise it doesn't work.  WTF?
                (buffer-string)))))))))
 
 (defun my/test-generate-lisp-commit-message-setup (diff-content)
