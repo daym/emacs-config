@@ -1983,7 +1983,9 @@ later form of vector is passed return 0."
     (ultra-scroll-mode 1)))
 
 (require 'mu4e)
-(add-hook 'mu4e-compose-mode-hook 'turn-off-auto-fill)
+                                        ; Hmm. (add-hook 'mu4e-compose-mode-hook 'turn-off-auto-fill)
+(add-hook 'message-mode-hook 'turn-off-auto-fill) ; maybe that covers both mu4e and gnus ?
+
 ;; Patch mu4e user-unfriendliness.  TODO: Upstream.
 (defvar mu4e-view-tool-bar-map
   (let ((tool-bar-map (make-sparse-keymap)))
