@@ -2,6 +2,10 @@
 
 ;;; Code:
 
+;; See <https://github.com/meedstrom/org-node/issues/98#issuecomment-2900747119>.
+;; This causes abbreviate-file-name to cache the (correct) homedir as a regexp.
+(abbreviate-file-name "~")
+
 (add-hook 'comint-mode-hook #'capf-autosuggest-mode)
 
 ;; That's actually kinda annoying?  Company should be enough.
@@ -529,8 +533,8 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 
 (setq visible-bell t)
 
-(add-to-list 'load-path "~/.emacs.d/lisp/")
-(load "~/.emacs.d/lisp/unbreak.el")
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
+(load (expand-file-name "~/.emacs.d/lisp/unbreak.el"))
 (load "modern-fringes.el")
 
                                         ; Vendored from https://raw.githubusercontent.com/Alexander-Miller/treemacs/master/src/extra/treemacs-projectile.el
@@ -543,11 +547,11 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 
                                         ;(setq nano-font-size 10)
 
-                                        ;(add-to-list 'load-path "~/.emacs.d/nano-emacs/")
+                                        ;(add-to-list 'load-path (expand-file-name "~/.emacs.d/nano-emacs/"))
                                         ;(load "nano.el")
 
                                         ; Too new version requires svg-tag-mode which is dumb
-                                        ;(add-to-list 'load-path "~/.emacs.d/notebook-mode/")
+                                        ;(add-to-list 'load-path (expand-file-name "~/.emacs.d/notebook-mode/"))
                                         ;(load "notebook.el")
 
                                         ;(setq org-ellipsis "▾")
@@ -562,16 +566,16 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 ;; Assuming the Guix checkout is in ~/src/guix.
 ;; Yasnippet configuration
 (with-eval-after-load 'yasnippet
-  (add-to-list 'yas-snippet-dirs "~/src/guix/etc/snippets/yas"))
+  (add-to-list 'yas-snippet-dirs (expand-file-name "~/src/guix/etc/snippets/yas")))
 ;; Tempel configuration
 (with-eval-after-load 'tempel
   ;; Ensure tempel-path is a list -- it may also be a string.
   (unless (listp 'tempel-path)
     (setq tempel-path (list tempel-path)))
-  (add-to-list 'tempel-path "~/src/guix/etc/snippets/tempel/*"))
+  (add-to-list 'tempel-path (expand-file-name "~/src/guix/etc/snippets/tempel/*"))) ; FIXME check
 
 ;; Assuming the Guix checkout is in ~/src/guix.
-(load-file "~/src/guix/etc/copyright.el")
+(load-file (expand-file-name "~/src/guix/etc/copyright.el"))
 
                                         ; super-g
 (global-set-key (kbd "s-g") 'guix)
@@ -580,21 +584,21 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
                                         ;(add-hook 'shell-mode-hook 'guix-prettify-mode)
                                         ;(add-hook 'dired-mode-hook 'guix-prettify-mode)
 
-(add-to-list 'load-path "~/.emacs.d/combobulate/")
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/combobulate/"))
 (load "combobulate.el")
 
 ;; Free version; see also https://github.com/WebFreak001/code-debug supports both gdb and lldb in case someone is interested.
                                         ; "gdb -i dap" is enough for DAP mode so no idea what all this is for here.
-(add-to-list 'load-path "~/.emacs.d/dap-gdb/")
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/dap-gdb/"))
 (load "dap-gdb.el")
 
-(add-to-list 'load-path "~/.emacs.d/ssass-mode/")
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/ssass-mode/"))
 (load "ssass-mode.el")
 
 (require 'bar-cursor)
 (bar-cursor-mode 1)
 
-(add-to-list 'load-path "~/.emacs.d/elfeed-tube/")
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/elfeed-tube/"))
 (require 'elfeed-tube)
 (require 'elfeed-tube-mpv)
 
@@ -605,7 +609,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 
                                         ; Latex
 
-(add-to-list 'load-path "~/.emacs.d/xenops/lisp/")
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/xenops/lisp/"))
 (require 'xenops)
 (setq-default xenops-math-image-scale-factor 0.6)
                                         ; (setq-default xenops-reveal-on-entry t) ; unreveal in org mode is buggy
@@ -623,7 +627,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 (wakib-keys 1)
 (define-key wakib-keys-overriding-map (kbd "C-f") #'consult-line) ; Note: someone overwrites this.
 
-(load "~/.emacs.d/lisp/copilot.el")
+(load (expand-file-name "~/.emacs.d/lisp/copilot.el"))
 (global-set-key (kbd "C-.") 'gptel-send)
 
 (require 'opascal)
@@ -691,8 +695,6 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
                                         ;  "Heavy face for `markchars-mode' char marking."
                                         ;  :group 'markchars)
 
-;; Must do this so the agenda knows where to look for my files
-(setq org-agenda-files '("~/doc/org"))
                                         ;(setq org-agenda-deadline-lead-time 7) ;; Notify 7 days before deadlines
                                         ;(setq org-agenda-scheduled-lead-time 1) ;; Notify 1 day before scheduled items
                                         ;   <2021-07-14 Wed 14:40 -1d>  with lead time; https://github.com/orgzly/orgzly-android/issues/636
@@ -733,61 +735,6 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
                                         ;(setq org-roam-node-display-template
                                         ;      (concat "${title:*} " (propertize "${tags}" 'face 'org-tag)))
 
-;; Uhh.
-                                        ;(setq org-roam-completion-everywhere t)
-
-                                        ; TODO: (org-roam-node-list)
-                                        ;(defun org-roam-update-recent-nodes ()
-                                        ;  "Update the list of recent nodes in the org-roam recent.org file."
-                                        ;  (interactive)
-                                        ;  (with-temp-file "~/doc/org-roam/recent.org"
-                                        ;    (insert "#+title: Recent Nodes\n\n")
-                                        ;    (dolist (node (org-roam-node-list))
-                                        ;      (insert (format "- [[node:%s][%s]]\n"
-                                        ;                      node
-                                        ;                      (org-roam-node-title node))))))
-                                        ;(run-with-timer 0 3600 'org-roam-update-recent-nodes)  ; Update every hour
-
-                                        ;(defun org-roam-open-index ()
-                                        ;  "Open the org-roam index file."
-                                        ;  (interactive)
-                                        ;  (find-file "~/doc/org-roam/org-roam-index.org"))
-                                        ;(global-set-key (kbd "C-c i") 'org-roam-open-index)
-
-                                        ;(setq org-roam-index-file "~/doc/org-roam/org-roam-index.org")
-
-                                        ;(add-hook 'after-init-hook 'org-roam-open-index) ; Automatically open org-roam index when you open emacs (yeah, right--we'll see)
-
-                                        ;(setq org-roam-node-search-function #'org-roam-node-find-by-tags)
-                                        ;(defun org-roam-node-find-by-tags (&optional other-window initial-input)
-                                        ;  "Find and open an Org-roam node by tags.
-                                        ;INITIAL-INPUT can be used to pre-fill the prompt."
-                                        ;  (interactive current-prefix-arg)
-                                        ;  (let* ((initial-input (or initial-input ""))
-                                        ;         (node (org-roam-node-read initial-input
-                                        ;                                   (lambda (node)
-                                        ;                                     (or (org-roam-node-file-title node)
-                                        ;                                         (org-roam-node-title node)))
-                                        ;                                   nil
-                                        ;                                   nil
-                                        ;                                   (lambda (n1 n2)
-                                        ;                                     (> (org-roam-node-file-mtime n1)
-                                        ;                                        (org-roam-node-file-mtime n2))))))
-                                        ;    (if other-window
-                                        ;        (org-roam-node-open node other-window)
-                                        ;      (org-roam-node-open node))))
-                                        ;
-                                        ;(use-package org-roam-ql
-                                        ;  :after (org-roam)
-                                        ;  :bind ((:map org-roam-mode-map
-                                        ;               ;; Have org-roam-ql's transient available in org-roam-mode buffers
-                                        ;               ("v" . org-roam-ql-buffer-dispatch)
-                                        ;               :map minibuffer-mode-map
-                                        ;               ;; Be able to add titles in queries while in minibuffer.
-                                        ;               ;; This is similar to `org-roam-node-insert', but adds
-                                        ;               ;; only title as a string.
-                                        ;               ("C-c n i" . org-roam-ql-insert-node-title))))
-
 ;; Wrap the lines in org mode so that things are easier to read ; FIXME how to make tables work correctly then?
                                         ;(add-hook 'org-mode-hook 'visual-line-mode)
 (add-hook 'text-mode-hook #'visual-line-mode)
@@ -795,18 +742,6 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
   (visual-line-mode))
                                         ;(with-current-buffer "*scratch*"
                                         ;  (visual-line-mode))
-
-                                        ;(setq org-roam-v2-ack t)
-                                        ;(use-package org-roam
-                                        ;  :ensure f
-                                        ;  :custom
-                                        ;  (org-roam-directory "~/doc/org-roam")
-                                        ;  :bind (("C-c n l" . org-roam-buffer-toggle)
-                                        ;         ("C-c n f" . org-roam-node-find)
-                                        ;         ("C-c n i" . org-roam-node-insert))
-                                        ;  :config
-                                        ;  (org-roam-setup))
-                                        ;(org-roam-db-autosync-mode)
 
 ;;; Make elfeed store-link store the link to the ORIGINAL article, not to the feed.
 
@@ -837,7 +772,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 
 ;;; Pandoc
 
-(setq pandoc-data-dir "~/.emacs.d/etc/pandoc/")
+(setq pandoc-data-dir (expand-file-name "~/.emacs.d/etc/pandoc/"))
 
 (defun efe/export-to-docx ()
   "Output to docx using `pandoc-mode'."
@@ -916,7 +851,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 
                                         ; Unbreak image scrolling
 
-                                        ;(add-to-list 'load-path "~/.emacs.d/iscroll/")
+                                        ;(add-to-list 'load-path (expand-file-name "~/.emacs.d/iscroll/"))
                                         ;(require 'iscroll)
                                         ; Note: Only enable in text modes, not prog modes
                                         ;(iscroll-mode)
@@ -958,19 +893,19 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
          :immediate-finish t)
 
         ("n" "Note"
-         entry (file+headline "~/doc/org/notes.org" "Random Notes")
+         entry (file+headline (expand-file-name "~/doc/org/notes.org") "Random Notes")
          "** %?"
          :empty-lines 0)
         ("g" "General To-Do"
-         entry (file+headline "~/doc/org/todos.org" "General Tasks")
+         entry (file+headline (expand-file-name "~/doc/org/todos.org") "General Tasks")
          "* TODO [#B] %?\n:Created: %T\n "
          :empty-lines 0)
         ("c" "Code To-Do" ; execute this on the line of code you want to link it to
-         entry (file+headline "~/doc/org/todos.org" "Code Related Tasks")
+         entry (file+headline (expand-file-name "~/doc/org/todos.org") "Code Related Tasks")
          "* TODO [#B] %?\n:Created: %T\n%i\n%a\nProposed Solution: "
          :empty-lines 0)
         ("m" "Meeting"
-         entry (file+datetree "~/doc/org/meetings.org")
+         entry (file+datetree (expand-file-name "~/doc/org/meetings.org"))
          "* %? :meeting:%^g \n:Created: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
          :tree-type week
          :clock-in t
@@ -1276,14 +1211,12 @@ argument is given.  Choose a file name based on any document
   (add-hook 'org-open-at-point-functions
             #'org-node-try-visit-ref-node)
 
-  (setq org-directory "~/doc/org")
+  (setq org-directory (expand-file-name "~/doc/org"))
   (setq org-default-notes-file (concat org-directory "/notes.org"))
 
 
-                                        ;        "~/Syncthing/"
-
   (setq org-node-extra-id-dirs
-        '("~/doc/org-roam/"))
+        (list (expand-file-name "~/doc/org-roam/")))
                                         ;Do a M-x org-node-reset and see if it can find your notes now.
                                         ; Then org-id-update-id-locations
 
@@ -1293,7 +1226,7 @@ argument is given.  Choose a file name based on any document
            :version 2
            :classifier (lambda (node)
                          (let ((path (org-node-get-file-path node)))
-                           (when (string-search "~/doc/org/daily" path)
+                           (when (string-search (expand-file-name "~/doc/org/daily") path) ; FIXME
                              (let ((ymd (org-node-helper-filename->ymd path)))
                                (when ymd
                                  (cons ymd path))))))
@@ -1306,7 +1239,7 @@ argument is given.  Choose a file name based on any document
                        (org-node-helper-try-visit-file (cdr item)))
            :creator (lambda (sortstr key)
                       (let ((org-node-datestamp-format "")
-                            (org-node-ask-directory "~/doc/org/daily"))
+                            (org-node-ask-directory (expand-file-name "~/doc/org/daily")))
                         (org-node-create sortstr (org-id-new) key))))
 
          ;; Obviously, this series works best if you have `org-node-put-created' on
@@ -1342,7 +1275,7 @@ argument is given.  Choose a file name based on any document
 (setq org-src-tab-acts-natively t)
 (add-hook 'org-mode-hook #'mixed-pitch-mode)
 
-                                        ;(add-to-list 'load-path "~/.emacs.d/qemu/")
+                                        ;(add-to-list 'load-path (expand-file-name "~/.emacs.d/qemu/"))
                                         ;(require 'qemu-qmp)
                                         ;(require 'qemu-dap)
 
@@ -1438,7 +1371,7 @@ argument is given.  Choose a file name based on any document
     "(specifications->manifest" \n
     " (list \"rust-analyzer\" \"ccls\" \"ocaml-lsp-server\" \"gcc-toolchain\" \"gdb\" \"rr\" \"texlive-minted\" \"texlive-latex-bin\" \"dvisvgm\" \"python-lsp-server\" \"emacs-ediprolog\" \"tidy-html\"))" \n))
 
-(add-to-list 'load-path "~/.emacs.d/kiwix.el")
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/kiwix.el"))
 (require 'kiwix)
                                         ; duplicate
 (setq kiwix-default-browser-function 'eww-browse-url)
@@ -1471,7 +1404,7 @@ argument is given.  Choose a file name based on any document
 
                                         ;(setq which-key-persistent-popup t)
 
-(add-to-list 'load-path "~/.emacs.d/shr-tag-math")
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/shr-tag-math"))
 (require 'shr-tag-math)
                                         ;(add-hook 'nov-mode-hook #'xenops-mode) ; so we render <math>; unfortunately, that fucks up all the other formatting. Also, the size of the rendered images is much too big here.
 
@@ -1494,7 +1427,7 @@ argument is given.  Choose a file name based on any document
   (require 'org-emms)
   (add-hook 'after-init-hook
             (lambda ()
-              (emms-add-directory-tree "~/Music"))))
+              (emms-add-directory-tree (expand-file-name "~/Music")))))
 
 (use-package mediainfo-mode
   :config
@@ -1740,7 +1673,7 @@ it acts on the current project."
                                   :run "lazrun" ; FIXME
                                   :test #'my/lazarus-test-command)
 
-(setq org-agenda-files '("~/doc/org-agenda"))
+(setq org-agenda-files (list (expand-file-name "~/doc/org-agenda")))
 (setq org-agenda-file-regexp "\\`[^.].*\\.org\\'")
 
 (defun fix-org-indent-form-feed ()
@@ -1824,8 +1757,8 @@ it acts on the current project."
 (require 'ox-publish)
 (setq org-publish-project-alist
       '(("friendly-machines.com"
-         :base-directory "~/doc/org-roam/"
-         :publishing-directory "~/friendly-machines.com/www/mirror/public/blog/"
+         :base-directory (expand-file-name "~/doc/org-roam")
+         :publishing-directory (expand-file-name "~/friendly-machines.com/www/mirror/public/blog/")
          :base-extension "org"
          :recursive t
          :publishing-function org-html-publish-to-html
@@ -1889,7 +1822,7 @@ it acts on the current project."
 ;; Stop asking "Autosave file on local temporary directory, do you want to continue? (yes or no)" for files on remote hosts owned by root
 ;; This will just put the autosave files on that same host instead of localhost.
 (setq auto-save-file-name-transforms nil)
-                                        ; (setq tramp-auto-save-directory "~/emacs/tramp-autosave")
+                                        ; (setq tramp-auto-save-directory (expand-file-name "~/.emacs/tramp-autosave"))
 
 ;; This is an lsp-ui workaround for <https://github.com/emacs-lsp/lsp-ui/issues/607>.
 (let ((areas '("mode-line" "left-margin" "left-fringe" "right-fringe" "header-line" "vertical-scroll-bar" "tool-bar" "menu-bar"))
@@ -2434,8 +2367,8 @@ This function is called by `org-babel-execute-src-block'."
                                         ; Also .newsrc
                                         ; If the variable gnus-default-subscribed-newsgroups is set, Gnus will subscribe you to just those groups in that list, leaving the rest killed. Your system administrator should have set this variable to something useful.
                                         ;(setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\”]\”[#’()]")
-                                        ;(setq nnml-directory "~/gmail")
-                                        ;(setq message-directory "~/gmail")
+                                        ;(setq nnml-directory (expand-file-name "~/gmail"))
+                                        ;(setq message-directory (expand-file-name "~/gmail"))
   (setq gnus-gcc-mark-as-read t)
   (setq gnus-agent t)
                                         ;(setq gnus-novice-user nil)           ; careful with this
@@ -2450,7 +2383,7 @@ This function is called by `org-babel-execute-src-block'."
   (setq gnus-agent-cache t)
   (setq gnus-agent-confirmation-function 'y-or-n-p)
   (setq gnus-agent-consider-all-articles nil)
-  (setq gnus-agent-directory "~/News/agent/")
+  (setq gnus-agent-directory (expand-file-name "~/News/agent/"))
   (setq gnus-agent-enable-expiration 'ENABLE)
   (setq gnus-agent-expire-all nil)
   (setq gnus-agent-expire-days 30)
@@ -2579,7 +2512,7 @@ This function is called by `org-babel-execute-src-block'."
       (tool-bar-local-item-from-menu 'ispell-message "spell" tool-bar-map message-mode-map)
       (tool-bar-local-item-from-menu 'mml-secure-message-sign "lock" tool-bar-map message-mode-map)
       (tool-bar-local-item-from-menu 'mml-secure-message-encrypt "locked-encrypted" tool-bar-map message-mode-map)
-      
+
       (tool-bar-local-item-from-menu 'message-send-and-exit "gnus/mail-send" tool-bar-map message-mode-map)
       ;; (tool-bar-local-item-from-menu 'message-dont-send "gnus/save-draft" tool-bar-map message-mode-map)
       (tool-bar-local-item-from-menu 'message-kill-buffer "gnus/kill-group" tool-bar-map message-mode-map)

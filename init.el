@@ -11,7 +11,7 @@
 (setq
  backup-by-copying t      ; don't clobber symlinks
  backup-directory-alist
- '(("." . "~/backup/"))    ; don't litter my fs tree
+ (list (cons "." (expand-file-name "~/backup/")))    ; don't litter my fs tree
  delete-old-versions t
  kept-new-versions 6
  kept-old-versions 2
@@ -73,7 +73,7 @@
 ;;; Git
 
 					;(with-eval-after-load 'geiser-guile
-					;  (add-to-list 'geiser-guile-load-path "~/src/guix"))
+					;  (add-to-list 'geiser-guile-load-path (expand-file-name "~/src/guix")))
 
 ;; probably cargo-culted from somewhere
 (update-glyphless-char-display 'glyphless-char-display-control '((format-control . empty-box) (no-font . empty-box)))
@@ -174,7 +174,6 @@
  '(inhibit-startup-screen t)
  '(kiwix-default-browser-function 'eww-browse-url)
  '(kiwix-server-type 'kiwix-serve-local)
- '(kiwix-zim-dir "~/.local/zim")
  '(large-file-warning-threshold 100000000)
  '(line-move-visual nil)
  '(lsp-rust-analyzer-rustc-source
@@ -200,7 +199,6 @@
  '(org-msg-posting-style nil)
  '(org-noter-always-create-frame nil)
  '(org-noter-auto-save-last-location t)
- '(org-noter-notes-search-path '("~/doc/org-roam"))
  '(org-preview-latex-default-process 'dvisvgm)
  '(org-replace-disputed-keys t)
  '(org-startup-folded 'content)
@@ -269,7 +267,7 @@
     (add-to-list 'major-mode-remap-alist mapping))
 
   :config
-  (setq treesit-extra-load-path (list "~/.guix-home/profile/lib/tree-sitter/"))
+  (setq treesit-extra-load-path (list (expand-file-name "~/.guix-home/profile/lib/tree-sitter/")))
   (setq treesit-auto-install 'prompt)
                                         ;					  (require 'tree-sitter-langs)
                                         ;					  (global-tree-sitter-mode)
@@ -298,6 +296,9 @@
     ;; Amend this to the directory where you keep Combobulate's source
     ;; code.
     :load-path ("~/.emacs.d/combobulate")))
+
+(setq kiwix-zim-dir (expand-file-name "~/.local/zim"))
+(setq org-noter-notes-search-path (expand-file-name "~/doc/org-roam"))
 
 (add-hook 'scheme-mode-hook
           (lambda ()
