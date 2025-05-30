@@ -1973,13 +1973,14 @@ later form of vector is passed return 0."
 (global-set-key (kbd "s-<delete>") #'delete-file-and-buffer)
 
                                         ;(pixel-scroll-precision-mode 1)
-(use-package ultra-scroll
-  :load-path "~/.emacs.d/ultra-scroll"
-  :init
-  (setq scroll-conservatively 101 ; important!
-        scroll-margin 0)
-  :config
-  (ultra-scroll-mode 1))
+(eval
+ `(use-package ultra-scroll
+    :load-path ,(expand-file-name "ultra-scroll" user-emacs-directory)
+    :init
+    (setq scroll-conservatively 101 ; important!
+          scroll-margin 0)
+    :config
+    (ultra-scroll-mode 1)))
 
 (require 'mu4e)
 (add-hook 'mu4e-compose-mode-hook 'turn-off-auto-fill)
