@@ -1185,7 +1185,12 @@ argument is given.  Choose a file name based on any document
 
                                         ; TODO: https://tero.hasu.is/blog/transient-directories-in-notdeft/
 
-(setq buffer-env-script-name '("manifest.scm" ".envrc"))
+(with-eval-after-load 'buffer-env
+  (setq buffer-env-script-name '("manifest.scm" "environment-variables" ".env" ".envrc"))
+  ;; guix failed build.
+  (add-to-list 'buffer-env-command-alist
+               `(,(rx "/environment-variables" eos)
+                 . "set -a && >&2 . \"$1\" && env -0")))
 
 ;; Original wakib binding would save and quit emacs (using save-buffers-kill-terminal).  Who wants that?
 (keymap-set wakib-keys-overriding-map "C-q" #'quoted-insert)
