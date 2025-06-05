@@ -1206,10 +1206,16 @@ argument is given.  Choose a file name based on any document
   :config
   (wrap-with-global-env #'org-notify-process))
 
+  (setq org-mem-watch-dirs
+        (list (expand-file-name "~/doc/org-roam/")))
+
 (use-package org-node
   :after org
   :config
+  (setq org-mem-do-sync-with-org-id t)
+  (org-mem-updater-mode)
   (org-node-cache-mode)
+  ;(org-node-seq-mode)
 
   (keymap-set global-map "C-<Search>" #'org-node-find)
   (keymap-set global-map "M-<Search>" #'org-node-grep) ; Requires consult
@@ -1226,8 +1232,8 @@ argument is given.  Choose a file name based on any document
   (setq org-default-notes-file (concat org-directory "/notes.org"))
 
 
-  (setq org-node-extra-id-dirs
-        (list (expand-file-name "~/doc/org-roam/")))
+;  (setq org-mem-watch-dirs
+;        (list (expand-file-name "~/doc/org-roam/")))
                                         ;Do a M-x org-node-reset and see if it can find your notes now.
                                         ; Then org-id-update-id-locations
 
