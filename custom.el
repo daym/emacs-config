@@ -511,6 +511,12 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
          (reusable-frames . visible))
         ))
 
+;; Don't bother user with emacs warnings
+(add-to-list 'display-buffer-alist
+             '("\\`\\*\\(Warnings\\|Compile-Log\\)\\*\\'"
+               (display-buffer-no-window)
+               (allow-no-window . t)))
+
 (require 'mh-e) ; mail
 
 (add-to-list 'treesit-extra-load-path "/home/dannym/.guix-home/profile/lib/tree-sitter/")
@@ -1531,12 +1537,6 @@ argument is given.  Choose a file name based on any document
 (use-package savehist
   :ensure nil ; it is built-in
   :hook (after-init . savehist-mode))
-
-;; Don't bother user with emacs warnings
-(add-to-list 'display-buffer-alist
-             '("\\`\\*\\(Warnings\\|Compile-Log\\)\\*\\'"
-               (display-buffer-no-window)
-               (allow-no-window . t)))
 
 (use-package vertico
   :ensure nil
