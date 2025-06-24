@@ -274,28 +274,6 @@
                                         ;					  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 
 
-					; no (mp-setup-install-grammars)
-  ;; Do not forget to customize Combobulate to your liking:
-  ;;
-  ;;  M-x customize-group RET combobulate RET
-  ;;
-  (use-package combobulate
-    ;; Optional, but recommended.
-    ;;
-    ;; You can manually enable Combobulate with `M-x
-    ;; combobulate-mode'.
-    :commands combobulate-mode ; XXX
-    :hook ( ;(python-ts-mode . combobulate-mode)
-           (js-ts-mode . combobulate-mode)
-           (css-ts-mode . combobulate-mode)
-					;(html-ts-mode . combobulate-mode)
-           (yaml-ts-mode . combobulate-mode)
-           (typescript-ts-mode . combobulate-mode)
-           (tsx-ts-mode . combobulate-mode)
-           (rust . combobulate-mode))
-    ;; Amend this to the directory where you keep Combobulate's source
-    ;; code.
-    :load-path ("~/.emacs.d/combobulate")))
 
 (setq kiwix-zim-dir (expand-file-name "~/.local/zim"))
 (setq org-noter-notes-search-path (expand-file-name "~/doc/org-roam"))
