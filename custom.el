@@ -590,9 +590,6 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
                                         ;(add-hook 'shell-mode-hook 'guix-prettify-mode)
                                         ;(add-hook 'dired-mode-hook 'guix-prettify-mode)
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/combobulate/"))
-(load "combobulate.el")
-
 ;; Free version; see also https://github.com/WebFreak001/code-debug supports both gdb and lldb in case someone is interested.
                                         ; "gdb -i dap" is enough for DAP mode so no idea what all this is for here.
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/dap-gdb/"))
