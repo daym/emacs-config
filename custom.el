@@ -1203,8 +1203,8 @@ argument is given.  Choose a file name based on any document
   :config
   (wrap-with-global-env #'org-notify-process))
 
-  (setq org-mem-watch-dirs
-        (list (expand-file-name "~/doc/org-roam/")))
+(setq org-mem-watch-dirs
+      (list (expand-file-name "~/doc/org-roam/")))
 
 (use-package org-node
   :after org
