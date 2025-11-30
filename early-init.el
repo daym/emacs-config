@@ -1,4 +1,7 @@
 
+(setq debug-on-quit t)
+(profiler-start 'cpu)
+
 (setq local-icon-directory (expand-file-name "~/.emacs.d/icons"))
 
 (add-to-list 'image-load-path local-icon-directory)
@@ -70,10 +73,10 @@
   [menu-bar tools osm]
   '("View street map" . osm))
 
-;; TODO: Report bug with emms upstream that this is missing.
-(define-key global-map
-  [menu-bar tools emms]
-  '("Play music..." . emms))
+;; emms-smart-browse shows that anyway.
+;(define-key global-map
+;  [menu-bar tools emms]
+;  '("Play music..." . emms))
 
 ;; TODO: Report bug with emms upstream that this is missing.
 (define-key global-map
@@ -96,9 +99,9 @@
   '("Start serial terminal" . serial-term))
 
 ;; TODO: Report bug with elfeed upstream that this is missing.
-(define-key global-map
-  [menu-bar tools elfeed]
-  '("Read news" . elfeed))
+;(define-key global-map
+;  [menu-bar tools elfeed]
+;  '("Read news" . elfeed))
 
 ;; TODO: where is enwc
 
@@ -114,3 +117,6 @@
   (setq tool-bar-separator-image-expression
     (tool-bar--image-expression "separator"))
   nil)
+
+;(setq package-enable-at-startup nil)
+;(setq use-package-defaults '(:ensure t :defer t))

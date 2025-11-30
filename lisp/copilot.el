@@ -72,7 +72,7 @@
   :group 'editing)
 
 (defcustom copilot-bin
-  "/home/dannym/.local/bin/wrap-llamafile"
+  "llama-cli"
   "Path of llamafile executable with LLM weights."
   :type 'string
   :group 'copilot)
@@ -125,9 +125,12 @@ Writing English explanations is forbidden. ")
     ;; run llamafile streaming stdout into buffer catching ctrl-g
     (with-local-quit
       (call-process copilot-bin nil (list (current-buffer) nil) t
+                    "--no-warmup"
+                    "--simple-io"
+                    "-m" (expand-file-name "~/x/llama/Llama-3.2-3B-Instruct.Q6_K.gguf")
                     "--prompt-cache" cash
                     "--prompt-cache-all"
-                    "--silent-prompt"
+                    "--no-display-prompt"                 ;"--silent-prompt"
                     "--temp" "0"
                     "-c" "1024"
                     "-ngl" "35"

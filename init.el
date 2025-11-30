@@ -1,10 +1,19 @@
 ;; -*- lexical-binding: t -*-
 
+(setq package-enable-at-startup nil)
+;; XXX
+(setq package-check-signature nil)
+                                        ;(setq use-package-defaults '(:ensure nil :defer t))
+
                                         ;(customize-set-variable 'lsp-treemacs-theme "Iconless")
+
+;; Guix-managed.
+(setq package-archives '())
 
 (require 'nerd-icons)
 
-(global-auto-revert-mode 1) ; revert buffers when the underlying file has changed
+;; Problematic with mediainfo-mode.
+                                        ;(global-auto-revert-mode 1) ; revert buffers when the underlying file has changed
 
 ;;; disable byte compilation would be: (setq load-suffixes '(".el"))
 
@@ -23,7 +32,7 @@
 
 (setq tab-always-indent 'complete)
                                         ; <https://github.com/thread314/intuitive-tab-line-mode>
-;(global-tab-line-mode 1)
+                                        ;(global-tab-line-mode 1)
 
 (require 'lsp-treemacs)
 
@@ -49,15 +58,19 @@
 (package-initialize)
 
 (use-package rust-mode
+  :init
+  (setq rust-mode-treesitter-derive t) ; TODO: test.
   :custom
   (rust-format-on-save t))
+
+(use-package rustic
+  :after (rust-mode))
 
 (use-package projectile
   :config
   (projectile-mode +1))
 
 (use-package pyvenv
-  :ensure nil
   :config
   (pyvenv-mode nil))
 
@@ -83,9 +96,9 @@
 
 (require 'vc)
 
-(global-diff-hl-mode 1)
-(add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
-(add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+                                        ;(global-diff-hl-mode 1) ; missing !?
+                                        ;(add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
+                                        ;(add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
 
                                         ; '(cua-mode t)
 
@@ -97,19 +110,44 @@
  '(LaTeX-command "lualatex -shell-escape")
  '(LaTeX-electric-left-right-brace t)
  '(TeX-engine 'luatex)
+ '(auth-source-save-behavior nil)
  '(back-button-no-wrap t)
  '(buffer-env-safe-files
-   '(("/home/dannym/src/guix/manifest.scm" . "0b387290e9851813debd81b6e3aa5099f0f17fad1fade821ca1f0928262e56c4")
-     ("/home/dannym/src/latex-ex/manifest.scm" . "5200b8ce405410acc7ad0e4baf5bfaa85b0160bff5815265a305bdc9a7fb70ed")))
+   '(("/home/dannym/src/agent-c/e/rune-os/kernel/manifest.scm"
+      . "56b5c94b285f1b8d64ebe7a71d065624543a0756cd64475daba8e9eff492de8c")
+     ("/home/dannym/src/agent-c/e/7d/manifest.scm"
+      . "a188b054069db09895e96ab758b6c04f2b48b86764c07a870d78207713917f6e")
+     ("/home/dannym/src/guix-dev86/manifest.scm"
+      . "0b387290e9851813debd81b6e3aa5099f0f17fad1fade821ca1f0928262e56c4")
+     ("/home/dannym/src/agent-c/e/fast-lisp-rs/manifest.scm"
+      . "a188b054069db09895e96ab758b6c04f2b48b86764c07a870d78207713917f6e")
+     ("/home/dannym/src/claude-code/e/rune-os/kernel/manifest.scm"
+      . "14c251e231894b6a8a2be77b9fca309eb339a1ee3ec2db153e67f5bdce8d4d73")
+     ("/home/dannym/src/mcphas/manifest.scm"
+      . "b8553849cd30c15f7ef9236e07b8582fdf58d875a3b6703505f5dfa30b6c8d40")
+     ("/home/dannym/src/mcphas/manifest.scm"
+      . "06fb17415d5503d1813a605c3914f3b5ed7daa0f9f375db0eccee0e997f9a802")
+     ("/home/dannym/src/guix/manifest.scm"
+      . "0b387290e9851813debd81b6e3aa5099f0f17fad1fade821ca1f0928262e56c4")
+     ("/home/dannym/src/latex-ex/manifest.scm"
+      . "5200b8ce405410acc7ad0e4baf5bfaa85b0160bff5815265a305bdc9a7fb70ed")))
+ '(canlock-password "b8c588bfbd074250c3428c56f4581d597dbb93be")
  '(column-number-mode t)
  '(debbugs-browse-url-regexp
    "^https?://\\(debbugs\\.gnu\\.org\\|bugs\\.gnu\\.org\\|issues.guix.gnu.org\\)/\\(cgi/bugreport\\.cgi\\?bug=\\)?\\([[:digit:]]+\\)$")
  '(delete-by-moving-to-trash t)
+ '(dired-listing-switches "-alot --si")
  '(dtrt-indent-global-mode t)
  '(elfeed-feeds
    '("https://the-dam.org/rss.xml"
      ("http://planet.emacslife.com/atom.xml" emacs)
-     "https://lwn.net/headlines/rss" "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fhnrss.org%252Ffrontpage%26max%3D3%26links%3Dpreserve" "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fwww.nature.com%252Fnmat%252Fcurrent_issue%252Frss%252F%26max%3D3%26links%3Dpreserve" "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fwww.nature.com%252Fnphys%252Fcurrent_issue%252Frss%252F%26max%3D3%26links%3Dpreserve" "https://semianalysis.substack.com/feed" "https://slow-journalism.com/blog/feed" "http://ftr.fivefilters.net/makefulltextfeed.php?url=https%3A%2F%2Ffeeds.arstechnica.com%2Farstechnica%2Ffeatures&max=3"))
+     "https://lwn.net/headlines/rss"
+     "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fhnrss.org%252Ffrontpage%26max%3D3%26links%3Dpreserve"
+     "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fwww.nature.com%252Fnmat%252Fcurrent_issue%252Frss%252F%26max%3D3%26links%3Dpreserve"
+     "https://subscribe.fivefilters.org/?url=http%3A%2F%2Fftr.fivefilters.net%2Fmakefulltextfeed.php%3Furl%3Dhttps%253A%252F%252Fwww.nature.com%252Fnphys%252Fcurrent_issue%252Frss%252F%26max%3D3%26links%3Dpreserve"
+     "https://semianalysis.substack.com/feed"
+     "https://slow-journalism.com/blog/feed"
+     "http://ftr.fivefilters.net/makefulltextfeed.php?url=https%3A%2F%2Ffeeds.arstechnica.com%2Farstechnica%2Ffeatures&max=3"))
  '(format-all-debug nil)
  '(format-all-show-errors 'errors)
  '(frame-background-mode 'light)
@@ -117,50 +155,50 @@
  '(ignored-local-variable-values
    '((eval with-eval-after-load 'git-commit
            (add-to-list 'git-commit-trailers "Change-Id"))
-     (eval progn
-           (require 'lisp-mode)
-           (defun emacs27-lisp-fill-paragraph
-               (&optional justify)
+     (eval progn (require 'lisp-mode)
+           (defun emacs27-lisp-fill-paragraph (&optional justify)
              (interactive "P")
-             (or
-              (fill-comment-paragraph justify)
-              (let
-                  ((paragraph-start
-                    (concat paragraph-start "\\|\\s-*\\([(;\"]\\|\\s-:\\|`(\\|#'(\\)"))
-                   (paragraph-separate
-                    (concat paragraph-separate "\\|\\s-*\".*[,\\.]$"))
-                   (fill-column
-                    (if
-                        (and
-                         (integerp emacs-lisp-docstring-fill-column)
-                         (derived-mode-p 'emacs-lisp-mode))
-                        emacs-lisp-docstring-fill-column fill-column)))
-                (fill-paragraph justify))
-              t))
-           (setq-local fill-paragraph-function #'emacs27-lisp-fill-paragraph))
+             (or (fill-comment-paragraph justify)
+                 (let
+                     ((paragraph-start
+                       (concat paragraph-start
+                               "\\|\\s-*\\([(;\"]\\|\\s-:\\|`(\\|#'(\\)"))
+                      (paragraph-separate
+                       (concat paragraph-separate
+                               "\\|\\s-*\".*[,\\.]$"))
+                      (fill-column
+                       (if
+                           (and
+                            (integerp emacs-lisp-docstring-fill-column)
+                            (derived-mode-p 'emacs-lisp-mode))
+                           emacs-lisp-docstring-fill-column
+                         fill-column)))
+                   (fill-paragraph justify))
+                 t))
+           (setq-local fill-paragraph-function
+                       #'emacs27-lisp-fill-paragraph))
      (geiser-repl-per-project-p . t)
      (eval with-eval-after-load 'yasnippet
            (let
                ((guix-yasnippets
                  (expand-file-name "etc/snippets/yas"
-                                   (locate-dominating-file default-directory ".dir-locals.el"))))
-             (unless
-                 (member guix-yasnippets yas-snippet-dirs)
+                                   (locate-dominating-file
+                                    default-directory ".dir-locals.el"))))
+             (unless (member guix-yasnippets yas-snippet-dirs)
                (add-to-list 'yas-snippet-dirs guix-yasnippets)
                (yas-reload-all))))
      (eval with-eval-after-load 'tempel
-           (if
-               (stringp tempel-path)
-               (setq tempel-path
-                     (list tempel-path)))
+           (if (stringp tempel-path)
+               (setq tempel-path (list tempel-path)))
            (let
                ((guix-tempel-snippets
                  (concat
                   (expand-file-name "etc/snippets/tempel"
-                                    (locate-dominating-file default-directory ".dir-locals.el"))
+                                    (locate-dominating-file
+                                     default-directory
+                                     ".dir-locals.el"))
                   "/*.eld")))
-             (unless
-                 (member guix-tempel-snippets tempel-path)
+             (unless (member guix-tempel-snippets tempel-path)
                (add-to-list 'tempel-path guix-tempel-snippets))))
      (eval setq-local guix-directory
            (locate-dominating-file default-directory ".dir-locals.el"))
@@ -168,8 +206,7 @@
      (eval modify-syntax-entry 43 "'")
      (eval modify-syntax-entry 36 "'")
      (eval modify-syntax-entry 126 "'")
-     (geiser-guile-binary "guix" "repl")
-     (geiser-insert-actual-lambda)))
+     (geiser-guile-binary "guix" "repl") (geiser-insert-actual-lambda)))
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(kiwix-default-browser-function 'eww-browse-url)
@@ -182,17 +219,19 @@
  '(mediainfo-mode-file-regexp
    "\\.\\(?:3gp\\|a\\(?:iff\\|vi\\)\\|flac\\|jpg\\|jpeg\\|png\\|gif\\|m\\(?:4a\\|kv\\|ov\\|p[34g]\\)\\|o\\(?:gg\\|pus\\)\\|vob\\|w\\(?:av\\|ebm\\|mv\\)\\)\\'")
  '(mouse-autoselect-window t)
+ '(mpv-start-timeout 0.5)
  '(mu4e-compose-switch nil)
+ '(org-babel-ditaa-java-cmd "ditaa")
+ '(org-ditaa-jar-path "/home/dannym/.guix-home/profile/lib/ditaa0.11.0.jar")
  '(org-export-exclude-tags '("confidential"))
  '(org-export-select-tags '("public"))
  '(org-format-latex-options
-   '(:foreground default :background default :scale 0.5 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
-                 ("begin" "$1" "$" "$$" "\\(" "\\[")))
+   '(:foreground default :background default :scale 0.5 :html-foreground
+                 "Black" :html-background "Transparent" :html-scale
+                 1.0 :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
  '(org-id-link-to-org-use-id 'use-existing)
  '(org-latex-packages-alist
-   '(("" "braket" t nil)
-     ("" "esint" t nil)
-     ("" "units" t nil)
+   '(("" "braket" t nil) ("" "esint" t nil) ("" "units" t nil)
      ("" "unicode-math" t nil)))
  '(org-msg-convert-citation t)
  '(org-msg-greeting-fmt "Hello%s,")
@@ -206,12 +245,18 @@
  '(org-sticky-header-always-show-header t)
  '(org-sticky-header-full-path 'reversed)
  '(org-support-shift-select t)
- '(package-selected-packages
-   '(dired-launch lv concurrent org-mime org-noter org-pdftools back-button magit-popup eat flycheck-rust typescript-mode go-mode git-timemachine web-mode rainbow-delimiters geiser-guile flycheck-guile clojure-mode envrc shackle vertico pkg-info rustic magit-svn magit-gerrit agda2-mode tramp find-file-in-project lsp-ui consult embark pg finalize org-roam eval-in-repl eval-in-repl-slime slime-company ts async ement crdt gptel smartparens inheritenv buffer-env ob-async discover-my-major))
+ '(package-selected-packages nil)
  '(read-mail-command 'mu4e)
+ '(safe-local-variable-values
+   '((org-emphasis-alist ("/" italic) ("_" underline)
+                         ("=" org-verbatim verbatim)
+                         ("~" org-code verbatim) ("," org-quote))))
+ '(solarized-contrast 'normal)
  '(spacious-padding-subtle-mode-line t)
  '(spacious-padding-widths
-   '(:internal-border-width 0 :header-line-width 4 :mode-line-width 6 :tab-width 5 :right-divider-width 10 :scroll-bar-width 8 :fringe-width 12))
+   '(:internal-border-width 0 :header-line-width 4 :mode-line-width 6
+                            :tab-width 5 :right-divider-width 10
+                            :scroll-bar-width 8 :fringe-width 12))
  '(tab-line-close-tab-function 'kill-buffer)
  '(tool-bar-style 'image)
  '(vertico-preselect 'prompt)
@@ -255,7 +300,7 @@
                      (go-mode . go-ts-mode) ; doesn't work
                      (go-mod-mode . go-mod-ts-mode) ; doesn't work
 					;((mhtml-mode sgml-mode) . html-ts-mode) ; isn't found
-                     ;(mhtml-mode . html-ts-mode) ; isn't found
+                                        ;(mhtml-mode . html-ts-mode) ; isn't found
                      (java-mode . java-ts-mode)
                      (javascript-mode . js-ts-mode)
                      (js-json-mode . json-ts-mode)
@@ -268,12 +313,10 @@
 
   :config
   (setq treesit-extra-load-path (list (expand-file-name "~/.guix-home/profile/lib/tree-sitter/")))
-  (setq treesit-auto-install 'prompt)
+  (setq treesit-auto-install 'prompt))
                                         ;					  (require 'tree-sitter-langs)
                                         ;					  (global-tree-sitter-mode)
                                         ;					  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
-
-
 
 (setq kiwix-zim-dir (expand-file-name "~/.local/zim"))
 (setq org-noter-notes-search-path (expand-file-name "~/doc/org-roam"))
@@ -358,7 +401,6 @@
 					;;; rustic is based on rust-mode, extending it with other features such as integration with LSP and with flycheck.
 
                                         ;(use-package csharp-mode
-                                        ;  :ensure t
                                         ;  :config
 (add-to-list 'auto-mode-alist '("\\.cs\\'" . csharp-tree-sitter-mode))
 
@@ -396,7 +438,6 @@
                                         ;(elpy-enable)
 
 (use-package lsp-mode
-  :ensure nil
   :commands lsp
   :custom
   ;; what to use when checking on-save. "check" is default, I prefer clippy
@@ -423,7 +464,6 @@
                                         ;  :commands (lsp lsp-deferred))
 
 (use-package lsp-ui
-  :ensure nil
   :commands lsp-ui-mode
   :custom
   (lsp-ui-peek-always-show t)
@@ -432,7 +472,6 @@
   (lsp-ui-doc-show-with-mouse t))
 
 (use-package company
-  :ensure nil
   :custom
   (company-idle-delay 0.5) ;; how long to wait until popup
   ;; (company-begin-commands nil) ;; uncomment to disable popup
@@ -480,9 +519,9 @@
 
 (with-eval-after-load 'dap-mode
                                         ; general
-  (dap-tooltip-mode 1)
+                                        ;(dap-tooltip-mode 1) ; missing ?!
   (tooltip-mode 1)
-  (dap-ui-controls-mode 1)
+                                        ;(dap-ui-controls-mode 1) ; missing!?
 
   ;;    ;; Make sure that terminal programs open a term for I/O in an Emacs buffer
   ;;    (setq dap-default-terminal-kind "integrated")
@@ -542,8 +581,7 @@
 ;; Die, Doc-View-mode! die!
                                         ;(defalias 'doc-view-mode #'pdf-view-mode)
 
-(use-package org-mime
-  :ensure t)
+(use-package org-mime)
 
 (use-package vertico
   :ensure f
@@ -601,7 +639,6 @@
             (set-face-background 'mmm-default-submode-face nil)))
 
 (use-package popper
-  :ensure t ; or :straight t
   :bind (("C-`"   . popper-toggle)
          ("M-`"   . popper-cycle)
          ("C-M-`" . popper-toggle-type))
@@ -745,7 +782,6 @@
 
 ;; The dtrt-indent provides an Emacs minor mode that detects the original indentation offset used in source code files and automatically adjusts Emacs settings accordingly, making it easier to edit files created with different indentation styles.
                                         ;(use-package dtrt-indent
-                                        ;  :ensure t
                                         ;  :commands (dtrt-indent-global-mode
                                         ;             dtrt-indent-mode
                                         ;             dtrt-indent-adapt
@@ -788,8 +824,9 @@
                                         ;(setq envrc-debug t)
 					; as late as possible:
                                         ;(envrc-global-mode)
-(add-hook 'hack-local-variables-hook #'buffer-env-update)
-(add-hook 'comint-mode-hook #'buffer-env-update)
+
 
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
+
+(setq debug-on-quit nil)

@@ -19,10 +19,10 @@
       mu4e-compose-signature-auto-include nil
       mu4e-view-show-images t
       mu4e-view-show-addresses t
-      mu4e-attachment-dir "~/Downloads"
+      mu4e-attachment-dir (expand-file-name "~/Downloads")
       mu4e-use-fancy-chars t
       mu4e-headers-auto-update t
-      message-signature-file "~/.emacs.d/.signature"
+      message-signature-file (expand-file-name "~/.emacs.d/.signature")
       mu4e-compose-signature-auto-include nil
       mu4e-view-prefer-html t
       mu4e-change-filenames-when-moving t

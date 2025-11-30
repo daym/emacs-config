@@ -146,14 +146,14 @@
 (defun shr-tag-math (math)
   "Render the MATH MathML element."
   (let ((start (point)))  ; Save the current point position
-    (insert "$") ; "\\begin{equation}\n" ; try $
+    (insert " \\(") ; "\\begin{equation}\n" ; try $
     (shr-tag-mathml--convert-to-latex math)
-    (insert "$") ; "\n\\end{equation}\n" ; try $
+    (insert "\\) ") ; "\n\\end{equation}\n" ; try $
     (let ((e (xenops-math-parse-element-at start)))
       (if e
           (progn
-  (setq TeX-header-end (regexp-quote "%**end of header"))
-  (setq TeX-trailer-start (regexp-quote (concat TeX-esc "bye")))
+  (setq-local TeX-header-end (regexp-quote "%**end of header"))
+  (setq-local TeX-trailer-start (regexp-quote (concat TeX-esc "bye")))
 
 (message "ELEMENT: %S" e)
 ;      (xenops-util-plist-update)

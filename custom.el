@@ -5,6 +5,7 @@
 ;; See <https://github.com/meedstrom/org-node/issues/98#issuecomment-2900747119>.
 ;; This causes abbreviate-file-name to cache the (correct) homedir as a regexp.
 (abbreviate-file-name "~")
+(setq quux-home (expand-file-name "~"))
 
 (add-hook 'comint-mode-hook #'capf-autosuggest-mode)
 
@@ -35,6 +36,54 @@
 ;; <https://github.com/chaosemer/window-tool-bar/issues/33>
                                         ;(global-unset-key (kbd "<tool-bar> <S-back-button>"))
                                         ;(global-unset-key (kbd "<tool-bar> <S-forward-button>"))
+
+;; Overwritten since otherwise if buffer-env sets HOME we get all kinds of idiotic things using that HOME.
+(defun unbroken-locate-user-emacs-file (new-name &optional old-name)
+  "Return an absolute per-user Emacs-specific file name.
+If NEW-NAME exists in `user-emacs-directory', return it.
+Else if OLD-NAME is non-nil and ~/OLD-NAME exists, return ~/OLD-NAME.
+Else return NEW-NAME in `user-emacs-directory', creating the
+directory if it does not exist."
+  (convert-standard-filename
+   (let* ((home quux-home)
+          (at-home (and old-name (expand-file-name old-name home)))
+          (bestname (abbreviate-file-name
+                     (expand-file-name new-name user-emacs-directory))))
+     (if (and at-home (not (file-readable-p bestname))
+              (file-readable-p at-home))
+         at-home
+       ;; Make sure `user-emacs-directory' exists,
+       ;; unless we're in batch mode or dumping Emacs.
+       (or noninteractive
+           dump-mode
+           (let (errtype)
+             (if (file-directory-p user-emacs-directory)
+                 (or (file-accessible-directory-p user-emacs-directory)
+                     (setq errtype "access"))
+               ;; We don't want to create HOME if it doesn't exist.
+               (if (and (not (file-exists-p home))
+                        (string-prefix-p
+                         (expand-file-name home)
+                         (expand-file-name user-emacs-directory)))
+                   (setq errtype "create")
+                 ;; Create `user-emacs-directory'.
+                 (with-file-modes ?\700
+                   (condition-case nil
+                       (make-directory user-emacs-directory t)
+                     (error (setq errtype "create"))))))
+             (when (and errtype
+                        user-emacs-directory-warning
+                        (not (get 'user-emacs-directory-warning 'this-session)))
+               ;; Warn only once per Emacs session.
+               (put 'user-emacs-directory-warning 'this-session t)
+               (display-warning 'initialization
+                                (format "\
+Unable to %s `user-emacs-directory' (%s).
+Any data that would normally be written there may be lost!
+If you never want to see this message again,
+customize the variable `user-emacs-directory-warning'."
+                                        errtype user-emacs-directory)))))
+       bestname))))
 
 (add-to-list 'image-load-path (expand-file-name "~/.emacs.d/icons"))
 
@@ -136,11 +185,32 @@
 (add-hook 'treemacs-mode-hook 'variable-pitch-mode)
 (add-hook 'nxml-mode-hook 'variable-pitch-mode)
                                         ;(add-hook 'emacs-lisp-mode-hook 'variable-pitch-mode)
+(add-hook 'emacs-lisp-mode-hook 'outshine-mode)
 (add-hook 'js-mode-hook 'variable-pitch-mode)
 (add-hook 'css-mode-hook 'variable-pitch-mode)
 (add-hook 'html-mode-hook 'variable-pitch-mode)
 (add-hook 'mhtml-mode-hook 'variable-pitch-mode)
 (add-hook 'python-mode-hook 'variable-pitch-mode)
+
+(use-package jupyter
+  :demand t
+  :after (:all org python))
+
+(add-hook 'python-mode-hook 'code-cells-mode-maybe)
+
+(add-hook 'emacs-lisp-mode-hook
+          (lambda () (setq-local code-cells-boundary-regexp "^;;\\(;+\\)"))) ; three or more semicolons
+
+;; Also possible: M-x add-dir-local-variable RET python-mode RET code-cells-boundary-regexp RET "^#\\(#+\\)" RET
+(add-hook 'python-mode-hook
+          (lambda () (setq-local code-cells-boundary-regexp "^#\\(#+\\)"))) ; two or more hashtags
+
+;; Convert between org and ipynb; Warning: not round-trip-safe.
+(setq code-cells-convert-ipynb-style '(("pandoc" "--to" "ipynb" "--from" "org")
+                                       ("pandoc" "--to" "org" "--from" "ipynb")
+                                       (lambda () #'org-mode)))
+
+
                                         ;(dolist (mode '(scheme-mode-hook term-mode-hook))  ; org-mode-hook term-mode-hook eshell-mode-hook treemacs-mode-hook
                                         ;  (add-hook mode
                                         ;    (lambda ()
@@ -357,7 +427,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
                                         ;(define-key dap-mode-map (kbd "C-c C-g") 'dap-debug-restart)
      ))
 
-                                        ; paredit was older than combobulate
+                                        ; paredit was older than combobulate.  Smartparens is newer than paredit.
                                         ; next sibling; via combobulate
 (global-set-key (kbd "C-M-<down>") 'forward-sexp)
 
@@ -546,7 +616,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
                                         ; Vendored from https://raw.githubusercontent.com/Alexander-Miller/treemacs/master/src/extra/treemacs-projectile.el
 (require 'treemacs-projectile)
 
-;(add-hook 'scheme-mode-hook 'guix-devel-mode)
+                                        ;(add-hook 'scheme-mode-hook 'guix-devel-mode)
 
                                         ;(straight-use-package
                                         ;  '(nano :type git :host github :repo "rougier/nano-emacs"))
@@ -614,13 +684,11 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/xenops/lisp/"))
 (require 'xenops)
-(setq-default xenops-math-image-scale-factor 0.6)
+(setq-default xenops-math-image-scale-factor 0.6) ; when not in org
                                         ; (setq-default xenops-reveal-on-entry t) ; unreveal in org mode is buggy
 (require 'ob-python) ; optional
 (add-hook 'LaTeX-mode-hook #'xenops-mode)
-(add-hook 'org-mode-hook #'xenops-mode)
-
-                                        ; (add-hook 'org-mode-hook #'xenops-mode) ; fucks up begin_src and end_src (lowercase) handling maybe
+(add-hook 'org-mode-hook #'xenops-mode) ; author doesn't really support it; also fucks up begin_src and end_src (lowercase) handling--see <https://github.com/dandavison/xenops/issues/73>
 
                                         ; Undefined
                                         ;(latex +cdlatex +latexmk +lsp)
@@ -720,7 +788,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
   ;; Was org-metaleft (Calls ‘org-do-promote’, ‘org-outdent-item’ or ‘org-table-move-column’, depending on context.  Otherwise, calls the Emacs default ‘backward-word’).
   (define-key org-mode-map [M-left] nil)
   ;; Was org-metaright. (Calls ‘org-do-demote’, ‘org-indent-item’, ‘org-table-move-column’, ‘org-indent-drawer’ or ‘org-indent-block’. Otherwise calls the Emacs default `forward-word').
-  ;(define-key org-mode-map [M-right] nil)
+                                        ;(define-key org-mode-map [M-right] nil)
 ;;; There's also S-M-<Up> but that's maybe okay.
   ;; Was org-shiftcontrolleft (switches to the previous todo set).  I want to be able to mark things so fuck off.
   (define-key org-mode-map [C-S-left] nil)
@@ -730,7 +798,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
   (define-key org-mode-map [S-up] nil)
   ;; Was (org-shiftdown &optional ARG).  Context dependent.
   (define-key org-mode-map [S-down] nil)
-)
+  )
 
 ;; Hide the markers so you just see bold text as BOLD-TEXT and not *BOLD-TEXT*
 (setq org-hide-emphasis-markers t)
@@ -875,6 +943,9 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 (defun transform-square-brackets-to-round-ones (string-to-transform)
   "Convert `[' into `(' and `]' into `)' of STRING-TO-TRANSFORM.  That's especially for arxiv."
   (concat (mapcar #'(lambda (c) (if (equal c ?\[) ?\( (if (equal c ?\]) ?\) c))) string-to-transform)))
+
+;; Set default column view headings: Task Total-Time Time-Stamp.  See C-d C-x C-c on a top-level heading
+(setq org-columns-default-format "%50ITEM(Task) %10CLOCKSUM %16TIMESTAMP_IA")
 
 (setq org-capture-templates
       `(("i" "Capture into ID node"
@@ -1186,6 +1257,7 @@ argument is given.  Choose a file name based on any document
                (apply ',original-func args)))))
     (fset func-symbol (eval new-func))))
 
+(wrap-with-global-env #'locate-user-emacs-file)
                                         ; TODO: https://tero.hasu.is/blog/transient-directories-in-notdeft/
 
 (with-eval-after-load 'buffer-env
@@ -1212,7 +1284,7 @@ argument is given.  Choose a file name based on any document
   (setq org-mem-do-sync-with-org-id t)
   (org-mem-updater-mode)
   (org-node-cache-mode)
-  ;(org-node-seq-mode)
+                                        ;(org-node-seq-mode)
 
   (keymap-set global-map "C-<Search>" #'org-node-find)
   (keymap-set global-map "M-<Search>" #'org-node-grep) ; Requires consult
@@ -1227,12 +1299,6 @@ argument is given.  Choose a file name based on any document
 
   (setq org-directory (expand-file-name "~/doc/org"))
   (setq org-default-notes-file (concat org-directory "/notes.org"))
-
-
-;  (setq org-mem-watch-dirs
-;        (list (expand-file-name "~/doc/org-roam/")))
-                                        ;Do a M-x org-node-reset and see if it can find your notes now.
-                                        ; Then org-id-update-id-locations
 
   (setq org-node-series-defs
         (list
@@ -1282,9 +1348,11 @@ argument is given.  Choose a file name based on any document
                                         ; check tramp/foo* and debug tramp/foo*
 
 
-;  (wrap-with-global-env #'el-job-launch)
-  (wrap-with-global-env #'org-node-find)
-)
+                                        ;  (wrap-with-global-env #'el-job-launch)
+                                        ; nope (wrap-with-global-env #'org-node-find)
+  )
+
+                                        ;(wrap-with-global-env #'locate-user-emacs-file) ; terrible; also, the result contains "~"--so it will just fail again later.
 
 (setq org-src-tab-acts-natively t)
 (add-hook 'org-mode-hook #'mixed-pitch-mode)
@@ -1491,15 +1559,16 @@ argument is given.  Choose a file name based on any document
 
 (setq elfeed-search-print-entry-function #'elfeed-search-print-entry)
 
-(setq gptel-backend
-      (gptel-make-openai "llama-cpp"
-        :stream t
-        :protocol "http"
-        :host "localhost:8080"
-        :models '(llama)))  ; Any names, doesn't matter for Llama
-
-(setq gptel-model 'llama)
-(setq gptel-default-mode 'org-mode)
+(use-package gptel
+  #:config
+  (setq gptel-backend
+        (gptel-make-openai "llama-cpp"
+         :stream t
+         :protocol "http"
+         :host "localhost:8080"
+         :models '(llama)))  ; Any names, doesn't matter for Llama
+  (setq gptel-model 'llama)
+  (setq gptel-default-mode 'org-mode))
 
                                         ; see also org-disputed-keys for CUA mode.
                                         ;(setq org-replace-disputed-keys t)
@@ -1681,6 +1750,13 @@ it acts on the current project."
                                   :run "lazrun" ; FIXME
                                   :test #'my/lazarus-test-command)
 
+;; TODO: Upstream.
+(projectile-register-project-type 'd-dub '("dub.json")
+                                  :project-file '("dub.json")
+                                  :compile "dub build"
+                                  :run "dub run"
+                                  :test "dub test")
+
 (setq org-agenda-files (list (expand-file-name "~/doc/org-agenda")))
 (setq org-agenda-file-regexp "\\`[^.].*\\.org\\'")
 
@@ -1781,6 +1857,8 @@ it acts on the current project."
 
 (setq org-src-fontify-natively t)
 (setq org-confirm-babel-evaluate nil)
+(setq org-startup-folded 'content)          ; Start with outline view
+(setq org-startup-with-inline-images t)     ; Show plots inline
 
 ;; Disambiguate /home/user/project1/main.cpp and /home/user/project2/main.cpp
 (require 'uniquify)
@@ -1983,7 +2061,6 @@ later form of vector is passed return 0."
                                         ;(pixel-scroll-precision-mode 1)
 (eval
  `(use-package ultra-scroll
-    :load-path ,(expand-file-name "ultra-scroll" user-emacs-directory)
     :init
     (setq scroll-conservatively 101 ; important!
           scroll-margin 0)
@@ -2279,6 +2356,7 @@ later form of vector is passed return 0."
                "https://debbugs.gnu.org/%s"))
 
 ;; Only used when the URL matches <https://debbugs.gnu.org/12345> or <https://bugs.gnu.org/54321>.
+;; TODO: also handle https://issues.guix.gnu.org/77086 (in regular mail body) somehow.
 (add-hook 'bug-reference-mode-hook 'debbugs-browse-mode)
 
 ;; Only used when the URL matches <https://debbugs.gnu.org/12345> or <https://bugs.gnu.org/54321>.
@@ -2336,9 +2414,9 @@ This function is called by `org-babel-execute-src-block'."
          ;; Other attributes are displayed in the order they appear in this list.
          '(git-msg file-time file-size))))
 
-;(use-package org-books
-;  :config
-;  (setq org-books-file "~/doc/org/books.org"))
+                                        ;(use-package org-books
+                                        ;  :config
+                                        ;  (setq org-books-file (expand-file-name "~/doc/org/books.org")))
 
 ;; TODO: emacs-lisp r sql ruby js perl c c++ java haskell scala octave[!] maxima awk ditaa dot gnuplot plantuml latex ledger picolisp ocaml sed go julia sage[!] mathematica scheme sass fortran lua coq[!] d
 (org-babel-do-load-languages
@@ -2350,6 +2428,29 @@ This function is called by `org-babel-execute-src-block'."
    (dot . t)
    (gnuplot . t)
    (plantuml . t)))
+
+;; I already get a "Contacts updated" thing from mu4e without this.  What gives?
+(use-package ebdb
+  :config
+  (ebdb-initialize)
+                                        ; FIXME: doesn't exist? (ebdb-mua-auto-update-init 'gnus 'message 'mu4e)
+
+  ;; When invoking bbdb interactively
+                                        ; missing (setq ebdb-mua-update-interactive-p '(query . create))
+
+  ;; Check every address in a message and not only the first
+                                        ; missing (setq ebdb-message-all-addresses t)
+
+  ;; use ; on a message to invoke ebdb
+                                        ;(add-hook 'gnus-summary-mode-hook ; missing
+                                        ;    (lambda ()
+                                        ;      (define-key gnus-summary-mode-map (kbd ";") 'ebdb-mua-edit-field)))
+
+  (add-hook 'gnus-startup-hook 'ebdb-insinuate-gnus)
+  (add-hook 'gnus-startup-hook 'ebdb-insinuate-mu4e)
+                                        ; missing (setq ebdb-complete-name-allow-cycling t)
+  )
+
 ;; TODO: Switch to notmuch for news as well?
 (use-package gnus
   :config
@@ -2372,6 +2473,7 @@ This function is called by `org-babel-execute-src-block'."
          " "
          "%1{%B%}"
          "%s\n"))
+  (setq mm-verify-option 'known) ; asks
   (setq gnus-summary-display-arrow t)
                                         ; gnus-dired-attach in dired; attaches to open email
   (setq gnus-play-startup-jingle nil)
@@ -2479,7 +2581,7 @@ This function is called by `org-babel-execute-src-block'."
         '(nntp "news.gmane.io"
                (nntp-open-connection-function nntp-open-network-stream) ; FIXME: Force STARTTLS
                (nntp-port-number 119)))
-  ;(add-hook 'dired-mode-hook #'gnus-dired-mode) ; dired integration ; does not exist??
+                                        ;(add-hook 'dired-mode-hook #'gnus-dired-mode) ; dired integration ; does not exist??
   (add-hook 'gnus-group-mode-hook #'gnus-topic-mode)
   (add-hook 'gnus-select-group-hook #'gnus-group-set-timestamp)
 
@@ -2542,12 +2644,13 @@ This function is called by `org-babel-execute-src-block'."
       (tool-bar-local-item "mail/reply-all" 'gnus-summary-wide-reply 'gnus-summary-wide-reply tool-bar-map :label "Reply to all" :help "Reply to all recipients")
       (tool-bar-local-item "mail/reply" 'gnus-summary-reply 'gnus-summary-reply tool-bar-map :label "Reply" :help "Reply to sender")
       (tool-bar-local-item "mail/forward" 'gnus-summary-post-forward 'gnus-summary-post-forward tool-bar-map :label "Forward" :help "Forward this message")
+      (tool-bar-local-item "ezimage/key" 'gnus-summary-force-verify-and-decrypt 'gnus-summary-force-verify-and-decrypt tool-bar-map :label "Verify PGP signature" :help "Verify PGP signature")
 
       ;; TODO mark
 
       tool-bar-map))
 
-  (defun my-gnus-article-mode-setup-toolbar ()
+  (defun my-gnus-article-mode-setup-toolbar () ; FIXME: maybe that's also used for mu4e ?! That might not be so great.
     "Set up the toolbar for `gnus-article-mode'."
     (setq-local tool-bar-map gnus-article-mode-tool-bar-map))
 
@@ -2597,6 +2700,23 @@ This function is called by `org-babel-execute-src-block'."
                                         ;(setq xenops-math-image-scale-factor 0.6)
   )
 (add-hook 'org-mode-hook #'my/org-scale-up-font)
+
+;; use a variable-pitch face in programming modes.
+                                        ;(add-hook 'prog-mode-hook
+                                        ;          (lambda ()
+                                        ;            (face-remap-add-relative 'default 'variable-pitch)))
+;;; (Customize variable-pitch face properly)
+                                        ;(use-package elastic-indent
+                                        ;  :hook (prog-mode . elastic-indent-mode))
+                                        ;(use-package elastic-table
+                                        ;  :hook (prog-mode . elastic-table-mode))
+
+                                        ;(require 'dired-x)
+                                        ;(add-hook 'dired-load-hook
+                                        ;          (lambda ()
+                                        ;            (setq dired-omit-files-p t) ; Enable dired-omit-mode by default
+                                        ;            (setq dired-omit-mode t))) ; Ensure dired-omit-mode is enabled
+
 (add-hook 'dired-mode-hook 'dired-hide-details-mode)
 
 (with-eval-after-load 'prog-mode
@@ -2608,9 +2728,16 @@ This function is called by `org-babel-execute-src-block'."
   :custom
   (compilation-scroll-output t)
   (ansi-color-for-compilation-mode t)
-  ; (compilation-environment '("TERM=xterm-256color"))
+                                        ; (compilation-environment '("TERM=xterm-256color"))
   :config
   (add-hook 'compilation-filter-hook #'ansi-color-compilation-filter))
+
+                                        ; TODO: (global-auto-revert-non-file-buffers t) for dired autorefresh.
+                                        ; TODO: (ispell-personal-dictionary ...)
+
+                                        ; TODO: (modify-coding-system-alist 'file "" 'utf-8)
+                                        ; TODO? (setenv "GPG_AGENT_INFO" nil)
+
 (use-package proced
   :defer t
   :custom
@@ -2738,9 +2865,16 @@ This function is called by `org-babel-execute-src-block'."
 (add-hook 'emms-playlist-mode-hook #'my-emms-playlist-setup-toolbar)
 (add-hook 'emms-playlist-mode-hook #'variable-pitch-mode)
 
-; emms-playlist-mode-go
-; switch-to-buffer emms-playlist-buffer
-; emms-playlist-mode-add-contents setq emms-playlist-buffer emms-playlist-set-playlist-buffer (emms-playlist-new
+                                        ; emms-playlist-mode-go
+                                        ; switch-to-buffer emms-playlist-buffer
+                                        ; emms-playlist-mode-add-contents setq emms-playlist-buffer emms-playlist-set-playlist-buffer (emms-playlist-new
+
+                                        ;(defun my-emms-file-handler (filename)
+                                        ;  (emms-add-file filename)
+                                        ;  (emms-show)  ; Shows the current track info
+                                        ;  t)
+                                        ;(add-to-list 'auto-mode-alist '("\\.mp4\\'" . emms-play-file))
+
 (defun my/substitute-unnecessary-latex ()
   "Substitute \\[ \\n \\text{STUFF} \\n \\] with STUFF in the current buffer."
   (interactive)
@@ -2748,6 +2882,94 @@ This function is called by `org-babel-execute-src-block'."
     (goto-char (point-min))
     (while (re-search-forward "\\\[\\([[:space:]]*\\)\\(\n\\)[[:space:]]*\\\\text{\\([a-zA-Zäöü:,.[:space:]]*\\)[[:space:]]*}[[:space:]]*\\(\n\\)[[:space:]]*\\\\]")
       (replace-match "\\3" nil nil))))
+
+(use-package emacs
+  :after (projectile)
+  :preface
+  (defvar-local jf/mode-line-format/org-clock
+      '(:eval
+        (when
+            (and
+             (mode-line-window-selected-p)
+             org-clock-current-task
+             (not (derived-mode-p
+                   'Info-mode
+                   'help-mode
+                   'special-mode
+                   'message-mode)))
+          (concat
+           ;; The symbol that most looks like an analogue stop watch.
+           (propertize " ⨶ " 'face 'mode-line-highlight) " "))))
+  (defvar-local jf/mode-line-format/project
+      '(:eval
+        (when (and (fboundp 'projectile-project-p) (projectile-project-p))
+          (propertize
+           (concat " " (project-name (project-current)))
+           'face
+           (if (mode-line-window-selected-p)
+               'jf/mode-line-format/face-shadow
+             'mode-line-inactive)))))
+
+  ;; We need to acknowledge and accept that these are risky variables.
+  ;; If we do not, then Emacs will not render the variable in the
+  ;; modeline.
+  (dolist (construct '(
+                       jf/mode-line-format/org-clock
+                       jf/mode-line-format/project
+                       ))
+    (put construct 'risky-local-variable t))
+
+                                        ; default: ("%e" mode-line-front-space (:propertize ("" mode-line-mule-info mode-line-client mode-line-modified mode-line-remote) display (min-width (5.0))) mode-line-frame-identification mode-line-buffer-identification "   " mode-line-position (vc-mode vc-mode) "  " mode-line-modes mode-line-misc-info mode-line-end-spaces)
+  (setq-default dummy-mode-line-format
+                '("%e" " "
+                  jf/mode-line-format/org-clock
+                  jf/mode-line-format/project " "
+                  )))
+
+(defun jupyter-session-with-random-ports ()
+  "Return a `jupyter-session' with random channel ports.
+The session can be used to write a connection file, see
+`jupyter-write-connection-file'."
+  ;; The actual work of making the connection file is left up to the
+  ;; `jupyter kernel` shell command.  This is done to support
+  ;; launching remote kernels via TRAMP.  The Jupyter suite of shell
+  ;; commands probably exist on the remote system, so we rely on them
+  ;; to figure out a set of open ports on the remote.
+  (with-temp-buffer
+    (let ((process (start-file-process
+                    "jupyter-session-with-random-ports" (current-buffer)
+                    "jupyter" "kernel")))
+      (set-process-query-on-exit-flag process nil)
+      (jupyter-with-timeout
+          (nil jupyter-long-timeout
+               (error "`jupyter kernel` failed to show connection file path"))
+        (and (process-live-p process)
+             (goto-char (point-min))
+             (re-search-forward (rx "Connection file: "
+                                    (group (+ any) ".json")
+                                    (* whitespace) line-end)
+                                nil t)))
+      (let* ((conn-file (concat
+                         (save-match-data
+                           (file-remote-p default-directory))
+                         (match-string 1)))
+             (conn-info (jupyter-read-connection conn-file)))
+        ;; Tell the `jupyter kernel` process to shutdown itself and
+        ;; the launched kernel.
+        (interrupt-process process)
+        ;; Wait until the connection file is cleaned up before
+        ;; forgetting about the process completely.
+        (jupyter-with-timeout
+            (nil jupyter-default-timeout
+                 (delete-file conn-file))
+          (not (file-exists-p conn-file)))
+        (delete-process process)
+        (let ((new-key (jupyter-new-uuid)))
+          (plist-put conn-info :key new-key)
+          (jupyter-session
+           :conn-info conn-info
+           :key new-key))))))
+
 (use-package magit
   :config
   (defvar magit-status-mode-tool-bar-map
@@ -2808,6 +3030,52 @@ This function is called by `org-babel-execute-src-block'."
   )
 
 (add-hook 'emacs-startup-hook #'my-remove-tools-menu-items)
+
+(defun my/grep-edit-results ()
+  "Export results using `embark-export' and activate `wgrep'.
+This only runs for ripgrep results.
+`wgrep' provides an editable buffer over multiple files."
+  (interactive)
+  (when (cl-search "Ripgrep" (buffer-string))
+    ;; we use `run-at-time' to ensure all of these steps
+    ;; will be executed in order
+    (run-at-time 0 nil #'embark-export)
+    (run-at-time 0 nil #'wgrep-change-to-wgrep-mode)
+                                        ;(run-at-time 0 nil #'evil-normal-state)
+    ))
+
+(define-key minibuffer-mode-map (kbd "C-c C-e") #'my/grep-edit-results)
+
+
+;; So I can set bug to DONE in debbugs-org-bugs org view
+
+(defun debbugs-gnu-send-control-message (query message &optional reverse)
+  "Send a control message for the current bug report.
+You can set the severity or add a tag, or close the report.
+
+If given a prefix, and given a tag to set, the tag will be
+removed instead."
+  (interactive
+   (list debbugs-gnu-local-query
+         (completing-read
+          "Control message: " debbugs-gnu-control-message-keywords nil t)
+	 current-prefix-arg))
+
+  (let ((id (or (debbugs-gnu-current-id t)
+                debbugs-gnu-bug-number       ; Set on group entry.
+                (debbugs-gnu-guess-current-id)
+                (pcase query
+                  (`((bugs ,x))
+                   x)
+                  (_ nil)))))
+    (with-temp-buffer
+      (debbugs-gnu-make-control-message
+       message id reverse (current-buffer))
+      (funcall (or debbugs-gnu-send-mail-function send-mail-function))
+      (message-goto-body)
+      (message "Control message sent:\n%s"
+               (buffer-substring-no-properties (point) (1- (point-max)))))))
+
 ;; Example configuration for Consult
 (use-package consult
   ;; Replace bindings. Lazily loaded by `use-package'.
@@ -2866,7 +3134,7 @@ This function is called by `org-babel-execute-src-block'."
 
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI.
-  ; :hook (completion-list-mode . consult-preview-at-point-mode)
+                                        ; :hook (completion-list-mode . consult-preview-at-point-mode)
 
   ;; The :init configuration is always executed (Not lazy)
   :init
@@ -2909,7 +3177,7 @@ This function is called by `org-babel-execute-src-block'."
   ;; Optionally make narrowing help available in the minibuffer.
   ;; You may want to use `embark-prefix-help-command' or which-key instead.
   ;; (keymap-set consult-narrow-map (concat consult-narrow-key " ?") #'consult-narrow-help)
-)
+  )
 
 (use-package tab-line
   :demand t
@@ -2918,10 +3186,37 @@ This function is called by `org-babel-execute-src-block'."
    ("C-<tab>" . tab-line-switch-to-next-tab))
   :config
   (global-tab-line-mode 1)
-  ;(setq
-  ; tab-line-new-button-show nil
-  ; tab-line-close-button-show nil)
-   )
+                                        ;(setq
+                                        ; tab-line-new-button-show nil
+                                        ; tab-line-close-button-show nil)
+  )
+
+                                        ;(add-hook 'emacs-lisp-mode-hook
+                                        ;          (lambda ()
+                                        ;            (local-set-key (kbd "C-x C-d") 'elisp-documentation-search)
+                                        ;            (local-set-key (kbd "C-x C-w") 'find-function-at-point)
+                                        ;            (local-set-key (kbd "C-x c") 'eval-buffer)))
+
+;; Lists existing org files, too.
+                                        ;(defvar org-source
+                                        ;  (list :name     "Org Buffer"
+                                        ;        :category 'buffer
+                                        ;        :narrow   ?o
+                                        ;        :face     'consult-buffer
+                                        ;        :history  'buffer-name-history
+                                        ;        :state    #'consult--buffer-state
+                                        ;        :new
+                                        ;        (lambda (name)
+                                        ;          (with-current-buffer (get-buffer-create name)
+                                        ;            (insert "#+title: " name "\n\n")
+                                        ;            (org-mode)
+                                        ;            (consult--buffer-action (current-buffer))))
+                                        ;        :items
+                                        ;        (lambda ()
+                                        ;          (consult--buffer-query :mode 'org-mode :as #'consult--buffer-pair))))
+                                        ;
+                                        ;(add-to-list 'consult-buffer-sources 'org-source 'append)
+
 ;; One color per project
 
 (require 'project)
@@ -2940,7 +3235,7 @@ This function is called by `org-babel-execute-src-block'."
 (defun amitp/set-modeline-color ()
   "Set mode line color based on current buffer's project"
   (let ((color (project-color-background)))
-    ;(face-remap-add-relative 'tab-line-tab-current :background color :foreground "white")
+                                        ;(face-remap-add-relative 'tab-line-tab-current :background color :foreground "white")
     (face-remap-add-relative 'mode-line-active :background color :foreground "white")
     (face-remap-add-relative 'line-number-current-line :background color :foreground "white")))
 
@@ -2948,48 +3243,52 @@ This function is called by `org-babel-execute-src-block'."
 (add-hook 'dired-mode-hook #'amitp/set-modeline-color)
 (add-hook 'change-major-mode-hook #'amitp/set-modeline-color)
 (add-hook 'temp-buffer-setup-hook #'amitp/set-modeline-color)
-(dolist (hook '(text-mode-hook prog-mode-hook conf-mode-hook org-mode-hook))
-  (add-hook hook #'jinx-mode))
-(keymap-global-set "M-$" #'jinx-correct)
-(keymap-global-set "C-M-$" #'jinx-languages)
-;(add-to-list 'vertico-multiform-categories
-;             '(jinx grid (vertico-grid-annotate . 20) (vertico-count . 4)))
-;(vertico-multiform-mode 1)
-;(use-package jinx
-;  :hook (emacs-startup . global-jinx-mode)
-;  :bind (("M-$" . jinx-correct)
-;         ("C-M-$" . jinx-languages)))
+(add-hook 'pdf-view-hook #'auto-revert-mode)
+
+(use-package jinx
+  :config
+  (dolist (hook '(text-mode-hook prog-mode-hook conf-mode-hook org-mode-hook))
+    (add-hook hook #'jinx-mode)) ; MISSING jinx-mode, apparently.
+  (keymap-global-set "M-$" #'jinx-correct)
+  (keymap-global-set "C-M-$" #'jinx-languages))
+                                        ;(add-to-list 'vertico-multiform-categories
+                                        ;             '(jinx grid (vertico-grid-annotate . 20) (vertico-count . 4)))
+                                        ;(vertico-multiform-mode 1)
+                                        ;(use-package jinx
+                                        ;  :hook (emacs-startup . global-jinx-mode)
+                                        ;  :bind (("M-$" . jinx-correct)
+                                        ;         ("C-M-$" . jinx-languages)))
 
 (use-package xenops
   :config
   (setq xenops-math-latex-process-alist
-  '((dvipng
-     :programs ("latex" "dvipng")
-     :description "dvi > png"
-     :message "you need to install the programs: latex and dvipng."
-     :image-input-type "dvi"
-     :image-output-type "png"
-     :image-size-adjust (1.0 . 1.0)
-     :latex-compiler ("lualatex -interaction nonstopmode -shell-escape -output-format dvi -output-directory %o %f")
-     :image-converter ("dvipng -D %D -T tight -o %O %f"))
-    (dvisvgm
-     :programs ("latex" "dvisvgm")
-     :description "dvi > svg"
-     :message "you need to install the programs: latex and dvisvgm."
-     :image-input-type "dvi"
-     :image-output-type "svg"
-     :image-size-adjust (1.7 . 1.5)
-     :latex-compiler ("lualatex -interaction nonstopmode -shell-escape -output-format dvi -output-directory %o %f")
-     :image-converter ("dvisvgm %f -n -b %B -c %S -o %O"))
-    (imagemagick
-     :programs ("latex" "convert")
-     :description "pdf > png"
-     :message "you need to install the programs: latex and imagemagick."
-     :image-input-type "pdf"
-     :image-output-type "png"
-     :image-size-adjust (1.0 . 1.0)
-     :latex-compiler ("pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f")
-     :image-converter ("convert -density %D -trim -antialias %f -quality 100 %O")))))
+        '((dvipng
+           :programs ("latex" "dvipng")
+           :description "dvi > png"
+           :message "you need to install the programs: latex and dvipng."
+           :image-input-type "dvi"
+           :image-output-type "png"
+           :image-size-adjust (1.0 . 1.0)
+           :latex-compiler ("lualatex -interaction nonstopmode -shell-escape -output-format dvi -output-directory %o %f")
+           :image-converter ("dvipng -D %D -T tight -o %O %f"))
+          (dvisvgm
+           :programs ("latex" "dvisvgm")
+           :description "dvi > svg"
+           :message "you need to install the programs: latex and dvisvgm."
+           :image-input-type "dvi"
+           :image-output-type "svg"
+           :image-size-adjust (1.7 . 1.5)
+           :latex-compiler ("lualatex -interaction nonstopmode -shell-escape -output-format dvi -output-directory %o %f")
+           :image-converter ("dvisvgm %f -n -b %B -c %S -o %O"))
+          (imagemagick
+           :programs ("latex" "convert")
+           :description "pdf > png"
+           :message "you need to install the programs: latex and imagemagick."
+           :image-input-type "pdf"
+           :image-output-type "png"
+           :image-size-adjust (1.0 . 1.0)
+           :latex-compiler ("pdflatex -interaction nonstopmode -shell-escape -output-directory %o %f")
+           :image-converter ("convert -density %D -trim -antialias %f -quality 100 %O")))))
 
 (use-package org-modern-indent
   :ensure t
@@ -3001,13 +3300,34 @@ This function is called by `org-babel-execute-src-block'."
   :custom
   (org-modern-hide-stars nil)		; adds extra indentation
   (org-modern-table nil)
-  (org-modern-list 
+  (org-modern-list
    '(;; (?- . "-")
      (?* . "•")
      (?+ . "‣")))
   :hook
   (org-mode . org-modern-mode)
   (org-agenda-finalize . org-modern-agenda))
+
+                                        ;(use-package org-bullets-mode
+                                        ;  :ensure org-bullets
+                                        ;  :config
+                                        ; :hook org-mode)
+
+;; TODO: https://magit.vc/manual/magit/Automatic-Reverting-of-File_002dVisiting-Buffers.html but maybe dumb
+(with-eval-after-load 'magit-mode
+  (add-hook 'after-save-hook 'magit-after-save-refresh-status t) ; or "g" key to refresh manually
+  (setq magit-save-repository-buffers t)) ; asks
+
+(with-eval-after-load 'fj
+  (setq fj-host "https://codeberg.org")
+  (setq fj-user "daym")
+  (setq fj-token
+        (funcall (plist-get
+                  (car
+                   (auth-source-search :host "codeberg.org/api/v1"
+                                       :user fj-user
+                                       :type 'netrc))
+                  :secret))))
 
 (use-package indent-bars
   :custom
@@ -3016,12 +3336,155 @@ This function is called by `org-babel-execute-src-block'."
   (indent-bars-treesit-ignore-blank-lines-types '("module"))
   ;; Add other languages as needed
   (indent-bars-treesit-scope '((python function_definition class_definition for_statement
-	  if_statement with_statement while_statement)))
+	                               if_statement with_statement while_statement)))
   ;; Note: wrap may not be needed if no-descend-list is enough
   ;;(indent-bars-treesit-wrap '((python argument_list parameters ; for python, as an example
   ;;				      list list_comprehension
   ;;				      dictionary dictionary_comprehension
   ;;				      parenthesized_expression subscript)))
   :hook ((python-base-mode yaml-mode) . indent-bars-mode))
-(load (locate-user-emacs-file "guix-build-failure3.el")
-      :no-error-if-file-is-missing)
+
+(defun my/org-remove-redundant-tags ()
+  "Remove redundant header tags from the current entry.
+Redundant header tags are tags that also have an entry in
+FILETAGS."
+  (interactive)
+  (let* ((file-tags-raw (org-collect-keywords '("FILETAGS")))
+         (file-tags (when file-tags-raw
+                      (split-string (cadar file-tags-raw) ":" t))))
+    (org-set-tags
+     (seq-remove (lambda (tag)
+                   (member tag file-tags))
+                 (org-get-tags)))))
+
+(defun my/org-remove-redundant-tags-in-buffer ()
+  "Remove redundant header tags from headlines in buffer"
+  (interactive)
+  (org-map-entries #'my/org-remove-redundant-tags))
+
+(defun my/org-remove-redundant-tags-in-directory (directory)
+  "Given a directory with org files, remove redundant header tags."
+  (interactive "DDirectory: ")
+  (dolist (file (directory-files-recursively directory "\\.org$"))
+    (with-current-buffer (find-file-noselect file)
+      (my/org-remove-redundant-tags-in-buffer)
+      (save-buffer)
+      (kill-buffer))))
+
+(defun my/org-collect-all-tags-in-directory (directory)
+  "Collect all unique tags from org files in DIRECTORY."
+  (interactive "DDirectory: ")
+  (let ((tags '()))
+    (dolist (file (directory-files-recursively directory "\\.org$"))
+      (with-current-buffer (find-file-noselect file)
+        (org-mode)
+        ;; Collect both file tags and headline tags
+        (when-let ((file-tags (org-get-tags nil t)))
+          (setq tags (append tags file-tags)))
+        (org-map-entries
+         (lambda ()
+           (when-let ((entry-tags (org-get-tags nil t)))
+             (setq tags (append tags entry-tags))))
+         t 'file)))
+    (delete-dups tags)
+    (if (called-interactively-p 'any)
+        (with-current-buffer (get-buffer-create "*Org Tags*")
+          (erase-buffer)
+          (insert (format "Total unique tags: %d\n\n" (length tags)))
+          (insert (mapconcat 'identity tags "\n"))
+          (display-buffer (current-buffer)))
+      tags)))
+
+(defun guix-move-crate-definitions ()
+  "Move crate definitions from crates-build.scm to their respective files."
+  (interactive)
+  (let ((moved-defs '())
+        (default-directory "/home/dannym/src/guix-installer/guix"))
+    (with-temp-buffer
+      (insert-file-contents "/home/dannym/src/guix-installer/guix/grep-results.txt")  ; Replace with your grep results file
+      (goto-char (point-min))
+      (while (not (eobp))
+        (let* ((line (buffer-substring-no-properties
+                      (line-beginning-position)
+                      (line-end-position)))
+               (_ (message "line %S" line))
+               (parts (split-string line ":"))
+               (target-file (car parts))
+               (def-line (cadr parts))
+               (_ (message "def-line %S" def-line))
+               (def-name (progn
+                           (string-match "(define-public \\(rust-[^ ]+\\)-[0-9]" def-line)
+                           (match-string 1 def-line)))
+               (_ (message "def-name %S" def-name)))
+
+          ;; Only process if we haven't moved this definition yet
+          (unless (member def-name moved-defs)
+            (push def-name moved-defs)
+
+            ;; Find and cut from source file
+            (with-current-buffer (find-file-noselect "gnu/packages/crates-build.scm")
+              (goto-char (point-min))
+              (when (re-search-forward (concat "(define-public " def-name "-[0-9]") nil t)
+                (backward-char)
+                (while (not (looking-at "("))
+                  (backward-char))
+                (let ((start (point)))
+                  (forward-sexp)
+                  (let ((def-text (buffer-substring start (point))))
+                    (message "def-text %S" def-text)
+                    ;; Delete from source
+                    (delete-region start (point))
+
+                    (message "target-file %S" target-file)
+
+                    ;; Insert in target file
+                    (with-current-buffer (find-file-noselect (concat "/home/dannym/src/guix-installer/guix/" target-file))
+                      (goto-char (point-min))
+                      (re-search-forward (concat "(define-public " def-name "-"))
+                      (backward-char)
+                      (while (not (looking-at "("))
+                        (backward-char))
+                      (insert def-text "\n\n")
+                      (save-buffer))
+                    )
+                  (save-buffer))))
+            )
+
+          (forward-line 1))))))
+
+(use-package eat
+  :custom
+  (eat-term-name "xterm-256color")
+  :custom-face
+  (ansi-color-bright-blue ((t (:foreground "#00afff" :background "#00afff"))))
+  :config
+  (evil-set-initial-state 'eat-mode 'emacs)
+  (eat-eshell-mode)
+  (eat-eshell-visual-command-mode))
+
+(with-eval-after-load 'buffer-env
+  (add-hook 'hack-local-variables-hook #'buffer-env-update)
+  (add-hook 'comint-mode-hook #'buffer-env-update))
+
+(require 'org-download)
+;; Drag-and-drop to `dired`
+(add-hook 'dired-mode-hook 'org-download-enable)
+
+(with-eval-after-load 'claude-code-ide
+  (setq claude-code-ide-cli-path (expand-file-name "~/src/agent-c/node_modules/.bin/claude")))
+    
+(add-hook 'vhdl-mode-hook
+          (lambda ()
+            ;; Remove format-all from the save hook for this buffer only
+            (remove-hook 'before-save-hook 'format-all-buffer t)
+            ;; Add the native beautifier instead
+            (add-hook 'before-save-hook 'vhdl-beautify-buffer nil t)))
+
+;(add-hook 'prog-mode-hook
+;          (lambda ()
+;            (add-hook 'before-save-hook
+;                      (lambda ()
+;                        (if (eq major-mode 'vhdl-mode)
+;                            (vhdl-beautify-buffer)
+;                          (format-all-buffer)))
+;                      nil t)))

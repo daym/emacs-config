@@ -57,12 +57,40 @@
   (interactive)
   (compile (concat "mcphas2jvx " (buffer-file-name))))
 
-(defun singleion ()
-  (interactive)
-  (let ((T (read-number "T: "))
-        (Hext (read-number "Hext: "))
-        (Hxc (read-number "Hxc: ")))
-    (compile (format "singleion -T %s -Hext %s -Hxc %s" T Hext Hxc))))
+;;; interactive argument:
+;;; "*" is buffer is supposed to be read-write.
+;;; a  function name
+;;; b  existing buffer name
+;;; B  buffer name
+;;; c  character
+;;; C  command name
+;;; d  position of point
+;;; D  directory
+;;; e  event
+;;; f  existing file name
+;;; F  file name
+;;; G  file or directory name
+;;; i  irrelevant (always nil)
+;;; k  key sequence
+;;; K  key sequence, with last element unconverted
+;;; U  key up sequence (or nil)
+;;; m  position of mark
+;;; n  number (!)
+;;; N  numeric prefix argument, or number
+;;; p  numeric prefix argument
+;;; P  raw prefix argument
+;;; r  position of point and mark, sorted, as two arguments.
+;;; s  string
+;;; S  interned symbol
+;;; v  custom variable
+;;; x  Lisp form, not evaluated
+;;; X  Lisp form, evaluated
+;;; z  coding system (as symbol)
+;;; Z  coding system, but only if this command has a prefix argument
+
+(defun singleion (T Hext Hxc)
+  (interactive "nT: \nnHext: \nnHxc: ")
+  (compile (format "singleion -T %s -Hext %s -Hxc %s" T Hext Hxc)))
 
 (defun ic1ion ()
   (interactive)
@@ -85,12 +113,12 @@
   (let* ((temperature (read-number "Enter temperature (T) in Kelvin: "))
          (field-strength (read-number "Enter absolute value of the external magnetic field (H) in Tesla: "))
          (polycrystal-flag (yes-or-no-p "Calculate polycrystal average? "))
-         
+
          (calc-plane (if polycrystal-flag ""
-                        (read-string "plane in which anisotropy should be calculated (given as direction normal to plane xn yn zn), e.g., '0 0 1': ")))
+                       (read-string "plane in which anisotropy should be calculated (given as direction normal to plane xn yn zn), e.g., '0 0 1': ")))
          (nofsteps (if polycrystal-flag ""
-                       (read-number "Enter number of steps to be calculated: ")))
-                      
+                     (read-number "Enter number of steps to be calculated: ")))
+
          (nofthetasteps (if polycrystal-flag (read-number "Enter number of theta steps to be calculated: ") ""))
 
          (sipffilename (read-file-name "Enter filename of single ion parameter file (or press Enter to skip): " nil nil t))
@@ -104,9 +132,9 @@
                    (number-to-string field-strength) " "
                    calc-plane " "
                    (number-to-string nofsteps) " "
-                   
+
                    (if polycrystal-flag (concat "-p " (number-to-string nofthetasteps))
-                      "")
+                     "")
                    " "
                    (if (not (string-empty-p sipffilename))
                        (concat "-r " sipffilename " " exchange-fields)))))
@@ -117,7 +145,7 @@
   (interactive)
   (let ((distance (read-number "distance (A): "))
         (option (completing-read "Choose an option: "
-                             '("-rkky" "-rkky3d" "-rkkz" "-rkkz3d" "-kaneyoshi" "-kaneyoshi3d" "-bvk" "-cfph" "-f" "-dm" "-d")))
+                                 '("-rkky" "-rkky3d" "-rkkz" "-rkkz3d" "-kaneyoshi" "-kaneyoshi3d" "-bvk" "-cfph" "-f" "-dm" "-d")))
         (A (read-number "A (meV): ")))
     (cond
      ((string-equal option "-rkky")
@@ -161,12 +189,9 @@
      ((string-equal option "-d") ; TODO: in addition?
       (compile (format "makenn %s -d" distance))))))
 
-(defun setup-jqfit ()
-  (interactive)
-  (let ((h (read-number "h: "))
-        (k (read-number "k: "))
-        (l (read-number "l: ")))
-    (compile (format "setup_jqfit -h %s -k %s -l %s" h k l))))
+(defun setup-jqfit (h k l)
+  (interactive "nh: \nnk: \nl: ")
+  (compile (format "setup_jqfit -h %s -k %s -l %s" h k l)))
 
 (defun setup-mcdiff-in ()
   (interactive)
@@ -197,8 +222,8 @@
         (x (read-number "x: "))
         (y (read-number "y: "))
         (z (read-number "z: "))
-;; TODO optional B4m
-;; TODO optional B6m
+        ;; TODO optional B4m
+        ;; TODO optional B6m
         )
     (compile (format "pointc %s %s %s %s %s" ionname charge x y z))))
 
@@ -329,12 +354,12 @@
       (tool-bar-local-item nil 'ic1ion 'ic1ion tool-bar-map :label "|Run ic1ion" :help "Run ic1ion")
       (tool-bar-local-item nil 'formfactor 'formfactor tool-bar-map :label "|Run formfactor" :help "Run formfactor")
       (tool-bar-local-item nil 'display-density 'display-density tool-bar-map :label "|Display density" :help "Display density")
-      ;(tool-bar-local-item nil 'display-densities 'display-densities tool-bar-map :label "|Display densities" :help "Display densities") ; TODO: results/mcphas.mf vs other mf
-  )
+                                        ;(tool-bar-local-item nil 'display-densities 'display-densities tool-bar-map :label "|Display densities" :help "Display densities") ; TODO: results/mcphas.mf vs other mf
+      )
      ((string-match "\\`.*mcphas\\.ini\\|.*mcphas\\.j\\'" file-name)
       (tool-bar-local-item "mcphas-mcphas" 'run-mcphas 'run-mcphas tool-bar-map :label "|Run mcphas" :help "Run mcphas")
       (tool-bar-local-item nil 'singleion 'singleion tool-bar-map :label "|Run singeleion" :help "Run singleion")
-      (tool-bar-local-item nil 'setup-jqfit 'setup-jqfit tool-bar-map :label "|Setup jqfit" :help "Setup jqfit") ; mcphase.j sipf -> 
+      (tool-bar-local-item nil 'setup-jqfit 'setup-jqfit tool-bar-map :label "|Setup jqfit" :help "Setup jqfit") ; mcphase.j sipf ->
       (tool-bar-local-item nil 'setup-mcphasjforfit 'setup-mcphasjforfit tool-bar-map :label "|Setup mcphasjforfit" :help "Setup mcphasjforfit") ; mcphas.j -> mcphas.j.forfit
       (tool-bar-local-item nil 'mcphas2jvx 'mcphas2jvx tool-bar-map :label "|Run mcphas2jvx" :help "Run mcphas2jvx")
       (tool-bar-local-item nil 'makenn 'makenn tool-bar-map :label "|Run makenn" :help "Run makenn")       ; requires mcphas.j, edits mcphas.j
@@ -345,14 +370,14 @@
       )
      ((string-match "\\`.*mcdisp\\.\\(par\\|mf\\)\\'" file-name)
       (tool-bar-local-item nil 'mcdisp 'mcdisp tool-bar-map :label "|Run mcdisp" :help "Run mcdisp")
-     )
+      )
      ((string-match "\\`.*\\(cef\\|par\\)\\'" file-name)
       (tool-bar-local-item nil 'bfk 'bfk tool-bar-map :label "|Run bfk" :help "Run bfk")
-     )
-     
+      )
+
      ((string-match "\\`.*mcdiff\\.in\\'" file-name)
       (tool-bar-local-item nil 'mcdiff 'mcdiff tool-bar-map :label "|Run mcdiff" :help "Run mcdiff")
-     )
+      )
      ((string-match "\\`.*\\.j\\'" file-name)
       nil
       )
@@ -367,14 +392,14 @@
       )
      ((string-match "\\`.*\\.sipf.levels\\'" file-name) ; results/
       (tool-bar-local-item nil 'cpsingleion 'cpsingleion tool-bar-map :label "|Run cpsingleion" :help "Run cpsingleion")
-     )
+      )
      ((string-match "\\`.*\\.qei\\'" file-name) ; results/*.qei
       (tool-bar-local-item nil 'powdermagnon-r 'powdermagnon-r tool-bar-map :label "|Run powdermagnon-r" :help "Run powdermagnon-r")
       )
-           
+
      ((string-match "\\`.*\\.jvx\\'" file-name)
       (tool-bar-local-item nil 'javaview 'javaview tool-bar-map :label "|Run javaview" :help "Run javaview"))
-      )
+     )
     (setq-local tool-bar-map tool-bar-map)))
 
 ;; Add the toolbar buttons when the mode is activated
@@ -384,11 +409,11 @@
 (provide 'my-mcphas-mode)
 
 (add-to-list 'auto-mode-alist
-  '("\\.\\(Blm\\|cef\\|cif\\|clc\\|dat\\|del\\|dsigma\\|fcm\\|fe_status\\|forfit\\|fst\\|fum\\|grid\\|hkl\\|hst\\|in\\|ini\\|j\\|jpg\\|jq\\|jvx\\|Llm\\|mcdisp\\|mcphas\\|mf\\|MH_mcphas\\|MH_spins\\|MH_spins3dab\\|MH_spins3dac\\|MH_spins3dbc\\|MT_mcphas\\|MT_spins\\|MT_spins3dab\\|MT_spins3dac\\|MT_spins3dbc\\|out\\|par\\|pc\\|phs\\|prn\\|qee\\|qei\\|qem\\|qom\\|qvc\\|rtplot\\|setup\\|sipf\\|spins\\|spins3dab\\|spins3dac\\|spins3dbc\\|sps\\|status\\|trs\\|tst\\|txt\\|xyt\\)\\'" . my-mcphas-mode))
+             '("\\.\\(Blm\\|cef\\|cif\\|clc\\|dat\\|del\\|dsigma\\|fcm\\|fe_status\\|forfit\\|fst\\|fum\\|grid\\|hkl\\|hst\\|in\\|ini\\|j\\|jq\\|jvx\\|Llm\\|mcdisp\\|mcphas\\|mf\\|MH_mcphas\\|MH_spins\\|MH_spins3dab\\|MH_spins3dac\\|MH_spins3dbc\\|MT_mcphas\\|MT_spins\\|MT_spins3dab\\|MT_spins3dac\\|MT_spins3dbc\\|out\\|par\\|pc\\|phs\\|prn\\|qee\\|qei\\|qem\\|qom\\|qvc\\|rtplot\\|setup\\|sipf\\|spins\\|spins3dab\\|spins3dac\\|spins3dbc\\|sps\\|status\\|trs\\|tst\\|txt\\|xyt\\)\\'" . my-mcphas-mode))
 
 ;; It's using bat-mode anyway.
 (add-to-list 'auto-mode-alist
-  '("calcsta\\.\\(bat\\)\\'" . my-mcphas-mode))
+             '("calcsta\\.\\(bat\\)\\'" . my-mcphas-mode))
 
 (add-hook 'my-mcphas-mode-hook
           (lambda ()
