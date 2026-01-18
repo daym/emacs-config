@@ -306,8 +306,8 @@ Warn if the directory already exists.  ARGS will be evaluated by eshell."
 (with-eval-after-load 'nov
   (define-key nov-mode-map (kbd "<mouse-8>") #'nov-history-back)
   (define-key nov-mode-map (kbd "<mouse-9>") #'nov-history-forward)
-  (define-key nov-mode-map (kbd "M-<Left>") #'nov-history-back)
-  (define-key nov-mode-map (kbd "M-<Right>") #'nov-history-forward))
+  (define-key nov-mode-map (kbd "M-<left>") #'nov-history-back)
+  (define-key nov-mode-map (kbd "M-<right>") #'nov-history-forward))
 
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
 (global-set-key (kbd "<Search>") 'consult-line)
