@@ -3462,7 +3462,12 @@ FILETAGS."
   (eat-eshell-mode)
   (eat-eshell-visual-command-mode))
 
-(with-eval-after-load 'buffer-env
+;; Usual init order:
+;;  1. early-init.el
+;;  2. package-initialize (loads autoloads)
+;;  3. init.el
+;; So with-eval-after-load 'buffer-env-autoloads will fire immediately, probably.  So maybe (require 'buffer-env) would be less weird? Who knows.
+(with-eval-after-load 'buffer-env-autoloads
   (add-hook 'hack-local-variables-hook #'buffer-env-update)
   (add-hook 'comint-mode-hook #'buffer-env-update))
 
