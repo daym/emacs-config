@@ -789,7 +789,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
   (define-key org-mode-map [M-left] nil)
   ;; Was org-metaright. (Calls ‘org-do-demote’, ‘org-indent-item’, ‘org-table-move-column’, ‘org-indent-drawer’ or ‘org-indent-block’. Otherwise calls the Emacs default `forward-word').
                                         ;(define-key org-mode-map [M-right] nil)
-;;; There's also S-M-<Up> but that's maybe okay.
+;;; There's also S-M-<up> but that's maybe okay.
   ;; Was org-shiftcontrolleft (switches to the previous todo set).  I want to be able to mark things so fuck off.
   (define-key org-mode-map [C-S-left] nil)
   ;; Was org-shiftcontrolright (switches to the next todo set).
@@ -1615,7 +1615,7 @@ argument is given.  Choose a file name based on any document
   :hook (after-init . vertico-mode))
 
 ;;; (setq completion-category-overrides '((file (styles basic))))
-                                        ;(keymap-set vertico-map "<Return>" #'vertico-exit-input)
+                                        ;(keymap-set vertico-map "<return>" #'vertico-exit-input)
 
 (use-package marginalia
   :ensure nil
@@ -2689,7 +2689,7 @@ This function is called by `org-babel-execute-src-block'."
 
 ;; wakib has keyboard-quit on <escape> via wakib-keys-overriding-map (see simple.el)
 ;; but apparently there's a minibuffer-keyboard-quit we don't use, except on C-g, where delsel.el defines it.
-;;(define-key minibuffer-local-map (kbd "<Escape>") 'minibuffer-keyboard-quit)
+;;(define-key minibuffer-local-map (kbd "<escape>") 'minibuffer-keyboard-quit)
 (wakib-define-keys wakib-keys-overriding-map `(("<escape>" . ,#'keyboard-escape-quit)))
 
 ;; Org mode stuff is too small for me (since it often contains math). Increase font size slightly.
