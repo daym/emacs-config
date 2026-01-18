@@ -300,8 +300,8 @@ Warn if the directory already exists.  ARGS will be evaluated by eshell."
 
 (global-set-key (kbd "<mouse-8>") 'back-button-global-backward)
 (global-set-key (kbd "<mouse-9>") 'back-button-global-forward)
-(global-set-key (kbd "M-<Left>") 'back-button-global-backward)
-(global-set-key (kbd "M-<Right>") 'back-button-global-forward)
+(global-set-key (kbd "M-<left>") 'back-button-global-backward)
+(global-set-key (kbd "M-<right>") 'back-button-global-forward)
 
 (with-eval-after-load 'nov
   (define-key nov-mode-map (kbd "<mouse-8>") #'nov-history-back)
