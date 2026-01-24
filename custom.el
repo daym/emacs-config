@@ -2957,6 +2957,44 @@ The session can be used to write a connection file, see
            :conn-info conn-info
            :key new-key))))))
 
+(with-eval-after-load 'magit
+  ;;; Wakib-keys uses emulation-mode-map-alists to override C-c with copy.
+  ;;; However, magit uses text-property keymaps for section-specific bindings,
+  ;;; and Emacs checks text-property keymaps BEFORE emulation-mode-map-alists:
+  ;;;
+  ;;;   1. overriding-terminal-local-map
+  ;;;   2. overriding-local-map
+  ;;;   3. keymap text property at point  <-- magit's section keymaps
+  ;;;   4. emulation-mode-map-alists      <-- wakib is here
+  ;;;
+  ;;; So magit's C-c prefix in section keymaps shadows wakib's C-c (copy).
+  ;;; Fix: move magit's C-c bindings to C-d (wakib's remapped prefix key).
+
+    ;; Move C-c prefix to C-d in magit-mode-map
+    (when-let ((cc-map (lookup-key magit-mode-map (kbd "C-c"))))
+      (define-key magit-mode-map (kbd "C-d") cc-map)
+      (define-key magit-mode-map (kbd "C-c") nil))
+
+    ;; Same for magit-section-mode-map
+    (when-let ((cc-map (lookup-key magit-section-mode-map (kbd "C-c"))))
+      (define-key magit-section-mode-map (kbd "C-d") cc-map)
+      (define-key magit-section-mode-map (kbd "C-c") nil))
+
+    ;; Same for magit-diff-section-map
+    (when-let ((cc-map (lookup-key magit-diff-section-map (kbd "C-c"))))
+      (define-key magit-diff-section-map (kbd "C-d") cc-map)
+      (define-key magit-diff-section-map (kbd "C-c") nil))
+
+    ;; Same for magit-hunk-section-map
+    (when-let ((cc-map (lookup-key magit-hunk-section-map (kbd "C-c"))))
+      (define-key magit-hunk-section-map (kbd "C-d") cc-map)
+      (define-key magit-hunk-section-map (kbd "C-c") nil))
+
+  ;(define-key magit-mode-map (kbd "C-c") nil)
+  ;(define-key magit-section-mode-map (kbd "C-c") nil)
+  ;(define-key magit-diff-section-map (kbd "C-c") nil)
+  )
+
 (use-package magit
   :config
   (defvar magit-status-mode-tool-bar-map
