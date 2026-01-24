@@ -3464,7 +3464,23 @@ FILETAGS."
 
 (with-eval-after-load 'claude-code-ide
   (setq claude-code-ide-cli-path (expand-file-name "~/src/agent-c/node_modules/.bin/claude")))
-    
+
+(add-hook 'vhdl-ts-mode-hook #'lsp-deferred)
+;  (add-hook 'vhdl-ts-mode-hook #'vhdl-ext-mode)
+
+(use-package vhdl-ext
+    :hook ((vhdl-ts-mode . vhdl-ext-mode))
+    :init
+    (setq vhdl-ext-feature-list
+      '(font-lock hierarchy
+        lsp ; or lsp-bridge which is supposedly much faster; or eglot
+        ; lsp has: capf flycheck
+        beautify navigation template
+        ;compilation ; requires ghdl
+        imenu which-func hideshow time-stamp ports))
+    :config
+    (vhdl-ext-mode-setup))
+
 (add-hook 'vhdl-mode-hook
           (lambda ()
             ;; Remove format-all from the save hook for this buffer only
