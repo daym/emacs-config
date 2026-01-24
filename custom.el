@@ -2406,8 +2406,11 @@ This function is called by `org-babel-execute-src-block'."
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((shell . t)
-   (ditaa . t)
+   (ditaa . t) ; crappier than svgbob
    (python . t)
+   (latex . t) ; tikz
+                                        ; (mermaid . t) requires package ob-mermaid ; mermaid is written in Javascript
+                                        ; (d2 . t) ; requires ob-d2; "modern block diagrams"
    (jupyter . t)
    (dot . t)
    (gnuplot . t)
