@@ -85,7 +85,7 @@ customize the variable `user-emacs-directory-warning'."
                                         errtype user-emacs-directory)))))
        bestname))))
 
-(add-to-list 'image-load-path (expand-file-name "~/.emacs.d/icons"))
+(add-to-list 'image-load-path (locate-user-emacs-file "icons"))
 
                                         ;(prefer-coding-system 'utf-8)
                                         ;(set-default-coding-systems 'utf-8)
@@ -609,8 +609,8 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 
 (setq visible-bell t)
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/"))
-(load (expand-file-name "~/.emacs.d/lisp/unbreak.el"))
+(add-to-list 'load-path (locate-user-emacs-file "lisp/"))
+(load (locate-user-emacs-file "lisp/unbreak.el"))
 (load "modern-fringes.el")
 
                                         ; Vendored from https://raw.githubusercontent.com/Alexander-Miller/treemacs/master/src/extra/treemacs-projectile.el
@@ -621,13 +621,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
                                         ;(straight-use-package
                                         ;  '(nano :type git :host github :repo "rougier/nano-emacs"))
 
-                                        ;(setq nano-font-size 10)
-
-                                        ;(add-to-list 'load-path (expand-file-name "~/.emacs.d/nano-emacs/"))
-                                        ;(load "nano.el")
-
                                         ; Too new version requires svg-tag-mode which is dumb
-                                        ;(add-to-list 'load-path (expand-file-name "~/.emacs.d/notebook-mode/"))
                                         ;(load "notebook.el")
 
                                         ;(setq org-ellipsis "▾")
@@ -662,16 +656,16 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 
 ;; Free version; see also https://github.com/WebFreak001/code-debug supports both gdb and lldb in case someone is interested.
                                         ; "gdb -i dap" is enough for DAP mode so no idea what all this is for here.
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/dap-gdb/"))
+(add-to-list 'load-path (locate-user-emacs-file "dap-gdb/"))
 (load "dap-gdb.el")
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/ssass-mode/"))
+(add-to-list 'load-path (locate-user-emacs-file "ssass-mode/"))
 (load "ssass-mode.el")
 
 (require 'bar-cursor)
 (bar-cursor-mode 1)
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/elfeed-tube/"))
+(add-to-list 'load-path (locate-user-emacs-file "elfeed-tube/"))
 (require 'elfeed-tube)
 (require 'elfeed-tube-mpv)
 
@@ -682,7 +676,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 
                                         ; Latex
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/xenops/lisp/"))
+(add-to-list 'load-path (locate-user-emacs-file "xenops/lisp/"))
 (require 'xenops)
 (setq-default xenops-math-image-scale-factor 0.6) ; when not in org
                                         ; (setq-default xenops-reveal-on-entry t) ; unreveal in org mode is buggy
@@ -698,7 +692,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 (wakib-keys 1)
 (define-key wakib-keys-overriding-map (kbd "C-f") #'consult-line) ; Note: someone overwrites this.
 
-(load (expand-file-name "~/.emacs.d/lisp/copilot.el"))
+(load (locate-user-emacs-file "lisp/copilot.el"))
 (global-set-key (kbd "C-.") 'gptel-send)
 
 (require 'opascal)
@@ -843,7 +837,7 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 
 ;;; Pandoc
 
-(setq pandoc-data-dir (expand-file-name "~/.emacs.d/etc/pandoc/"))
+(setq pandoc-data-dir (locate-user-emacs-file "etc/pandoc/"))
 
 (defun efe/export-to-docx ()
   "Output to docx using `pandoc-mode'."
@@ -919,15 +913,6 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
       (message "No word found at point."))))
 
 (setq scroll-preserve-screen-position nil)
-
-                                        ; Unbreak image scrolling
-
-                                        ;(add-to-list 'load-path (expand-file-name "~/.emacs.d/iscroll/"))
-                                        ;(require 'iscroll)
-                                        ; Note: Only enable in text modes, not prog modes
-                                        ;(iscroll-mode)
-
-                                        ;(add-hook 'elfeed-show-mode-hook 'iscroll-mode)
 
 ;;; Org mode
 
@@ -1357,7 +1342,6 @@ argument is given.  Choose a file name based on any document
 (setq org-src-tab-acts-natively t)
 (add-hook 'org-mode-hook #'mixed-pitch-mode)
 
-                                        ;(add-to-list 'load-path (expand-file-name "~/.emacs.d/qemu/"))
                                         ;(require 'qemu-qmp)
                                         ;(require 'qemu-dap)
 
@@ -1453,7 +1437,7 @@ argument is given.  Choose a file name based on any document
     "(specifications->manifest" \n
     " (list \"rust\" \"rust-analyzer\" \"ccls\" \"ocaml-lsp-server\" \"gcc-toolchain\" \"gdb\" \"rr\" \"texlive-minted\" \"texlive-scheme-basic\" \"dvisvgm\" \"python-lsp-server\" \"tidy-html\"))" \n))
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/kiwix.el"))
+(add-to-list 'load-path (locate-user-emacs-file "kiwix.el"))
 (require 'kiwix)
                                         ; duplicate
 (setq kiwix-default-browser-function 'eww-browse-url)
@@ -1486,7 +1470,7 @@ argument is given.  Choose a file name based on any document
 
                                         ;(setq which-key-persistent-popup t)
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/shr-tag-math"))
+(add-to-list 'load-path (locate-user-emacs-file "shr-tag-math"))
 (require 'shr-tag-math)
                                         ;(add-hook 'nov-mode-hook #'xenops-mode) ; so we render <math>; unfortunately, that fucks up all the other formatting. Also, the size of the rendered images is much too big here.
 
