@@ -1547,10 +1547,10 @@ argument is given.  Choose a file name based on any document
   #:config
   (setq gptel-backend
         (gptel-make-openai "llama-cpp"
-         :stream t
-         :protocol "http"
-         :host "localhost:8080"
-         :models '(llama)))  ; Any names, doesn't matter for Llama
+                           :stream t
+                           :protocol "http"
+                           :host "localhost:8080"
+                           :models '(llama)))  ; Any names, doesn't matter for Llama
   (setq gptel-model 'llama)
   (setq gptel-default-mode 'org-mode))
 
