@@ -219,8 +219,8 @@ customize the variable `user-emacs-directory-warning'."
                                         ; Nope. (add-hook 'scheme-mode-hook 'variable-pitch-mode)
 
                                         ; TODO local; TODO override paragraphs.el forward-paragraph
-                                        ;(global-set-key (kbd "C-<Down>") 'combobulate-navigate-logical-next)
-                                        ;(global-set-key (kbd "C-<Up>") 'combobulate-navigate-logical-previous)
+                                        ;(global-set-key (kbd "C-<down>") 'combobulate-navigate-logical-next)
+                                        ;(global-set-key (kbd "C-<up>") 'combobulate-navigate-logical-previous)
 
                                         ; (column-number-mode)
                                         ; (global-display-line-numbers-mode t)
