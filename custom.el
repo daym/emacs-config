@@ -3472,11 +3472,13 @@ FILETAGS."
             ;; Add the native beautifier instead
             (add-hook 'before-save-hook 'vhdl-beautify-buffer nil t)))
 
-;(add-hook 'prog-mode-hook
-;          (lambda ()
-;            (add-hook 'before-save-hook
-;                      (lambda ()
-;                        (if (eq major-mode 'vhdl-mode)
-;                            (vhdl-beautify-buffer)
-;                          (format-all-buffer)))
-;                      nil t)))
+                                        ;(add-hook 'prog-mode-hook
+                                        ;          (lambda ()
+                                        ;            (add-hook 'before-save-hook
+                                        ;                      (lambda ()
+                                        ;                        (if (eq major-mode 'vhdl-mode)
+                                        ;                            (vhdl-beautify-buffer)
+                                        ;                          (format-all-buffer)))
+                                        ;                      nil t)))
+
+
