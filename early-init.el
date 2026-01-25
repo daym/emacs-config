@@ -1,4 +1,9 @@
 
+;; It's extremely dangerous if this isn't set (because of a config error, say), so keep this here and at the beginning.
+(with-eval-after-load 'agent-shell-anthropic
+  (setq agent-shell-anthropic-claude-command
+        (list (expand-file-name "~/.local/bin/wrap-claude-code-acp"))))
+
 (setq debug-on-quit t)
 (profiler-start 'cpu)
 
