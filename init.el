@@ -308,6 +308,7 @@
                                         ;(rust-mode . rust-ts-mode)
                      (typescript-mode . tsx-ts-mode) ; or typescript-ts-mode
 					;(js-mode . js-ts-mode)
+					 (vhdl-mode . vhdl-ts-mode)
                      (yaml-mode . yaml-ts-mode)))
     (add-to-list 'major-mode-remap-alist mapping))
 
