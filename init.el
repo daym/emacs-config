@@ -253,6 +253,7 @@
                          ("=" org-verbatim verbatim)
                          ("~" org-code verbatim) ("," org-quote))))
  '(solarized-contrast 'normal)
+ '(spacious-padding-subtle-frame-lines t)
  '(spacious-padding-subtle-mode-line t)
  '(spacious-padding-widths
    '(:internal-border-width 0 :header-line-width 4 :mode-line-width 6
