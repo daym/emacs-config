@@ -216,6 +216,7 @@
  '(lsp-rust-analyzer-rustc-source
    "/usr/local/rustup/toolchains/nightly-2024-08-03-x86_64-unknown-linux-musl/lib/rustlib/rustc-src/rust/compiler/rustc/Cargo.toml")
  '(lsp-treemacs-theme "Iconless")
+ '(magit-status-file-list-limit 1000)
  '(mediainfo-mode-file-regexp
    "\\.\\(?:3gp\\|a\\(?:iff\\|vi\\)\\|flac\\|jpg\\|jpeg\\|png\\|gif\\|m\\(?:4a\\|kv\\|ov\\|p[34g]\\)\\|o\\(?:gg\\|pus\\)\\|vob\\|w\\(?:av\\|ebm\\|mv\\)\\)\\'")
  '(mouse-autoselect-window t)
