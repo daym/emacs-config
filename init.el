@@ -221,6 +221,7 @@
  '(mouse-autoselect-window t)
  '(mpv-start-timeout 0.5)
  '(mu4e-compose-switch nil)
+ '(mu4e-search-results-limit -1)
  '(org-babel-ditaa-java-cmd "ditaa")
  '(org-ditaa-jar-path "/home/dannym/.guix-home/profile/lib/ditaa0.11.0.jar")
  '(org-export-exclude-tags '("confidential"))
