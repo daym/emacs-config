@@ -1,8 +1,20 @@
 
-;; It's extremely dangerous if this isn't set (because of a config error, say), so keep this here and at the beginning.
 (with-eval-after-load 'agent-shell-anthropic
+  ;; Prefixes the command that starts the agent, or a shell command that should be run so it is executed inside the container.
+  ;; It's extremely dangerous if this isn't set (because of a config error, say), so keep this here and at the beginning.
+  (setq agent-shell-container-command-runner
+        (list "guix" "shell"
+              "-C" "-N" "-W"
+              "-m" "manifest.scm"
+              "--expose=/usr/bin/env"
+              (concat "--share=" (expand-file-name "~/.claude"))
+              (concat "--share=" (expand-file-name "~/.claude.json"))
+              "--"))
+  ;; To prevent the agent running inside the container to access your local file-system altogether and to have it read/modify files inside the container directly, in addition to setting the resolver function, disable the “read/write text file” client capabilities.
+  (setq agent-shell-text-file-capabilities nil)
+
   (setq agent-shell-anthropic-claude-command
-        (list (expand-file-name "~/.local/bin/wrap-claude-code-acp"))))
+        (list "claude-code-acp")))
 
 (setq debug-on-quit t)
 (profiler-start 'cpu)
