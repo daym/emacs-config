@@ -610,6 +610,8 @@ GUD-COMMAND and DAP-COMMAND should be quoted command symbols."
 (setq visible-bell t)
 
 (add-to-list 'load-path (locate-user-emacs-file "lisp/"))
+
+(load (locate-user-emacs-file "guix-workspace.el"))
 (load (locate-user-emacs-file "lisp/unbreak.el"))
 (load "modern-fringes.el")
 
