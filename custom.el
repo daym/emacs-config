@@ -3541,6 +3541,37 @@ FILETAGS."
                                         ;                      nil t)))
 
 
+;;; git-rebase toolbar
+
+(require 'git-rebase)
+(defvar git-rebase-tool-bar-map
+  (let ((tool-bar-map (make-sparse-keymap)))
+    (tool-bar-local-item-from-menu 'git-rebase-pick "checked" tool-bar-map git-rebase-mode-map :label "Pick" :help "Pick the commit for retaining")
+    (tool-bar-local-item-from-menu 'git-rebase-drop "delete" tool-bar-map git-rebase-mode-map :label "Drop" :help "Drop the commit")
+    (tool-bar-local-item-from-menu 'git-rebase-reword "describe" tool-bar-map git-rebase-mode-map :label "Reword..." :help "Reword the commit message")
+    (tool-bar-local-item-from-menu 'git-rebase-edit "mail/flag-for-followup" tool-bar-map git-rebase-mode-map :label "Edit..." :help "Stop and edit the commit")
+    (tool-bar-local-item-from-menu 'git-rebase-squash "spell" tool-bar-map git-rebase-mode-map :label "Squash" :help "Squash the commit with previous commit")
+    (tool-bar-local-item-from-menu 'git-rebase-fixup "attach" tool-bar-map git-rebase-mode-map :label "Fixup" :help "Fixup the commit with previous commit")
+    (tool-bar-local-item-from-menu 'git-rebase-kill-line "delete" tool-bar-map git-rebase-mode-map :label "Kill" :help "Kill the commit")
+    (tool-bar-local-item-from-menu 'git-rebase-noop "mail/not-spam" tool-bar-map git-rebase-mode-map :label "Noop" :help "No-operation the commit")
+    (tool-bar-local-item-from-menu 'git-rebase-exec "ezimage/bits" tool-bar-map git-rebase-mode-map :label "Execute..." :help "Execute shell command for commit")
+    (tool-bar-local-item-from-menu 'git-rebase-move-line-up "up-arrow" tool-bar-map git-rebase-mode-map :label "Move Up" :help "Move the commit up")
+    ;; TODO: icon
+    (tool-bar-local-item-from-menu 'git-rebase-move-line-down "down" tool-bar-map git-rebase-mode-map :label "Move Down" :help "Move the commit down")
+    (tool-bar-local-item-from-menu 'with-editor-cancel "cancel" tool-bar-map git-rebase-mode-map :label "Cancel" :help "Cancel the entire rebasing")
+    (tool-bar-local-item-from-menu 'with-editor-finish "ezimage/checkmark" tool-bar-map git-rebase-mode-map :label "Finish" :help "Finish the entire rebasing")
+
+    tool-bar-map))
+
+(defun my-git-rebase-setup-toolbar ()
+  "Set up the toolbar for `git-rebase-mode'."
+  (setq-local tool-bar-map git-rebase-tool-bar-map)
+                                        ; we don't need that: (tool-bar-mode 1)
+  )
+
+(add-hook 'git-rebase-mode-hook #'my-git-rebase-setup-toolbar)
+                                        ;(my-git-rebase-setup-toolbar)
+
 (use-package agent-shell
   :config
   ;; (setq agent-shell-confirm-tool-execution nil)
