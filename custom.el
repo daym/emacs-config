@@ -1246,7 +1246,8 @@ argument is given.  Choose a file name based on any document
                                         ; TODO: https://tero.hasu.is/blog/transient-directories-in-notdeft/
 
 (with-eval-after-load 'buffer-env
-  (setq buffer-env-script-name '("manifest.scm" "environment-variables" ".env" ".envrc"))
+  ;; Removed: "manifest.scm" in favor of guix-workspace.
+  (setq buffer-env-script-name '("environment-variables" ".env" ".envrc"))
   ;; guix failed build.
   (add-to-list 'buffer-env-command-alist
                `(,(rx "/environment-variables" eos)
